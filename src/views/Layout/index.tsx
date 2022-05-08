@@ -5,11 +5,11 @@ import { SideBar } from "../../layouts/SideBar";
 
 export const Layout = () => {
 	return (
-		<div className="flex w-full min-h-screen font-sans text-gray-900 bg-gray-50">
+		<div className="flex w-full font-sans text-gray-900 bg-gray-50">
 			<div>
 				<SideBar />
 			</div>
-			<div className="flex flex-col flex-1">
+			<div className="flex flex-col flex-grow min-w-0 max-h-screen overflow-auto">
 				<Header />
 				<Outlet />
 				<Footer />

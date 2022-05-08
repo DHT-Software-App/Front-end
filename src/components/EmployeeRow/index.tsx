@@ -8,6 +8,7 @@ import {
 	faEdit,
 	faCircleQuestion,
 } from "@fortawesome/free-regular-svg-icons";
+import { useEffect, useState } from "react";
 
 const EnableAccount = () => {
 	return (
@@ -28,21 +29,30 @@ const EmployeeStatusBadge = ({
 }: {
 	status?: EmployeeStatus;
 }) => {
-	const bgStatus = status == "active" ? "green" : "yellow";
-
 	return (
 		<span
 			className={`p-1.5 text-xs font-medium uppercase 
-			tracking-wider rounded-lg bg-opacity-50 text-${bgStatus}-800 bg-${bgStatus}-200`}
+		tracking-wider rounded-lg bg-opacity-50 
+		${
+			status == "active"
+				? "text-green-800 bg-green-200"
+				: "text-yellow-800 bg-yellow-200"
+		} 
+		`}
 		>
 			{status}
 		</span>
 	);
 };
 
-export const EmployeeRow = ({ value: employee }: { value: Employee }) => {
+type EmployeeRowProps = {
+	value: Employee;
+	onEdit: (employee: Employee) => void;
+};
+
+export const EmployeeRow = ({ value: employee, onEdit }: EmployeeRowProps) => {
 	return (
-		<tr className="bg-white">
+		<tr className="bg-white border-b-2 border-slate-100">
 			<td className="p-3 text-slate-700 whitespace-nowrap">
 				{employee.first_name}
 			</td>
@@ -79,12 +89,12 @@ export const EmployeeRow = ({ value: employee }: { value: Employee }) => {
 							className="text-lg text-slate-400 hover:text-slate-700"
 						/>
 					</Link>
-					<Link to="">
+					<button onClick={() => onEdit(employee)}>
 						<FontAwesomeIcon
 							icon={faEdit}
 							className="text-lg text-slate-400 hover:text-slate-700"
 						/>
-					</Link>
+					</button>
 				</div>
 			</td>
 		</tr>

@@ -1,7 +1,3 @@
-.is-invalid {
-	border-color: crimson;
-}
-
 .error {
 	color: crimson;
 	font-size: 0.75rem;

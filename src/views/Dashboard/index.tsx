@@ -1,3 +1,5 @@
+import { EmployeeForm } from "components/EmployeeForm";
+
 export const DashboardView = () => {
-	return <></>;
+	return <div></div>;
 };

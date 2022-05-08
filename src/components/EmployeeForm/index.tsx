@@ -1,3 +1,5 @@
+import { DropDown, DropMetaOption } from "components/DropDown";
+import { DropDownItem } from "components/DropDownItem";
 import { useFormik, Form, FormikProvider } from "formik";
 import { useCountry } from "hooks/useCountry";
 import { useState } from "react";
@@ -10,12 +12,10 @@ import "yup-phone";
 const validate = yup.object({
 	first_name: yup
 		.string()
-		.min(15, "First name must be min 15 characters")
 		.max(50, "First name must be max 50 characters")
 		.required("First name required."),
 	last_name: yup
 		.string()
-		.min(25, "First name must be min 25 characters")
 		.max(50, "First name must be max 50 characters")
 		.required("Last name required."),
 	email_address: yup
@@ -33,17 +33,14 @@ const validate = yup.object({
 		.required("Phone required"),
 	state: yup
 		.string()
-		.min(5, "State must be min 5 characters")
 		.max(45, "State must be max 45 characters")
 		.required("State required."),
 	street: yup
 		.string()
-		.min(15, "State must be min 15 characters")
 		.max(45, "State must be max 45 characters")
 		.required("Street required."),
 	city: yup
 		.string()
-		.min(5, "State must be min 5 characters")
 		.max(45, "State must be max 45 characters")
 		.required("City required"),
 	zip: yup.number().integer().required("Zip required"),
@@ -51,10 +48,23 @@ const validate = yup.object({
 		.string()
 		.oneOf(["active", "desactive"])
 		.required("Status required"),
-	role: yup.number().integer().required("Role required"),
+	role: yup.number().integer(),
 });
 
+const statusOptions: DropMetaOption[] = [
+	{
+		display: "Desactive",
+		value: "desactive",
+	},
+	{
+		display: "Active",
+		value: "active",
+	},
+];
+
 export const EmployeeForm = ({ initialValue }: { initialValue: Employee }) => {
+	const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
+
 	const [flagIcon, setFlagIcon] = useState<string>();
 	const { country, getCurrentCountry } = useCountry();
 
@@ -73,33 +83,126 @@ export const EmployeeForm = ({ initialValue }: { initialValue: Employee }) => {
 	const formikBag = useFormik({
 		initialValues: initialValue,
 		validationSchema: validate,
-		onSubmit: () => {},
+		onSubmit: (values, { setSubmitting }) => {
+			console.log(values);
+
+			setSubmitting(false);
+		},
 	});
 
-	const { isSubmitting, isValid } = formikBag;
+	const { isSubmitting, isValid, setFieldValue } = formikBag;
+
+	useEffect(() => {
+		if (selectedStatus) {
+			setFieldValue("status", selectedStatus.value);
+		}
+	}, [selectedStatus]);
 
 	return (
 		<FormikProvider value={formikBag}>
 			<Form>
-				<TextField label="First Name" name="first_name" type="text" />
-				<TextField label="Last Name" name="last_name" type="text" />
-				<TextField label="Email Address" name="email_address" type="email" />
-				<TextField label="Contact #1" name="contact_1" type="tel" />
-				<TextField label="Contact #2" name="contact_2" type="tel" />
-				<TextField label="State" name="state" type="text" />
-				<TextField label="Street" name="street" type="text" />
-				<TextField label="City" name="city" type="text" />
-				<TextField label="Zip" name="zip" type="number" />
-				<TextField label="Status" name="status" type="text" />
+				<div className="flex flex-col px-7 py-14 max-w-screen-lg space-y-6">
+					<h3 className="font-bold text-xl">Employee Information</h3>
 
-				<img src={flagIcon} />
+					<div>
+						<div className="grid grid-cols-6 gap-4">
+							<div className="col-span-2">
+								<TextField
+									label="First Name"
+									name="first_name"
+									type="text"
+									required
+								/>
+							</div>
+							<div className="col-span-2">
+								<TextField
+									label="Last Name"
+									name="last_name"
+									type="text"
+									required
+								/>
+							</div>
+							<div className="col-span-2">
+								<TextField label="Street" name="street" type="text" required />
+							</div>
 
-				<button type="submit" disabled={isSubmitting || !isValid}>
-					Create
-				</button>
-				<button type="reset" disabled={isSubmitting}>
-					Reset
-				</button>
+							<div className="col-span-2">
+								<TextField
+									label="Email Address"
+									name="email_address"
+									type="email"
+									required
+								/>
+							</div>
+							<div className="col-span-2">
+								<DropDown
+									label="Status"
+									value={selectedStatus}
+									onChange={setSelectedStatus}
+									required
+								>
+									{statusOptions.map((option, index) => (
+										<DropDownItem key={index} value={option}>
+											{option.display}
+										</DropDownItem>
+									))}
+								</DropDown>
+							</div>
+							<div className="col-span-2">
+								<TextField label="State" name="state" type="text" required />
+							</div>
+
+							<div className="col-span-2">
+								<TextField
+									label="Contact #1"
+									name="contact_1"
+									type="tel"
+									required
+								/>
+							</div>
+
+							<div className="col-span-2">
+								<TextField
+									label="Contact #2"
+									name="contact_2"
+									type="tel"
+									required
+								/>
+							</div>
+
+							<div className="col-span-1">
+								<TextField label="City" name="city" type="text" required />
+							</div>
+
+							<div className="col-span-1">
+								<TextField label="Zip" name="zip" type="number" required />
+							</div>
+						</div>
+
+						<p className="text-xs text-slate-400 font-semibold mt-3">
+							In order to process registration provide the following
+							information. All fields marked with an asterisk (*) are required.
+						</p>
+					</div>
+
+					<div className="flex gap-x-4">
+						<button
+							type="submit"
+							disabled={isSubmitting || !isValid}
+							className="bg-blue text-white text-xs hover:cursor-pointer font-semibold px-5 py-3"
+						>
+							Save Employee
+						</button>
+
+						{/* <button
+							type="reset"
+							disabled={isSubmitting}
+							className="bg-slate-100  text-slate-700 text-sm font-semibold px-5 py-3"
+						>
+							Reset
+						</button> */}
+					</div>
+				</div>
 			</Form>
 		</FormikProvider>
 	);
