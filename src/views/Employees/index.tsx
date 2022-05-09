@@ -41,6 +41,7 @@ export const EmployeesView = () => {
 	const [filteredEmployee, setFilteredEmployee] = useState();
 	const [employeeEdit, setEmployeeEdit] = useState<Employee>();
 	const [openEdit, setOpenEdit] = useState<boolean>(false);
+	const [openNew, setOpenNew] = useState<boolean>(false);
 
 	const handleSearch = (ev: any) => {
 		console.log(ev);
@@ -60,7 +61,10 @@ export const EmployeesView = () => {
 					manage employes
 				</span>
 				<div>
-					<button className="bg-blue-light text-white uppercase text-xs font-semibold px-5 py-3 rounded-md">
+					<button
+						className="bg-blue-light text-white uppercase text-xs font-semibold px-5 py-3 rounded-md"
+						onClick={() => setOpenNew(true)}
+					>
 						create a new employee
 					</button>
 				</div>
@@ -106,9 +110,27 @@ export const EmployeesView = () => {
 				/>
 			</Modal> */}
 
-			<Modal open={openEdit} opacity={true}>
+			{/* Edit Form */}
+			<Modal
+				isOpen={openEdit}
+				closeModal={() => {
+					setOpenEdit(false);
+				}}
+			>
 				<div className="px-6">
 					{employeeEdit && <EmployeeForm initialValue={employeeEdit} />}
+				</div>
+			</Modal>
+
+			{/* New Form */}
+			<Modal
+				isOpen={openNew}
+				closeModal={() => {
+					setOpenNew(false);
+				}}
+			>
+				<div className="px-6">
+					<EmployeeForm initialValue={{}} />
 				</div>
 			</Modal>
 		</div>

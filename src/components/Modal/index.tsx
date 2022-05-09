@@ -1,56 +1,46 @@
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-
-const modalRoot = document.getElementById("modal-root");
-const el = document.createElement("div");
-
-const ModalPortalWrapper = ({ children }: any) => {
-	useEffect(() => {
-		modalRoot?.appendChild(el);
-
-		return () => {
-			modalRoot?.removeChild(el);
-
-			console.log(modalRoot);
-		};
-	}, []);
-
-	return createPortal(children, el);
-};
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment } from "react";
 
 type ModalProps = {
-	opacity?: boolean;
-	props?: any;
 	children?: any;
-	open?: boolean;
+	isOpen?: boolean;
+	closeModal: () => void;
 };
 
-export const Modal = ({
-	opacity = false,
-	children,
-	open = false,
-}: ModalProps) => {
+export const Modal = ({ children, isOpen = false, closeModal }: ModalProps) => {
 	return (
-		<ModalPortalWrapper>
-			<div
-				id="modal-component-container"
-				className={`fixed inset-0 ${open ? "" : "hidden"} z-50`}
-			>
-				<div className="modal-flex-container max-h-screen flex flex-col items-center pt-4 pl-4 pr-4 pb-20 text-center sm:p-0">
-					<div
-						className={`modal-bg-container fixed inset-0  ${
-							opacity ? "bg-black bg-opacity-75" : ""
-						}`}
-					></div>
-					<div
-						className="modal-container inline-block align-bottom bg-white rounded-lg 
-text-left shadow-xl overflow-auto transform transition-all sm:my-8 sm:align-middle 
-"
-					>
-						{children}
+		<Transition appear show={isOpen} as={Fragment}>
+			<Dialog as="div" className="relative z-50 w-screen" onClose={closeModal}>
+				<Transition.Child
+					as={Fragment}
+					enter="ease-out duration-300"
+					enterFrom="opacity-0"
+					enterTo="opacity-100"
+					leave="ease-in duration-200"
+					leaveFrom="opacity-100"
+					leaveTo="opacity-0"
+				>
+					<div className="fixed inset-0 bg-black bg-opacity-25" />
+				</Transition.Child>
+
+				<div className="fixed inset-0 overflow-y-auto">
+					<div className="flex min-h-full items-center justify-center p-4 text-center">
+						<Transition.Child
+							as={Fragment}
+							enter="ease-out duration-300"
+							enterFrom="opacity-0 scale-95"
+							enterTo="opacity-100 scale-100"
+							leave="ease-in duration-200"
+							leaveFrom="opacity-100 scale-100"
+							leaveTo="opacity-0 scale-95"
+						>
+							<Dialog.Panel className="transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+								{children}
+							</Dialog.Panel>
+						</Transition.Child>
 					</div>
 				</div>
-			</div>
-		</ModalPortalWrapper>
+			</Dialog>
+		</Transition>
 	);
 };

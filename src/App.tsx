@@ -9,7 +9,7 @@ import { Layout } from "./views/Layout";
 import { NewAccountView } from "views/NewAccount";
 import { ProtectedRoute } from "routes/ProtectedRoute";
 import { ProfileView } from "views/Profile";
-import { RestoreByEmailView } from "views/RestoreByEmail";
+import { ForgotPasswordView } from "views/ForgotPassword";
 
 function App() {
 	return (
@@ -29,12 +29,12 @@ function App() {
 						<Route path="/dashboard" element={<Navigate to="/" />} />
 						<Route path="/employees" element={<EmployeesView />} />
 						<Route path="/profile/:profileId" element={<ProfileView />} />
-						<Route path="/restore/send" element={<RestoreByEmailView />} />
 					</Route>
 
 					{/* public routes */}
-					<Route path="/sign" element={<SignView />} />
 					<Route path="/new/password/:token" element={<NewAccountView />} />
+					<Route path="/sign" element={<SignView />} />
+					<Route path="/forgot-password" element={<ForgotPasswordView />} />
 				</Routes>
 			</Provider>
 		</div>

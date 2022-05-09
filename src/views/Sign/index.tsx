@@ -2,7 +2,7 @@ import { SignForm } from "components/SignForm";
 
 export const SignView = () => {
 	return (
-		<div className="min-h-screen grid place-content-center">
+		<div className="min-h-screen grid place-content-center bg-blue-dark">
 			<SignForm />
 		</div>
 	);
