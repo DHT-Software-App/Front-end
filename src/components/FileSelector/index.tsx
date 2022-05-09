@@ -23,7 +23,7 @@ const Image = ({ src, filename, quit }: ImageProps) => {
 };
 
 export const FileSelector = ({ multiple }: FileSelectorProps) => {
-	const [selectedImages, setSelectedImages] = useState<File[]>();
+	const [selectedImages, setSelectedImages] = useState<File[]>([]);
 	const [dragOverStatus, setDragOverStatus] = useState<boolean>(false);
 
 	// to handle when drag enter or drag leave.
@@ -53,8 +53,6 @@ export const FileSelector = ({ multiple }: FileSelectorProps) => {
 			return;
 		}
 
-		console.log(fileList);
-
 		// files array
 		const files: File[] = [];
 
@@ -62,7 +60,7 @@ export const FileSelector = ({ multiple }: FileSelectorProps) => {
 			files.push(fileList.item(i)!);
 		}
 
-		setSelectedImages({ ...(multiple ? selectedImages : {}), ...files });
+		setSelectedImages([...(multiple ? selectedImages : []), ...files]);
 	};
 
 	return (
@@ -81,8 +79,6 @@ export const FileSelector = ({ multiple }: FileSelectorProps) => {
 			) : (
 				"Nothing"
 			)}
-
-			{JSON.stringify(selectedImages)}
 		</div>
 	);
 };
