@@ -17,6 +17,7 @@
 		"@types/react": "^18.0.5",
 		"@types/react-dom": "^18.0.1",
 		"buffer": "^6.0.3",
+		"cookie-store": "^3.0.0",
 		"formik": "^2.2.9",
 		"react": "^17.0.0",
 		"react-dom": "^17.0.0",
@@ -31,11 +32,14 @@
 		"yup": "^0.32.11",
 		"yup-phone": "^1.3.2"
 	},
+	"homepage": "https://dht.impulsohost.com",
 	"scripts": {
-		"start": "react-scripts start",
+		"dev": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
-		"eject": "react-scripts eject"
+		"eject": "react-scripts eject",
+		"heroku-postbuild": "npm run build",
+		"start": "serve -s build"
 	},
 	"eslintConfig": {
 		"extends": [

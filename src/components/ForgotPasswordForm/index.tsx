@@ -57,7 +57,7 @@ export const ForgotPasswordForm = () => {
 						</div>
 					</div>
 
-					<p className="text-xs text-justify tracking-wide text-slate-400 mb-7 mt-14">
+					<p className="text-xs text-justify tracking-wide text-slate-400 mb-4 mt-7">
 						*if you do not have login credentials, please communicate with your
 						system administrator.
 					</p>

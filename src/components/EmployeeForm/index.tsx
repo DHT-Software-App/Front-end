@@ -101,7 +101,7 @@ export const EmployeeForm = ({ initialValue }: { initialValue: Employee }) => {
 	return (
 		<FormikProvider value={formikBag}>
 			<Form>
-				<div className="flex flex-col py-8 px-4 max-w-screen-lg space-y-6">
+				<div className="flex flex-col py-14 px-10 max-w-screen-lg space-y-6">
 					<div className="flex justify-between items-center">
 						<h3 className="font-bold text-xl">Employee Information</h3>
 						<div className="space-x-2">

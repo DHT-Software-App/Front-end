@@ -1,4 +1,3 @@
-import React from "react";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { SignView } from "./views/Sign";
@@ -10,6 +9,11 @@ import { NewAccountView } from "views/NewAccount";
 import { ProtectedRoute } from "routes/ProtectedRoute";
 import { ProfileView } from "views/Profile";
 import { ForgotPasswordView } from "views/ForgotPassword";
+import { onAuthChanged } from "utils/auth/onAuthChanged";
+
+onAuthChanged(function (state: any) {
+	console.log(state);
+});
 
 function App() {
 	return (

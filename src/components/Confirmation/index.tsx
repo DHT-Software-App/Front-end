@@ -1,20 +1,22 @@
+import { ReactNode } from "react";
+
 type ConfirmationProps = {
-	title: string;
-	description: string;
-	cancel: () => void;
+	title: ReactNode;
+	description: ReactNode;
+	cancel?: () => void;
 	accept: () => void;
-	icon: any;
+	icon: ReactNode;
 	iconBg: string;
 	acceptTitle: string;
 	acceptClasses: string;
 };
 
 export const Confirmation = ({
+	title: Title,
+	description: Description,
 	accept,
 	cancel,
-	description,
 	icon: Icon,
-	title,
 	acceptTitle,
 	acceptClasses,
 	iconBg,
@@ -26,29 +28,33 @@ export const Confirmation = ({
 					<div
 						className={`first-letter:modal-icon mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full  ${iconBg}
             sm:mx-0 sm:h-10 sm:w-10`}
-					></div>
+					>
+						{Icon}
+					</div>
 					<div className="modal-content text-center mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-						<h3 className="text-lg font-medium text-stone-900">{title}</h3>
+						<h3 className="text-lg font-medium text-stone-900">{Title}</h3>
 
 						<div className="modal-text mt-2">
-							<p className="text-stone-500 text-sm">{description}</p>
+							<p className="text-stone-500 text-sm">{Description}</p>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div className="modal-actions bg-stone-50 px-4 py-3 sm:px-6 sm:flex sm:justify-end">
-				<button
-					onClick={cancel}
-					className="w-full inline-flex justify-center rounded-md
-        border border-stone-700 shadow-md px-4 py-2 bg-white font-medium text-stone-700
-        hover:bg-stone-50
-        focus:outline-none
-        focus:ring-2
-        focus:ring-offset-2
-        sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-				>
-					Cancel
-				</button>
+				{cancel && (
+					<button
+						onClick={cancel}
+						className="w-full inline-flex justify-center rounded-md
+						border border-stone-700 shadow-md px-4 py-2 bg-white font-medium text-stone-700
+						hover:bg-stone-50
+						focus:outline-none
+						focus:ring-2
+						focus:ring-offset-2
+						sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+					>
+						Cancel
+					</button>
+				)}
 				<button
 					onClick={accept}
 					className={`w-full inline-flex justify-center rounded-md

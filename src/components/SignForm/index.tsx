@@ -50,7 +50,7 @@ export const SignForm = () => {
 			<FormikProvider value={formikBag}>
 				<Form className="flex flex-col text-gray-800 py-8 px-12 max-w-sm max-h-max shadow-md ">
 					<div className="flex justify-center mb-10 mt-4">
-						<Logo className="w-40" />
+						<Logo className="w-36" />
 					</div>
 					<div className="space-y-4">
 						<div>
@@ -71,7 +71,7 @@ export const SignForm = () => {
 						</div>
 					</div>
 
-					<p className="text-xs text-justify tracking-wide text-slate-400 mb-7 mt-14">
+					<p className="text-xs text-justify tracking-wide text-slate-400 mb-4 mt-7">
 						*if you do not have an access account, please communicate with your
 						system administrator.
 					</p>
