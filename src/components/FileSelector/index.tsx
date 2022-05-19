@@ -1,23 +1,34 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWindowClose } from "@fortawesome/free-solid-svg-icons";
 import { useState, DragEvent } from "react";
 
 type ImageProps = {
 	src: string;
 	filename: string;
-	quit: () => void;
+	id: number;
+	quit: (id: number) => void;
 };
 
 type FileSelectorProps = {
 	multiple?: true;
 };
 
-const Image = ({ src, filename, quit }: ImageProps) => {
+// Preview image
+const Image = ({ src, id, filename, quit, ...props }: ImageProps) => {
 	return (
-		<figure>
-			<span className="" onClick={quit}>
-				x
-			</span>
-			<img src={src} />
-			<figcaption>{filename}</figcaption>
+		<figure
+			{...props}
+			className="bg-white rounded-sm shadow-lg px-2 py-4 relative flex flex-col"
+		>
+			<FontAwesomeIcon
+				icon={faWindowClose}
+				onClick={() => quit(id)}
+				className="absolute right-0 mx-2 my-1 text-lg text-blue-dark hover:cursor-pointer hover:text-slate-100"
+			/>
+			<img src={src} className="h-24 object-cover" />
+			<figcaption className="px-1 pt-2 text-xs text-zinc-600 font-semibold tracking-wide">
+				{filename}
+			</figcaption>
 		</figure>
 	);
 };
@@ -25,6 +36,14 @@ const Image = ({ src, filename, quit }: ImageProps) => {
 export const FileSelector = ({ multiple }: FileSelectorProps) => {
 	const [selectedImages, setSelectedImages] = useState<File[]>([]);
 	const [dragOverStatus, setDragOverStatus] = useState<boolean>(false);
+
+	const handleQuitImage = (id: number) => {
+		const stayedImages = selectedImages.filter((image, index) => {
+			return index != id;
+		});
+
+		setSelectedImages(stayedImages);
+	};
 
 	// to handle when drag enter or drag leave.
 	const handleOnDrag = (event: DragEvent<HTMLDivElement>) => {
@@ -70,15 +89,22 @@ export const FileSelector = ({ multiple }: FileSelectorProps) => {
 			onDragOver={handleOnDragOver}
 			onDrop={handleOnDrop}
 		>
-			{selectedImages?.length ? (
-				<ul>
-					{selectedImages.map((image, index) => (
-						<li key={index}>{image.name}</li>
-					))}
-				</ul>
-			) : (
-				"Nothing"
-			)}
+			<div className="grid grid-cols-6 gap-4 bg-zinc-50 p-4">
+				{selectedImages?.length
+					? selectedImages.map((image, index) => {
+							const blob = URL.createObjectURL(image);
+							return (
+								<Image
+									key={index}
+									filename={image.name}
+									src={blob}
+									quit={handleQuitImage}
+									id={index}
+								/>
+							);
+					  })
+					: "Nothing"}
+			</div>
 		</div>
 	);
 };

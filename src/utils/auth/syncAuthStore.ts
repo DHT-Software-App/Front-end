@@ -1,5 +1,7 @@
 import "cookie-store";
+import moment from "moment";
+import { Cookie } from "utils/cookies/cookieEnum";
 
-export const syncAuthStore = async (token: string) => {
-	await window.cookieStore.set("auth-token", token);
+export const syncAuthStore = (token: string, maxAge?: number) => {
+	document.cookie = `${Cookie.AuthenticationToken}=${token}; max-age=${maxAge}`;
 };

@@ -1,12 +1,13 @@
-import { Account } from "types/Account";
+import { Employee } from "types/Employee";
 
 const initialState: {
-	auth?: Account;
+	auth?: string;
 	loading: boolean;
 	isAuthenticated: boolean;
-	error?: any;
+	error?: Error;
+	employee?: Employee;
 } = {
-	isAuthenticated: true,
+	isAuthenticated: false,
 	loading: false,
 };
 
@@ -17,6 +18,32 @@ export const authReducer = (
 	const { type, payload } = action;
 
 	switch (type) {
+		// ME
+
+		case "@me/auth/request": {
+			return {
+				...state,
+				loading: true,
+			};
+		}
+
+		case "@me/auth/success": {
+			return {
+				...state,
+				loading: false,
+				error: null,
+				employee: payload,
+			};
+		}
+
+		case "@me/auth/failed": {
+			return {
+				...state,
+				loading: false,
+				error: payload,
+			};
+		}
+
 		// SIGN
 		case "@sign/auth/request": {
 			return {
@@ -53,7 +80,7 @@ export const authReducer = (
 		case "@signout/auth/request": {
 			return {
 				...state,
-				auth: null,
+				auth: payload,
 				isAuthenticated: false,
 			};
 		}

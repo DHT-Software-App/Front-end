@@ -54,10 +54,10 @@ export const EmployeeRow = ({ value: employee, onEdit }: EmployeeRowProps) => {
 	return (
 		<tr className="bg-white border-b-2 border-slate-100">
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.first_name}
+				{employee.firstname}
 			</td>
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.last_name}
+				{employee.lastname}
 			</td>
 			<td className="p-3 text-slate-700 whitespace-nowrap">
 				{employee.contact_1}
@@ -73,7 +73,7 @@ export const EmployeeRow = ({ value: employee, onEdit }: EmployeeRowProps) => {
 				<EmployeeStatusBadge status={employee.status} />
 			</td>
 			<td className="text-center p-3 text-slate-700 whitespace-nowrap">
-				{employee.account ? <Avatar /> : <EnableAccount />}
+				{employee.user ? <Avatar /> : <EnableAccount />}
 			</td>
 			<td className="text-center p-3 text-slate-700 whitespace-nowrap">
 				<div className="flex space-x-6">

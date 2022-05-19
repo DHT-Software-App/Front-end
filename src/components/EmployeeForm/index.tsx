@@ -115,7 +115,7 @@ export const EmployeeForm = ({ initialValue }: { initialValue: Employee }) => {
 							<div className="col-span-2">
 								<TextField
 									label="First Name"
-									name="first_name"
+									name="firstname"
 									type="text"
 									required
 								/>
@@ -123,7 +123,7 @@ export const EmployeeForm = ({ initialValue }: { initialValue: Employee }) => {
 							<div className="col-span-2">
 								<TextField
 									label="Last Name"
-									name="last_name"
+									name="lastname"
 									type="text"
 									required
 								/>

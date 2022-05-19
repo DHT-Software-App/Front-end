@@ -2,6 +2,7 @@ import { Employee } from "types/Employee";
 
 const initialState: {
 	employees: Employee[];
+	authenticated?: Employee;
 	loading: boolean;
 	error?: any;
 } = {
@@ -17,6 +18,31 @@ export const employeeReducer = (
 
 	switch (type) {
 		// GET ALL
+		case "@get/employees/request": {
+			return {
+				...state,
+				loading: true,
+			};
+		}
+
+		case "@get/employees/success": {
+			return {
+				...state,
+				loading: false,
+				error: null,
+				employees: payload,
+			};
+		}
+
+		case "@get/employees/failure": {
+			return {
+				...state,
+				loading: false,
+				error: payload,
+			};
+		}
+
+		// GET ONE
 		case "@get/employee/request": {
 			return {
 				...state,
@@ -29,7 +55,7 @@ export const employeeReducer = (
 				...state,
 				loading: false,
 				error: null,
-				employees: payload,
+				authenticated: payload,
 			};
 		}
 

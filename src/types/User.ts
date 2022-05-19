@@ -1,8 +1,8 @@
 import { Profile } from "./Profile";
 
-export interface Account {
+export interface User {
 	id?: number;
-	email_address?: string;
+	email?: string;
 	password?: string;
 	confirm_password?: string;
 	profile?: Profile;

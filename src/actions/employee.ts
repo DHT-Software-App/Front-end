@@ -1,17 +1,33 @@
 import { Employee } from "types/Employee";
 
 // GET ALL
-export const get_employee_request = () => ({
-	type: "@get/employee/request",
+export const get_employees_request = (token: string) => ({
+	type: "@get/employees/request",
+	payload: token,
 });
 
-export const get_employee_success = (employees: Employee[]) => ({
-	type: "@get/employee/success",
+export const get_employees_success = (employees: Employee[]) => ({
+	type: "@get/employees/success",
 	payload: employees,
 });
 
-export const get_employee_failure = (error: any) => ({
-	type: "@get/employee/failure",
+export const get_employees_failure = (error: any) => ({
+	type: "@get/employees/failure",
+	payload: error,
+});
+
+// GET ONE
+export const get_employee_request = (id: number) => ({
+	type: "@get/employee/request",
+});
+
+export const get_employee_success = (employee: Employee) => ({
+	type: "@get/employee/success",
+	payload: employee,
+});
+
+export const get_employee_failed = (error: Error) => ({
+	type: "@get/employee/success",
 	payload: error,
 });
 

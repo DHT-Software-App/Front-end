@@ -3,16 +3,17 @@ import {
 	create_employee_success,
 	update_employee_success,
 	delete_employee_success,
-	get_employee_success,
+	get_employees_success,
 } from "actions/employee";
 import { Employee } from "types/Employee";
 import { EmployeeService } from "services/EmployeeService";
 
-function* getAll(): any {
+function* getAll(action: any): any {
 	try {
-		const employees: Employee[] = yield call(EmployeeService.getAll);
+		const { payload: token } = action;
+		const employees: Employee[] = yield call(EmployeeService.getAll, token);
 
-		yield put(get_employee_success(employees));
+		yield put(get_employees_success(employees));
 	} catch (error) {}
 }
 function* create(action: any): any {
@@ -46,7 +47,7 @@ function* remove(action: any): any {
 }
 
 export function* employeeSaga() {
-	yield takeEvery("@get/employee/request", getAll);
+	yield takeEvery("@get/employees/request", getAll);
 	yield takeEvery("@create/employee/request", create);
 	yield takeEvery("@update/employee/request", update);
 	yield takeEvery("@delete/employee/request", remove);

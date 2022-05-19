@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 const allowedModules = {
 	views: [
-		"Dashboard",
-		"Employees",
-		"Documents",
-		"Jobs",
-		"Customers",
-		"Customer References",
-		"Insurance Companies",
-		"Appointments",
+		"dashboard",
+		"employees",
+		// "Documents",
+		// "Jobs",
+		// "Customers",
+		// "Customer References",
+		// "Insurance Companies",
+		// "Appointments",
 	],
 };
 
@@ -16,7 +16,7 @@ const MenuItem = ({ display }: { display: string }) => {
 	return (
 		<li>
 			<Link
-				to={`localhost:300/${display}`}
+				to={`${display}`}
 				className="flex gap-x-6 items-start py-3 px-6 hover:bg-blue hover:font-medium"
 			>
 				<img

@@ -1,15 +1,12 @@
-import { Account } from "types/Account";
-
 const initialState: {
 	loading: boolean;
-	existingAccount?: boolean;
-	account?: Account;
+	existingUser?: boolean;
 	error?: any;
 } = {
 	loading: false,
 };
 
-export const accountReducer = (
+export const userReducer = (
 	state = initialState,
 	action: { type: string; payload: any }
 ) => {
@@ -17,7 +14,7 @@ export const accountReducer = (
 
 	switch (type) {
 		// CREATE
-		case "@create/account/request": {
+		case "@create/user/request": {
 			return {
 				...state,
 				loading: true,
@@ -25,16 +22,16 @@ export const accountReducer = (
 			};
 		}
 
-		case "@create/account/success": {
+		case "@create/user/success": {
 			return {
 				...state,
 				loading: false,
 				error: null,
-				account: payload,
+				user: payload,
 			};
 		}
 
-		case "@create/account/failure": {
+		case "@create/user/failure": {
 			return {
 				...state,
 				loading: false,
@@ -55,11 +52,11 @@ export const accountReducer = (
 				...state,
 				loading: false,
 				error: null,
-				account: payload,
+				user: payload,
 			};
 		}
 
-		case "@reset/account/failure": {
+		case "@reset/user/failure": {
 			return {
 				...state,
 				loading: false,
@@ -67,24 +64,24 @@ export const accountReducer = (
 			};
 		}
 
-		// EXISTS ACCOUNT
-		case "@exists/account/request": {
+		// EXISTS USER
+		case "@exists/user/request": {
 			return {
 				...state,
 				loading: true,
 			};
 		}
 
-		case "@exists/account/success": {
+		case "@exists/user/success": {
 			return {
 				...state,
 				loading: false,
 				error: null,
-				existingAccount: payload,
+				existinguser: payload,
 			};
 		}
 
-		case "@exists/account/failure": {
+		case "@exists/user/failure": {
 			return {
 				...state,
 				loading: false,

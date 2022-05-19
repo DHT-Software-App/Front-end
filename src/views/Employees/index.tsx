@@ -1,36 +1,14 @@
+import { get_employees_request } from "actions/employee";
 import { Confirmation } from "components/Confirmation";
 import { DropDown } from "components/DropDown";
 import { DropDownItem } from "components/DropDownItem";
 import { EmployeeForm } from "components/EmployeeForm";
 import { EmployeeTable } from "components/EmployeeTable";
 import { Modal } from "components/Modal";
-import React, { useState } from "react";
+import { useAuth } from "hooks/useAuth";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Employee } from "types/Employee";
-
-const employees: Employee[] = [
-	{
-		first_name: "Amber Maite",
-		last_name: "Abreu",
-		city: "Santo Domingo Este",
-		contact_1: "829-268-2153",
-		contact_2: "829-268-2153",
-		email_address: "ambar.abreu@gmail.com",
-		state: "Santo Domingo",
-		street: "Amalia, San Isidro",
-		status: "desactive",
-	},
-	{
-		first_name: "Gian Carlos",
-		last_name: "Perez",
-		city: "Bonao",
-		contact_1: "829-042-2315",
-		contact_2: "829-321-5233",
-		email_address: "gian.carlos@gmail.com",
-		state: "Monseñor Nouel",
-		street: "Fanny Pimentel",
-		status: "desactive",
-	},
-];
 
 // Open within a modal
 {
@@ -42,6 +20,14 @@ export const EmployeesView = () => {
 	const [employeeEdit, setEmployeeEdit] = useState<Employee>();
 	const [openEdit, setOpenEdit] = useState<boolean>(false);
 	const [openNew, setOpenNew] = useState<boolean>(false);
+
+	const { auth: token } = useSelector(({ auth }: any) => auth);
+	const { employees, loading } = useSelector(({ employee }: any) => employee);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(get_employees_request(token));
+	}, []);
 
 	const handleSearch = (ev: any) => {
 		console.log(ev);

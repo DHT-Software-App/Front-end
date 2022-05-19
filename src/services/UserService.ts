@@ -1,7 +1,7 @@
-import { Account } from "types/Account";
+import { User } from "types/User";
 
-export class AccountService {
-	static async get(account_id: number): Promise<Account> {
+export class UserService {
+	static async get(user_id: number): Promise<User> {
 		// get information of account without password
 		try {
 			return {};
@@ -10,7 +10,7 @@ export class AccountService {
 		}
 	}
 
-	static async create(account: Account): Promise<Account> {
+	static async create(user: User): Promise<User> {
 		try {
 			return {};
 		} catch (error) {
@@ -18,7 +18,7 @@ export class AccountService {
 		}
 	}
 
-	static async update(account: Account): Promise<Account> {
+	static async update(user: User): Promise<User> {
 		try {
 			return {};
 		} catch (error) {

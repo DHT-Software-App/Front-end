@@ -3,17 +3,20 @@ import {
 	sign_auth_request,
 	sign_clean_errors,
 } from "actions/auth";
+import { useEffect } from "react";
+import { isExpired } from "react-jwt";
 import { useDispatch, useSelector } from "react-redux";
-import { Account } from "types/Account";
+import { User } from "types/User";
 
 export const useAuth = () => {
-	const { isAuthenticated, loading, auth, errors } = useSelector(
+	const { isAuthenticated, loading, auth, error } = useSelector(
 		({ auth }: any) => auth
 	);
+
 	const dispatch = useDispatch();
 
-	const sign = (account: Account) => {
-		dispatch(sign_auth_request(account));
+	const sign = (user: User) => {
+		dispatch(sign_auth_request(user));
 	};
 
 	const signout = () => {
@@ -24,11 +27,17 @@ export const useAuth = () => {
 		dispatch(sign_clean_errors());
 	};
 
+	useEffect(() => {
+		if (auth && isExpired(auth)) {
+			signout();
+		}
+	});
+
 	return {
 		isAuthenticated,
 		loading,
 		auth,
-		errors,
+		error,
 		sign,
 		signout,
 		cleanErrors,

@@ -1,7 +1,7 @@
 import { useFormik, Form, FormikProvider } from "formik";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Account } from "types/Account";
+import { User } from "types/User";
 import { TextField } from "utils/components/TextField";
 import * as yup from "yup";
 
@@ -18,25 +18,23 @@ const validate = yup.object({
 		.required("Confirm password is required."),
 });
 
-export const AccountForm = ({
+export const UserForm = ({
 	initialValue,
 	submit,
 	success,
 }: {
-	initialValue: Account;
-	submit: (account: Account) => void;
-	success: (account: Account) => void;
+	initialValue: User;
+	submit: (user: User) => void;
+	success: (user: User) => void;
 }) => {
-	const { error, account, loading } = useSelector(
-		({ account }: any) => account
-	);
+	const { error, user, loading } = useSelector(({ user }: any) => user);
 
 	const formikBag = useFormik({
 		initialValues: initialValue,
 		validationSchema: validate,
-		onSubmit: (account) => {
+		onSubmit: (user) => {
 			// proccessing on backend
-			submit(account);
+			submit(user);
 		},
 	});
 
@@ -53,10 +51,10 @@ export const AccountForm = ({
 			setErrors(error);
 		}
 
-		if (account) {
-			success(account);
+		if (user) {
+			success(user);
 		}
-	}, [account, error]);
+	}, [user, error]);
 
 	return (
 		<FormikProvider value={formikBag}>

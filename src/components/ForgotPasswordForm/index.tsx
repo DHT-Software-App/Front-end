@@ -1,17 +1,17 @@
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useFormik, Form, FormikProvider } from "formik";
 import * as yup from "yup";
-import { Account } from "types/Account";
+import { User } from "types/User";
 import { TextField } from "utils/components/TextField";
 import { Logo } from "components/Logo";
 
-const account: Account = {
-	email_address: "",
+const user: User = {
+	email: "",
 	password: "",
 };
 
 const validate = yup.object({
-	email_address: yup.string().email().required(),
+	email: yup.string().email().required(),
 });
 
 export const ForgotPasswordForm = () => {
@@ -19,7 +19,7 @@ export const ForgotPasswordForm = () => {
 	const { state } = useLocation();
 
 	const formikBag = useFormik({
-		initialValues: account,
+		initialValues: user,
 		validationSchema: validate,
 		onSubmit: (values: any, actions: any) => {
 			console.log(values);
@@ -37,7 +37,7 @@ export const ForgotPasswordForm = () => {
 					<div className="divide-y divide-slate-300">
 						<div className="space-y-4 mb-8">
 							<div>
-								<TextField label="Email" name="email_address" type="email" />
+								<TextField label="Email" name="email" type="email" />
 							</div>
 
 							<div className="flex justify-between items-center">

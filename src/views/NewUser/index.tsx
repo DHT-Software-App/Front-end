@@ -1,52 +1,47 @@
-import { AccountForm } from "components/AccountForm";
-import { Account } from "types/Account";
+import { UserForm } from "components/UserForm";
+import { User } from "types/User";
 import { useJwt } from "react-jwt";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-	create_account_request,
-	exists_account_request,
-} from "actions/account";
+import { create_user_request, exists_user_request } from "actions/user";
 
-export const NewAccountView = () => {
+export const NewUserView = () => {
 	const dispatch = useDispatch();
-	const { loading, existingAccount } = useSelector(
-		({ account }: any) => account
-	);
+	const { loading, existingUser } = useSelector(({ user }: any) => user);
 
 	const { token } = useParams();
 	const navigate = useNavigate();
-	const [account, setAccount] = useState<Account>();
+	const [user, setUser] = useState<User>();
 	const { decodedToken, isExpired } = useJwt(token!);
 
 	useEffect(() => {
 		if (decodedToken && !isExpired) {
 			const { email_address } = decodedToken as any;
 
-			setAccount({
+			setUser({
 				email_address,
 				password: "",
 				confirm_password: "",
-			} as Account);
+			} as User);
 
 			// we need to verify that account does not exist on backend
 			// ................
-			dispatch(exists_account_request(email_address));
+			dispatch(exists_user_request(email_address));
 		} else if (isExpired) {
 			navigate("/");
 		}
 	}, [decodedToken, isExpired]);
 
 	useEffect(() => {
-		if (existingAccount) {
+		if (existingUser) {
 			// should be redirect to the existing account page
 			navigate("/");
 		}
-	}, [existingAccount]);
+	}, [existingUser]);
 
-	const handleOnSubmit = (account: Account) => {
-		dispatch(create_account_request(account));
+	const handleOnSubmit = (user: User) => {
+		dispatch(create_user_request(user));
 	};
 
 	const handleOnSuccess = () => {
@@ -56,11 +51,11 @@ export const NewAccountView = () => {
 
 	return (
 		<div className="NewPassword">
-			{existingAccount == null ? (
+			{existingUser == null ? (
 				<h4>Loading...</h4>
 			) : (
-				<AccountForm
-					initialValue={account!}
+				<UserForm
+					initialValue={user!}
 					submit={handleOnSubmit}
 					success={handleOnSuccess}
 				/>

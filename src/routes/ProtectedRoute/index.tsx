@@ -1,9 +1,10 @@
 import { useAuth } from "hooks/useAuth";
-import { Route, Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 export const ProtectedRoute = ({ children }: any) => {
 	const { isAuthenticated } = useAuth();
 	const location = useLocation();
+
 	return isAuthenticated ? (
 		<>{children}</>
 	) : (

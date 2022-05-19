@@ -1,9 +1,19 @@
+import { me_auth_request } from "actions/auth";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { Footer } from "../../layouts/Footer";
 import { Header } from "../../layouts/Header";
 import { SideBar } from "../../layouts/SideBar";
 
 export const Layout = () => {
+	const { auth: token } = useSelector(({ auth }: any) => auth);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(me_auth_request(token));
+	}, []);
+
 	return (
 		<div className="flex w-full font-sans text-gray-900 bg-gray-50">
 			<div>

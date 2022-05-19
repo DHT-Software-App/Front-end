@@ -1,11 +1,39 @@
 import { Employee } from "types/Employee";
+import { decodeToken } from "react-jwt";
+import axios, { AxiosError, AxiosResponse } from "axios";
+
+const { REACT_APP_BACKEND_API } = process.env;
 
 export class EmployeeService {
-	static async getAll(): Promise<Employee[]> {
+	static async getAll(token: string): Promise<Employee[]> {
 		try {
-			return [];
+			const endpoint = `${REACT_APP_BACKEND_API}/employees`;
+
+			const { data } = await axios.get(endpoint, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			const employees: Employee[] = data.data.map((data: any) => {
+				const { id, attributes } = data.data;
+
+				const employee: Employee = { id, ...attributes };
+
+				return employee;
+			});
+
+			return employees;
 		} catch (error) {
 			return [];
+		}
+	}
+
+	static async getById(id: number): Promise<Employee> {
+		try {
+			return {};
+		} catch (error) {
+			throw error;
 		}
 	}
 

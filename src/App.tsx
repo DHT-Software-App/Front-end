@@ -5,17 +5,29 @@ import { EmployeesView } from "./views/Employees";
 import { DashboardView } from "./views/Dashboard";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Layout } from "./views/Layout";
-import { NewAccountView } from "views/NewAccount";
+import { NewUserView } from "views/NewUser";
 import { ProtectedRoute } from "routes/ProtectedRoute";
 import { ProfileView } from "views/Profile";
 import { ForgotPasswordView } from "views/ForgotPassword";
 import { onAuthChanged } from "utils/auth/onAuthChanged";
-
-onAuthChanged(function (state: any) {
-	console.log(state);
-});
+import { signout_auth_request, sign_auth_success } from "actions/auth";
+import { useEffect, useState } from "react";
 
 function App() {
+	const [loadedToken, setLoadedToken] = useState<boolean>();
+
+	useEffect(() => {
+		onAuthChanged((token) => {
+			if (token) {
+				store.dispatch(sign_auth_success(token));
+				setLoadedToken(true);
+			} else {
+				store.dispatch(signout_auth_request());
+				setLoadedToken(false);
+			}
+		});
+	}, []);
+
 	return (
 		<div className="App">
 			<Provider store={store}>
@@ -24,9 +36,13 @@ function App() {
 					<Route
 						path="/"
 						element={
-							<ProtectedRoute>
-								<Layout />
-							</ProtectedRoute>
+							loadedToken !== undefined ? (
+								<ProtectedRoute>
+									<Layout />
+								</ProtectedRoute>
+							) : (
+								<div>loading</div>
+							)
 						}
 					>
 						<Route index element={<DashboardView />} />
@@ -36,7 +52,7 @@ function App() {
 					</Route>
 
 					{/* public routes */}
-					<Route path="/new/password/:token" element={<NewAccountView />} />
+					<Route path="/new/password/:token" element={<NewUserView />} />
 					<Route path="/sign" element={<SignView />} />
 					<Route path="/forgot-password" element={<ForgotPasswordView />} />
 				</Routes>

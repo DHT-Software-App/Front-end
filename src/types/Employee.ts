@@ -1,10 +1,11 @@
-import { Account } from "./Account";
+import { Ability } from "./Ability";
+import { User } from "./User";
 import { Role } from "./Role";
 
 export interface Employee {
 	id?: number;
-	first_name?: string;
-	last_name?: string;
+	firstname?: string;
+	lastname?: string;
 	email_address?: string;
 	contact_1?: string;
 	contact_2?: string;
@@ -14,5 +15,6 @@ export interface Employee {
 	zip?: number;
 	status?: "active" | "desactive";
 	role?: Role;
-	account?: Account;
+	abilities?: Ability[];
+	user?: User;
 }

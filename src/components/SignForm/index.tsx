@@ -3,47 +3,52 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useFormik, Form, FormikProvider } from "formik";
 import * as yup from "yup";
 import { useEffect } from "react";
-import { Account } from "types/Account";
+import { User } from "types/User";
 import { TextField } from "utils/components/TextField";
 import { Logo } from "components/Logo";
+import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
 
-const account: Account = {
-	email_address: "",
+const user: User = {
+	email: "",
 	password: "",
 };
 
 const validate = yup.object({
-	email_address: yup.string().email().required(),
+	email: yup.string().email().required(),
 });
 
 export const SignForm = () => {
-	const { auth, errors, sign, cleanErrors, loading } = useAuth();
+	const { auth, error, sign, cleanErrors, loading } = useAuth();
 	const navigate = useNavigate();
 	const { state } = useLocation();
 
+	const formikBag = useFormik({
+		initialValues: user,
+		validationSchema: validate,
+		onSubmit: (values: any, { setSubmitting }) => {
+			sign(values as User);
+
+			// setSubmitting(false);
+		},
+	});
+
 	useEffect(() => {
-		if (errors) {
+		if (error) {
+			if (error instanceof InvalidAttributeError) {
+				const { attribute, detail } = error.content;
+				formikBag.setFieldError(attribute, detail);
+			}
 		}
 
 		if (auth) {
-			navigate("/");
+			// navigate("/");
 		}
 
 		return () => {
 			// clean errors in global state
 			cleanErrors();
 		};
-	}, [errors, auth]);
-
-	const formikBag = useFormik({
-		initialValues: account,
-		validationSchema: validate,
-		onSubmit: (values: any, actions: any) => {
-			console.log(values);
-			sign(values);
-			actions.setSubmitting(true);
-		},
-	});
+	}, [error, auth]);
 
 	return (
 		<div className="SignForm bg-white rounded-md">
@@ -54,7 +59,7 @@ export const SignForm = () => {
 					</div>
 					<div className="space-y-4">
 						<div>
-							<TextField label="Email" name="email_address" type="email" />
+							<TextField label="Email" name="email" type="email" />
 							<TextField label="Password" name="password" type="password" />
 						</div>
 
