@@ -1,3 +1,3 @@
 export enum Cookie {
-	AuthenticationToken = "auth-token",
+	AuthenticationToken = "access-token",
 }

@@ -18,7 +18,7 @@ const validate = yup.object({
 		.required("Confirm password is required."),
 });
 
-export const UserForm = ({
+export const PasswordForm = ({
 	initialValue,
 	submit,
 	success,
@@ -27,8 +27,6 @@ export const UserForm = ({
 	submit: (user: User) => void;
 	success: (user: User) => void;
 }) => {
-	const { error, user, loading } = useSelector(({ user }: any) => user);
-
 	const formikBag = useFormik({
 		initialValues: initialValue,
 		validationSchema: validate,
@@ -39,22 +37,6 @@ export const UserForm = ({
 	});
 
 	const { isSubmitting, isValid, setErrors, setSubmitting } = formikBag;
-
-	useEffect(() => {
-		if (loading != null) {
-			setSubmitting(loading);
-		}
-	}, [loading]);
-
-	useEffect(() => {
-		if (error) {
-			setErrors(error);
-		}
-
-		if (user) {
-			success(user);
-		}
-	}, [user, error]);
 
 	return (
 		<FormikProvider value={formikBag}>

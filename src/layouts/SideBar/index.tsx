@@ -1,8 +1,11 @@
 import { Logo } from "components/Logo";
 import { Menu } from "components/Menu";
+import { useCan } from "hooks/useCan";
 import { Link } from "react-router-dom";
 
 export const SideBar = () => {
+	const { can } = useCan();
+
 	return (
 		<aside className="w-64 h-screen bg-blue-dark text-sm text-gray py-4 font-normal flex flex-col justify-between ">
 			<div className="flex justify-center">

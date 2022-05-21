@@ -1,4 +1,5 @@
 import { Employee } from "types/Employee";
+import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 // GET ALL
 export const get_employees_request = (token: string) => ({
@@ -32,14 +33,28 @@ export const get_employee_failed = (error: Error) => ({
 });
 
 // CREATE
-export const create_employee_request = (employee: Employee) => ({
+export const create_employee_request = (
+	employee: Employee,
+	roleName: string,
+	token: string
+) => ({
 	type: "@create/employee/request",
-	payload: employee,
+	payload: {
+		employee,
+		token,
+		roleName,
+	},
 });
 
-export const create_employee_success = (employee: Employee) => ({
+export const create_employee_success = (
+	employee: Employee,
+	success?: SuccessResponse
+) => ({
 	type: "@create/employee/success",
-	payload: employee,
+	payload: {
+		employee,
+		success,
+	},
 });
 
 export const create_employee_failure = (error: any) => ({
@@ -48,9 +63,12 @@ export const create_employee_failure = (error: any) => ({
 });
 
 // UPDATE
-export const update_employee_request = (employee: Employee) => ({
+export const update_employee_request = (employee: Employee, token: string) => ({
 	type: "@update/employee/request",
-	payload: employee,
+	payload: {
+		employee,
+		token,
+	},
 });
 
 export const update_employee_success = (employee: Employee) => ({
@@ -64,9 +82,12 @@ export const update_employee_failure = (error: any) => ({
 });
 
 // DELETE
-export const delete_employee_request = (id: number) => ({
+export const delete_employee_request = (id: number, token: string) => ({
 	type: "@delete/employee/request",
-	payload: id,
+	payload: {
+		id,
+		token,
+	},
 });
 
 export const delete_employee_success = (id: number) => ({

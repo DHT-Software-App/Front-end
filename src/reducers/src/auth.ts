@@ -1,11 +1,13 @@
 import { Employee } from "types/Employee";
+import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 const initialState: {
 	auth?: string;
 	loading: boolean;
 	isAuthenticated: boolean;
-	error?: Error;
+	error?: any;
 	employee?: Employee;
+	success?: SuccessResponse;
 } = {
 	isAuthenticated: false,
 	loading: false,
@@ -28,19 +30,23 @@ export const authReducer = (
 		}
 
 		case "@me/auth/success": {
+			const { employee } = payload;
+
 			return {
 				...state,
 				loading: false,
 				error: null,
-				employee: payload,
+				employee,
 			};
 		}
 
 		case "@me/auth/failed": {
+			const { error } = payload;
+
 			return {
 				...state,
 				loading: false,
-				error: payload,
+				error,
 			};
 		}
 
@@ -53,20 +59,58 @@ export const authReducer = (
 		}
 
 		case "@sign/auth/success": {
+			const { token } = payload;
 			return {
 				...state,
 				loading: false,
 				error: null,
-				auth: payload,
+				auth: token,
 				isAuthenticated: true,
 			};
 		}
 
 		case "@sign/auth/failure": {
+			const { error } = payload;
+
 			return {
 				...state,
 				loading: false,
-				error: payload,
+				error,
+			};
+		}
+
+		case "@register/auth/request": {
+			return {
+				...state,
+				loading: true,
+			};
+		}
+
+		case "@register/auth/request": {
+			return {
+				...state,
+				loading: true,
+			};
+		}
+
+		case "@register/auth/success": {
+			const { success } = payload;
+
+			return {
+				...state,
+				loading: false,
+				error: null,
+				success,
+			};
+		}
+
+		case "@register/auth/failure": {
+			const { error } = payload;
+
+			return {
+				...state,
+				loading: false,
+				error,
 			};
 		}
 
@@ -78,9 +122,11 @@ export const authReducer = (
 		}
 
 		case "@signout/auth/request": {
+			const { auth } = payload;
+
 			return {
 				...state,
-				auth: payload,
+				auth,
 				isAuthenticated: false,
 			};
 		}

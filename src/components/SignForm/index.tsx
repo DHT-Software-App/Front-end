@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import { User } from "types/User";
 import { TextField } from "utils/components/TextField";
 import { Logo } from "components/Logo";
-import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
 
 const user: User = {
 	email: "",
@@ -32,16 +31,18 @@ export const SignForm = () => {
 		},
 	});
 
+	const { setFieldError, errors } = formikBag;
+
 	useEffect(() => {
 		if (error) {
-			if (error instanceof InvalidAttributeError) {
+			error.forEach((error: any) => {
 				const { attribute, detail } = error.content;
-				formikBag.setFieldError(attribute, detail);
-			}
+				setFieldError(attribute, detail);
+			});
 		}
 
 		if (auth) {
-			// navigate("/");
+			navigate("/");
 		}
 
 		return () => {

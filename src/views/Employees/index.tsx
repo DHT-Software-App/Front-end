@@ -1,33 +1,66 @@
-import { get_employees_request } from "actions/employee";
+import {
+	create_employee_request,
+	get_employees_request,
+} from "actions/employee";
 import { Confirmation } from "components/Confirmation";
 import { DropDown } from "components/DropDown";
 import { DropDownItem } from "components/DropDownItem";
 import { EmployeeForm } from "components/EmployeeForm";
 import { EmployeeTable } from "components/EmployeeTable";
+import { Feedback } from "components/Feedback";
 import { Modal } from "components/Modal";
-import { useAuth } from "hooks/useAuth";
+import { useCan } from "hooks/useCan";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Employee } from "types/Employee";
+import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 // Open within a modal
 {
 	/* <EmployeeForm initialValue={employee} /> */
 }
 export const EmployeesView = () => {
+	// util hooks
+	const dispatch = useDispatch();
+
+	// for validate abilities
+	const { can, unloadCan } = useCan();
+
 	const [search, setSearch] = useState();
 	const [filteredEmployee, setFilteredEmployee] = useState();
+
+	// to preserve employee to edit
 	const [employeeEdit, setEmployeeEdit] = useState<Employee>();
+
+	// for modal open status
 	const [openEdit, setOpenEdit] = useState<boolean>(false);
 	const [openNew, setOpenNew] = useState<boolean>(false);
 
 	const { auth: token } = useSelector(({ auth }: any) => auth);
-	const { employees, loading } = useSelector(({ employee }: any) => employee);
-	const dispatch = useDispatch();
+
+	const {
+		employees,
+		loading,
+		success,
+	}: { employees: Employee[]; loading: boolean; success: SuccessResponse } =
+		useSelector(({ employee }: any) => employee);
+
+	// feedback
+	const [successes, setSuccesses] = useState<SuccessResponse[]>([]);
 
 	useEffect(() => {
 		dispatch(get_employees_request(token));
 	}, []);
+
+	useEffect(() => {
+		if (success) {
+			setSuccesses([...successes, success]);
+		}
+	}, [success]);
+
+	const removeSuccess = (index: number) => {
+		setSuccesses(successes.filter((success, i) => i != index));
+	};
 
 	const handleSearch = (ev: any) => {
 		console.log(ev);
@@ -38,13 +71,26 @@ export const EmployeesView = () => {
 		setOpenEdit(true);
 	};
 
+	// when creating employee
+	const create = (employee: Employee, roleName: string) => {
+		dispatch(create_employee_request(employee, roleName, token));
+	};
+
 	const handleFilteredEmployee = (ev: any) => {};
 
 	return (
-		<div className="flex flex-col gap-y-12 p-12 bg-gray-100">
+		<div className="flex flex-col gap-y-12 p-12 bg-gray-100 relative">
+			{successes.map((success, index) => (
+				<Feedback
+					key={index}
+					response={success}
+					quit={() => removeSuccess(index)}
+				/>
+			))}
+
 			<div className="flex justify-between items-baseline">
 				<span className="uppercase font-bold text-xl text-blue-dark">
-					manage employes
+					manage employees
 				</span>
 				<div>
 					<button
@@ -104,7 +150,9 @@ export const EmployeesView = () => {
 				}}
 			>
 				<div className="px-6">
-					{employeeEdit && <EmployeeForm initialValue={employeeEdit} />}
+					{employeeEdit && (
+						<EmployeeForm initialValue={employeeEdit} submit={() => {}} />
+					)}
 				</div>
 			</Modal>
 
@@ -116,7 +164,7 @@ export const EmployeesView = () => {
 				}}
 			>
 				<div className="px-6">
-					<EmployeeForm initialValue={{}} />
+					<EmployeeForm initialValue={{}} submit={create} />
 				</div>
 			</Modal>
 		</div>

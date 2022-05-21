@@ -5,7 +5,7 @@ import { EmployeesView } from "./views/Employees";
 import { DashboardView } from "./views/Dashboard";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Layout } from "./views/Layout";
-import { NewUserView } from "views/NewUser";
+import { NewPasswordView } from "views/NewPassword";
 import { ProtectedRoute } from "routes/ProtectedRoute";
 import { ProfileView } from "views/Profile";
 import { ForgotPasswordView } from "views/ForgotPassword";
@@ -52,7 +52,7 @@ function App() {
 					</Route>
 
 					{/* public routes */}
-					<Route path="/new/password/:token" element={<NewUserView />} />
+					<Route path="/new/password/:token" element={<NewPasswordView />} />
 					<Route path="/sign" element={<SignView />} />
 					<Route path="/forgot-password" element={<ForgotPasswordView />} />
 				</Routes>

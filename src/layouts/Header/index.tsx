@@ -6,11 +6,20 @@ import { useAuth } from "hooks/useAuth";
 import { Avatar } from "components/Avatar";
 import { ProfileCollapse } from "components/ProfileCollapse";
 import { Menu, Transition } from "@headlessui/react";
+import { useSelector } from "react-redux";
+import { Employee } from "types/Employee";
 
 export const Header = () => {
 	const { signout } = useAuth();
+	const {
+		employee: authEmployee,
+		loading,
+	}: { employee: Employee; loading: boolean } = useSelector(
+		({ auth }: any) => auth
+	);
+
 	// #f7f7f7
-	return (
+	return authEmployee ? (
 		<header className="flex justify-between items-center shadow-sm shadow-neutral-300 w-full bg-white">
 			<div className="ml-12">
 				<input
@@ -38,16 +47,19 @@ export const Header = () => {
 						<div className="flex space-x-6 py-3 px-6 hover:cursor-pointer hover:bg-zinc-100">
 							<div className="flex-shrink-0">
 								<Avatar
-									src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+									src={authEmployee.user?.profile?.url || undefined}
 									alt=""
 									className="w-10 h-10 object-cover rounded-full"
 								/>
 							</div>
 							<div className="flex flex-col items-end justify-center">
 								<span className="text-sm font-medium text-slate-800">
-									Luis Miguel
+									{authEmployee.user?.profile?.nickname ||
+										`${authEmployee.firstname} ${authEmployee.lastname}`}
 								</span>
-								<span className="text-xs text-slate-500 mt-1">Admin</span>
+								<span className="text-xs text-slate-500 mt-1">
+									{authEmployee.role?.title}
+								</span>
 							</div>
 						</div>
 					</Menu.Button>
@@ -69,5 +81,7 @@ export const Header = () => {
 				</Menu>
 			</div>
 		</header>
+	) : (
+		<>Loading</>
 	);
 };

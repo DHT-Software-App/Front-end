@@ -4,24 +4,27 @@ import { useFormik, Form, FormikProvider } from "formik";
 import { useCountry } from "hooks/useCountry";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Employee } from "types/Employee";
 import { TextField } from "utils/components/TextField";
+import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
+import { SuccessResponse } from "utils/Responses/SuccessResponse";
 import * as yup from "yup";
 import "yup-phone";
 
 const validate = yup.object({
-	first_name: yup
+	firstname: yup
 		.string()
 		.max(50, "First name must be max 50 characters")
 		.required("First name required."),
-	last_name: yup
+	lastname: yup
 		.string()
 		.max(50, "First name must be max 50 characters")
 		.required("Last name required."),
 	email_address: yup
 		.string()
 		.email()
-		.max(45, "Must be max 45 characters.")
+		.max(100, "Must be max 45 characters.")
 		.required("Email address required"),
 	contact_1: yup
 		.string()
@@ -48,7 +51,7 @@ const validate = yup.object({
 		.string()
 		.oneOf(["active", "desactive"])
 		.required("Status required"),
-	role: yup.number().integer(),
+	role: yup.string(),
 });
 
 const statusOptions: DropMetaOption[] = [
@@ -62,15 +65,60 @@ const statusOptions: DropMetaOption[] = [
 	},
 ];
 
-export const EmployeeForm = ({ initialValue }: { initialValue: Employee }) => {
-	const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
+export const EmployeeForm = ({
+	initialValue,
+	submit,
+}: {
+	initialValue: Employee;
+	submit: (employee: Employee, roleName: string) => void;
+}) => {
+	const { employee: authenticated }: { employee: Employee } = useSelector(
+		({ auth }: any) => auth
+	);
+	const {
+		error,
+		loading,
+	}: {
+		error: any;
+		loading: boolean;
+	} = useSelector(({ employee }: any) => employee);
+	const [selectedStatus, setSelectedStatus] = useState(
+		initialValue.status
+			? ({
+					display: initialValue.status,
+					value: initialValue.status,
+			  } as DropMetaOption)
+			: statusOptions[0]
+	);
 
 	const [flagIcon, setFlagIcon] = useState<string>();
 	const { country, getCurrentCountry } = useCountry();
 
+	const [allowedRoles, setAllowedRoles] = useState<DropMetaOption[]>();
+	const [selectedRole, setSelectedRole] = useState<DropMetaOption>();
+
 	useEffect(() => {
 		getCurrentCountry();
 	}, []);
+
+	useEffect(() => {
+		if (authenticated) {
+			const allowedRoles: DropMetaOption[] = [];
+
+			for (let ability of authenticated.abilities!) {
+				if (ability.title == "employees" && ability.name?.includes("create")) {
+					const role = ability.name.split(":")[1];
+
+					allowedRoles.push({
+						display: role,
+						value: role,
+					});
+				}
+			}
+
+			setAllowedRoles(allowedRoles);
+		}
+	}, [authenticated]);
 
 	useEffect(() => {
 		if (country) {
@@ -84,13 +132,23 @@ export const EmployeeForm = ({ initialValue }: { initialValue: Employee }) => {
 		initialValues: initialValue,
 		validationSchema: validate,
 		onSubmit: (values, { setSubmitting }) => {
-			console.log(values);
+			submit(values as Employee, selectedRole?.value);
 
 			setSubmitting(false);
 		},
 	});
 
-	const { isSubmitting, isValid, setFieldValue } = formikBag;
+	const { isSubmitting, isValid, setFieldValue, setFieldError } = formikBag;
+
+	// when server errors
+	useEffect(() => {
+		if (error) {
+			error.forEach((error: any) => {
+				const { attribute, detail } = error.content;
+				setFieldError(attribute, detail);
+			});
+		}
+	}, [error]);
 
 	useEffect(() => {
 		if (selectedStatus) {
@@ -98,7 +156,7 @@ export const EmployeeForm = ({ initialValue }: { initialValue: Employee }) => {
 		}
 	}, [selectedStatus]);
 
-	return (
+	return allowedRoles ? (
 		<FormikProvider value={formikBag}>
 			<Form>
 				<div className="flex flex-col py-14 px-10 max-w-screen-lg space-y-6">
@@ -140,7 +198,7 @@ export const EmployeeForm = ({ initialValue }: { initialValue: Employee }) => {
 									required
 								/>
 							</div>
-							<div className="col-span-2">
+							<div className="col-span-1">
 								<DropDown
 									label="Status"
 									value={selectedStatus}
@@ -148,6 +206,20 @@ export const EmployeeForm = ({ initialValue }: { initialValue: Employee }) => {
 									required
 								>
 									{statusOptions.map((option, index) => (
+										<DropDownItem key={index} value={option}>
+											{option.display}
+										</DropDownItem>
+									))}
+								</DropDown>
+							</div>
+							<div className="col-span-1">
+								<DropDown
+									label="Role"
+									value={selectedRole! || allowedRoles[0]!}
+									onChange={setSelectedRole}
+									required
+								>
+									{allowedRoles.map((option, index) => (
 										<DropDownItem key={index} value={option}>
 											{option.display}
 										</DropDownItem>
@@ -211,5 +283,7 @@ export const EmployeeForm = ({ initialValue }: { initialValue: Employee }) => {
 				</div>
 			</Form>
 		</FormikProvider>
+	) : (
+		<></>
 	);
 };

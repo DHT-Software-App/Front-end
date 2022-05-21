@@ -8,6 +8,7 @@ import {
 import { Employee } from "types/Employee";
 import { decodeToken } from "react-jwt";
 import { Role } from "types/Role";
+import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 const { REACT_APP_BACKEND_API } = process.env;
 
@@ -62,7 +63,14 @@ export class AuthService {
 					}
 
 					case "abilities": {
-						employee.abilities = [{ id, ...attributes }];
+						if (!employee.abilities) {
+							employee.abilities = [];
+						}
+
+						employee.abilities = [
+							...employee.abilities!,
+							{ id, ...attributes },
+						];
 						break;
 					}
 
@@ -91,13 +99,35 @@ export class AuthService {
 			};
 		} catch (error) {
 			if (error instanceof AxiosError) {
-				const { status, data } = error.response as AxiosResponse;
+				const {
+					status,
+					data: { errors },
+				} = error.response as AxiosResponse;
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {
-					throw new InvalidAttributeError(data as InvalidAttribute);
+					throw errors.map((error: {}) => {
+						return new InvalidAttributeError(error as InvalidAttribute);
+					});
 				}
 			}
 		}
+	}
+
+	static async register(
+		owner: Employee,
+		token: string
+	): Promise<SuccessResponse | void> {
+		try {
+			const endpoint = `${REACT_APP_BACKEND_API}/employees/${owner.id}/user`;
+
+			const { data } = await axios.post(endpoint, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			return data as SuccessResponse;
+		} catch (error) {}
 	}
 }

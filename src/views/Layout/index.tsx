@@ -11,8 +11,10 @@ export const Layout = () => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(me_auth_request(token));
-	}, []);
+		if (token) {
+			dispatch(me_auth_request(token));
+		}
+	}, [token]);
 
 	return (
 		<div className="flex w-full font-sans text-gray-900 bg-gray-50">

@@ -9,8 +9,13 @@ import {
 	faCircleQuestion,
 } from "@fortawesome/free-regular-svg-icons";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const EnableAccount = () => {
+	const dispatch = useDispatch();
+
+	const { auth: token } = useSelector(({ auth }: any) => auth);
+
 	return (
 		<button
 			id="enable-account"

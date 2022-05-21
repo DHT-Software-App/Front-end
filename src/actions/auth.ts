@@ -1,43 +1,113 @@
 import { User } from "types/User";
 import { Employee } from "types/Employee";
+import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 // ME
 export const me_auth_request = (token: string) => ({
 	type: "@me/auth/request",
-	payload: token,
+	payload: {
+		token,
+	},
 });
 
 export const me_auth_success = (employee: Employee) => ({
 	type: "@me/auth/success",
-	payload: employee,
+	payload: {
+		employee,
+	},
 });
 
 export const me_auth_failure = (error: Error) => ({
 	type: "@me/auth/failure",
-	payload: error,
+	payload: {
+		error,
+	},
 });
 
 // SIGN
 export const sign_auth_request = (user: User) => ({
 	type: "@sign/auth/request",
-	payload: user,
+	payload: {
+		user,
+	},
 });
 
 export const sign_auth_success = (token: string) => ({
 	type: "@sign/auth/success",
-	payload: token,
+	payload: {
+		token,
+	},
 });
 
-export const sign_auth_failure = (error: Error) => ({
+export const sign_auth_failure = (error: any) => ({
 	type: "@sign/auth/failure",
-	payload: error,
+	payload: {
+		error,
+	},
 });
 
 export const sign_clean_errors = () => ({
 	type: "@sign/clean/errors",
 });
 
+// register
+export const register_auth_request = (owner: Employee, token: string) => ({
+	type: "@register/auth/request",
+	payload: {
+		owner,
+		token,
+	},
+});
+
+export const register_auth_success = (success?: SuccessResponse) => ({
+	type: "@register/auth/success",
+	payload: {
+		success,
+	},
+});
+
+export const register_auth_failure = (error: any) => ({
+	type: "@register/auth/failure",
+	payload: { error },
+});
+
+// signout
 export const signout_auth_request = () => ({
 	type: "@signout/auth/request",
-	payload: null,
+	payload: {
+		auth: null,
+	},
+});
+
+// reset
+export const reset_password_request = (user: User) => ({
+	type: "@reset/password/request",
+	payload: {
+		user,
+	},
+});
+
+export const reset_password_success = (user: User) => ({
+	type: "@reset/password/success",
+	payload: user,
+});
+
+export const reset_password_failure = (error: any) => ({
+	type: "@reset/password/failure",
+	payload: error,
+});
+
+export const exists_user_request = (email: string) => ({
+	type: "@exists/user/request",
+	payload: email,
+});
+
+export const exists_user_success = (confirmation: boolean) => ({
+	type: "@exists/user/success",
+	payload: confirmation,
+});
+
+export const exists_user_failure = (error: any) => ({
+	type: "@exists/user/failure",
+	payload: error,
 });

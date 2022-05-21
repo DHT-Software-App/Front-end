@@ -1,10 +1,12 @@
 import { Employee } from "types/Employee";
+import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 const initialState: {
 	employees: Employee[];
 	authenticated?: Employee;
 	loading: boolean;
 	error?: any;
+	success?: SuccessResponse;
 } = {
 	employees: [],
 	loading: false,
@@ -73,11 +75,13 @@ export const employeeReducer = (
 		}
 
 		case "@create/employee/success": {
+			const { success, employee } = payload;
 			return {
 				...state,
 				loading: false,
 				error: null,
-				employees: [...state.employees, payload],
+				employees: [...state.employees, employee],
+				success,
 			};
 		}
 
