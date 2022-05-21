@@ -1,4 +1,4 @@
-import { PasswordForm } from "components/PasswordForm";
+// import { PasswordForm } from "components/PasswordForm";
 import { User } from "types/User";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -22,11 +22,11 @@ export const NewPasswordView = () => {
 
 	return (
 		<div className="NewPassword">
-			<PasswordForm
+			{/* <PasswordForm
 				initialValue={user!}
 				submit={handleOnSubmit}
 				success={handleOnSuccess}
-			/>
+			/> */}
 		</div>
 	);
 };

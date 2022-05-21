@@ -1,3 +1,4 @@
+import { clean_auth } from "actions/auth";
 import {
 	create_employee_request,
 	get_employees_request,
@@ -36,27 +37,42 @@ export const EmployeesView = () => {
 	const [openEdit, setOpenEdit] = useState<boolean>(false);
 	const [openNew, setOpenNew] = useState<boolean>(false);
 
-	const { auth: token } = useSelector(({ auth }: any) => auth);
+	const { auth: token, success: successFromAuth } = useSelector(
+		({ auth }: any) => auth
+	);
 
 	const {
 		employees,
 		loading,
-		success,
-	}: { employees: Employee[]; loading: boolean; success: SuccessResponse } =
-		useSelector(({ employee }: any) => employee);
+		success: successFromEmployee,
+	}: {
+		employees: Employee[];
+		loading: boolean;
+		success: SuccessResponse;
+	} = useSelector(({ employee }: any) => employee);
 
 	// feedback
 	const [successes, setSuccesses] = useState<SuccessResponse[]>([]);
 
 	useEffect(() => {
 		dispatch(get_employees_request(token));
+
+		return () => {
+			dispatch(clean_auth());
+		};
 	}, []);
 
 	useEffect(() => {
-		if (success) {
-			setSuccesses([...successes, success]);
+		if (successFromEmployee) {
+			setSuccesses([...successes, successFromEmployee]);
 		}
-	}, [success]);
+	}, [successFromEmployee]);
+
+	useEffect(() => {
+		if (successFromAuth) {
+			setSuccesses([...successes, successFromAuth]);
+		}
+	}, [successFromAuth]);
 
 	const removeSuccess = (index: number) => {
 		setSuccesses(successes.filter((success, i) => i != index));

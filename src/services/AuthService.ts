@@ -130,4 +130,14 @@ export class AuthService {
 			return data as SuccessResponse;
 		} catch (error) {}
 	}
+
+	static async resend(email: string): Promise<SuccessResponse | void> {
+		try {
+			const endpoint = `${REACT_APP_BACKEND_API}/auth/resend/email/token`;
+
+			const { data } = await axios.post(endpoint, { email });
+
+			return data as SuccessResponse;
+		} catch (error) {}
+	}
 }

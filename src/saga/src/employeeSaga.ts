@@ -37,7 +37,7 @@ function* create(action: any): any {
 			})
 		);
 
-		// To create employee's user
+		//To create employee's user
 		yield put(register_auth_request(employee, token));
 	} catch (errors) {
 		if (Array.isArray(errors)) {

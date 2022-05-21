@@ -8,23 +8,8 @@ import {
 	faEdit,
 	faCircleQuestion,
 } from "@fortawesome/free-regular-svg-icons";
-import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-const EnableAccount = () => {
-	const dispatch = useDispatch();
-
-	const { auth: token } = useSelector(({ auth }: any) => auth);
-
-	return (
-		<button
-			id="enable-account"
-			className=" bg-blue-light text-white uppercase text-xs font-semibold px-4 py-2 rounded-sm whitespace-nowrap"
-		>
-			enable account
-		</button>
-	);
-};
+import { ResendConfirmation } from "components/ResendConfirmation";
 
 type EmployeeStatus = "active" | "desactive";
 
@@ -78,7 +63,12 @@ export const EmployeeRow = ({ value: employee, onEdit }: EmployeeRowProps) => {
 				<EmployeeStatusBadge status={employee.status} />
 			</td>
 			<td className="text-center p-3 text-slate-700 whitespace-nowrap">
-				{employee.user ? <Avatar /> : <EnableAccount />}
+				{employee.user &&
+					(employee.user.email_verified_at ? (
+						<Avatar />
+					) : (
+						<ResendConfirmation to={employee.user.email!} />
+					))}
 			</td>
 			<td className="text-center p-3 text-slate-700 whitespace-nowrap">
 				<div className="flex space-x-6">

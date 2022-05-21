@@ -117,6 +117,7 @@ export const EmployeeForm = ({
 			}
 
 			setAllowedRoles(allowedRoles);
+			setSelectedRole(allowedRoles[0]);
 		}
 	}, [authenticated]);
 

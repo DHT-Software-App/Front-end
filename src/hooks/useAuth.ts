@@ -1,7 +1,7 @@
 import {
 	signout_auth_request,
 	sign_auth_request,
-	sign_clean_errors,
+	clean_auth,
 } from "actions/auth";
 import { useEffect } from "react";
 import { isExpired } from "react-jwt";
@@ -24,7 +24,7 @@ export const useAuth = () => {
 	};
 
 	const cleanErrors = () => {
-		dispatch(sign_clean_errors());
+		dispatch(clean_auth());
 	};
 
 	useEffect(() => {

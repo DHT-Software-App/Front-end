@@ -46,8 +46,8 @@ export const sign_auth_failure = (error: any) => ({
 	},
 });
 
-export const sign_clean_errors = () => ({
-	type: "@sign/clean/errors",
+export const clean_auth = () => ({
+	type: "@clean/auth",
 });
 
 // register
@@ -76,6 +76,28 @@ export const signout_auth_request = () => ({
 	type: "@signout/auth/request",
 	payload: {
 		auth: null,
+	},
+});
+
+// resend pin
+export const resend_pin_request = (email: string) => ({
+	type: "@resend/pin/request",
+	payload: {
+		email,
+	},
+});
+
+export const resend_pin_success = (success: SuccessResponse) => ({
+	type: "@resend/pin/success",
+	payload: {
+		success,
+	},
+});
+
+export const resend_pin_failure = (error: any) => ({
+	type: "@resend/pin/failure",
+	payload: {
+		error,
 	},
 });
 

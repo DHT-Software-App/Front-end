@@ -2,6 +2,7 @@ import { call, put, takeEvery } from "redux-saga/effects";
 import {
 	me_auth_success,
 	register_auth_success,
+	resend_pin_success,
 	sign_auth_failure,
 	sign_auth_success,
 } from "actions/auth";
@@ -46,13 +47,23 @@ function* register(action: any): any {
 	try {
 		const { owner, token }: { owner: Employee; token: string } = action.payload;
 
-		const response: SuccessResponse = yield call(
+		const success: SuccessResponse = yield call(
 			AuthService.register,
 			owner,
 			token
 		);
 
-		yield put(register_auth_success(response));
+		yield put(register_auth_success(success));
+	} catch (error) {}
+}
+
+function* resend_pin(action: any) {
+	try {
+		const { email } = action.payload;
+
+		const success: SuccessResponse = yield call(AuthService.resend, email);
+
+		yield put(resend_pin_success(success));
 	} catch (error) {}
 }
 
@@ -60,4 +71,5 @@ export function* authSaga() {
 	yield takeEvery("@me/auth/request", me);
 	yield takeEvery("@sign/auth/request", sign);
 	yield takeEvery("@register/auth/request", register);
+	yield takeEvery("@resend/pin/request", resend_pin);
 }

@@ -79,6 +79,7 @@ export const authReducer = (
 			};
 		}
 
+		// register
 		case "@register/auth/request": {
 			return {
 				...state,
@@ -114,10 +115,41 @@ export const authReducer = (
 			};
 		}
 
-		case "@sign/clean/errors": {
+		// resend pin
+		case "@resend/pin/request": {
+			return {
+				...state,
+				loading: true,
+			};
+		}
+
+		case "@resend/pin/success": {
+			const { success } = payload;
+
+			return {
+				...state,
+				loading: false,
+				error: null,
+				success,
+			};
+		}
+
+		case "@resend/pin/failure": {
+			const { error } = payload;
+
+			return {
+				...state,
+				loading: false,
+				error,
+			};
+		}
+
+		// clean
+		case "@clean/auth": {
 			return {
 				...state,
 				error: null,
+				success: undefined,
 			};
 		}
 
