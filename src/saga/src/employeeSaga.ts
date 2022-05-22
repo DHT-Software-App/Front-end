@@ -10,10 +10,12 @@ import { Employee } from "types/Employee";
 import { EmployeeService } from "services/EmployeeService";
 import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
 import { register_auth_request } from "actions/auth";
+import { SuccessResponse } from "utils/Responses/SuccessResponse";
+import { HTTPResponse } from "utils/Responses/HTTPResponse";
 
 function* getAll(action: any): any {
 	try {
-		const { payload: token } = action;
+		const { token } = action.payload;
 		const employees: Employee[] = yield call(EmployeeService.getAll, token);
 
 		yield put(get_employees_success(employees));
@@ -21,50 +23,64 @@ function* getAll(action: any): any {
 }
 function* create(action: any): any {
 	try {
-		const { employee: newEmployee, roleName, token } = action.payload;
+		const { employee, roleName, token } = action.payload;
 
-		const employee: Employee = yield call(
+		const newEmployee: Employee = yield call(
 			EmployeeService.create,
-			newEmployee,
+			employee,
 			roleName,
 			token
 		);
 
 		yield put(
-			create_employee_success(employee, {
+			create_employee_success(newEmployee, {
 				message: "Employee created successfully",
 				success: true,
 			})
 		);
 
 		//To create employee's user
-		yield put(register_auth_request(employee, token));
+		yield put(register_auth_request(newEmployee, token));
 	} catch (errors) {
-		if (Array.isArray(errors)) {
-			if (errors.every((er) => er instanceof InvalidAttributeError)) {
-				yield put(create_employee_failure(errors));
-			}
-		}
+		yield put(create_employee_failure(errors));
 	}
 }
 
 function* update(action: any): any {
 	try {
-		const { payload } = action;
+		const { employee, roleName, token } = action.payload;
 
-		const employee: Employee = yield call(EmployeeService.update, payload);
+		const updated_employee: Employee = yield call(
+			EmployeeService.update,
+			employee,
+			roleName,
+			token
+		);
 
-		yield put(update_employee_success(employee));
-	} catch (error) {}
+		yield put(
+			update_employee_success(updated_employee, {
+				message: "Employee updated successfully.",
+				success: true,
+				statusCode: HTTPResponse.OK,
+				objectId: employee.id,
+			})
+		);
+	} catch (errors) {
+		yield put(create_employee_failure(errors));
+	}
 }
 
 function* remove(action: any): any {
 	try {
-		const { payload } = action;
+		const { id, token } = action.payload;
 
-		const id: number = yield call(EmployeeService.delete, payload);
+		const success: SuccessResponse = yield call(
+			EmployeeService.delete,
+			id,
+			token
+		);
 
-		yield put(delete_employee_success(id));
+		yield put(delete_employee_success(id, success));
 	} catch (error) {}
 }
 

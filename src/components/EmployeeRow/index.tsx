@@ -38,9 +38,14 @@ const EmployeeStatusBadge = ({
 type EmployeeRowProps = {
 	value: Employee;
 	onEdit: (employee: Employee) => void;
+	onDelete: (employee: Employee) => void;
 };
 
-export const EmployeeRow = ({ value: employee, onEdit }: EmployeeRowProps) => {
+export const EmployeeRow = ({
+	value: employee,
+	onEdit,
+	onDelete,
+}: EmployeeRowProps) => {
 	return (
 		<tr className="bg-white border-b-2 border-slate-100">
 			<td className="p-3 text-slate-700 whitespace-nowrap">
@@ -78,12 +83,12 @@ export const EmployeeRow = ({ value: employee, onEdit }: EmployeeRowProps) => {
 							className="text-lg text-slate-400 hover:text-slate-700"
 						/>
 					</Link>
-					<Link to="">
+					<button onClick={() => onDelete(employee)}>
 						<FontAwesomeIcon
 							icon={faTrashCan}
 							className="text-lg text-slate-400 hover:text-slate-700"
 						/>
-					</Link>
+					</button>
 					<button onClick={() => onEdit(employee)}>
 						<FontAwesomeIcon
 							icon={faEdit}

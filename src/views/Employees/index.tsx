@@ -1,7 +1,9 @@
 import { clean_auth } from "actions/auth";
 import {
 	create_employee_request,
+	delete_employee_request,
 	get_employees_request,
+	update_employee_request,
 } from "actions/employee";
 import { Confirmation } from "components/Confirmation";
 import { DropDown } from "components/DropDown";
@@ -32,10 +34,12 @@ export const EmployeesView = () => {
 
 	// to preserve employee to edit
 	const [employeeEdit, setEmployeeEdit] = useState<Employee>();
+	const [employeeDelete, setEmployeeDelete] = useState<Employee>();
 
 	// for modal open status
 	const [openEdit, setOpenEdit] = useState<boolean>(false);
 	const [openNew, setOpenNew] = useState<boolean>(false);
+	const [openDelete, setOpenDelete] = useState<boolean>(false);
 
 	const { auth: token, success: successFromAuth } = useSelector(
 		({ auth }: any) => auth
@@ -82,14 +86,28 @@ export const EmployeesView = () => {
 		console.log(ev);
 	};
 
-	const handleOnEdit = (employee: Employee) => {
+	// when editing employee
+	const handleOnEdit = (employee: Employee, roleName: string) => {
+		dispatch(update_employee_request(employee, roleName, token));
+	};
+
+	// when creating employee
+	const handleOnCreate = (employee: Employee, roleName: string) => {
+		dispatch(create_employee_request(employee, roleName, token));
+	};
+
+	const handleOnDelete = (id: number) => {
+		dispatch(delete_employee_request(id, token));
+	};
+
+	const prepareToEdit = (employee: Employee) => {
 		setEmployeeEdit(employee);
 		setOpenEdit(true);
 	};
 
-	// when creating employee
-	const create = (employee: Employee, roleName: string) => {
-		dispatch(create_employee_request(employee, roleName, token));
+	const prepareToDelete = (employee: Employee) => {
+		setEmployeeDelete(employee);
+		setOpenDelete(true);
 	};
 
 	const handleFilteredEmployee = (ev: any) => {};
@@ -143,20 +161,34 @@ export const EmployeesView = () => {
 				</div> */}
 			</div>
 
-			<EmployeeTable values={employees} onEdit={handleOnEdit} />
+			<EmployeeTable
+				values={employees}
+				onEdit={prepareToEdit}
+				onDelete={prepareToDelete}
+			/>
 
-			{/* <Modal open={true}>
+			<Modal
+				isOpen={openDelete}
+				closeModal={() => {
+					setOpenDelete(false);
+				}}
+			>
 				<Confirmation
-					title="Eliminar elemento"
-					description="Seguro que quieres eliminar el elemento?"
-					accept={() => {}}
-					cancel={() => {}}
+					title={`Eliminar empleado.`}
+					description={`Seguro que quieres eliminar a '${employeeDelete?.firstname} ${employeeDelete?.lastname}'?`}
+					accept={() => {
+						handleOnDelete(employeeDelete?.id!);
+						setOpenDelete(false);
+					}}
+					cancel={() => {
+						setOpenDelete(false);
+					}}
 					acceptClasses="text-white hover:bg-red-600 bg-red-500"
 					iconBg="bg-red-100"
 					acceptTitle="Remove"
 					icon={<div></div>}
 				/>
-			</Modal> */}
+			</Modal>
 
 			{/* Edit Form */}
 			<Modal
@@ -167,7 +199,7 @@ export const EmployeesView = () => {
 			>
 				<div className="px-6">
 					{employeeEdit && (
-						<EmployeeForm initialValue={employeeEdit} submit={() => {}} />
+						<EmployeeForm initialValue={employeeEdit} submit={handleOnEdit} />
 					)}
 				</div>
 			</Modal>
@@ -180,7 +212,7 @@ export const EmployeesView = () => {
 				}}
 			>
 				<div className="px-6">
-					<EmployeeForm initialValue={{}} submit={create} />
+					<EmployeeForm initialValue={{}} submit={handleOnCreate} />
 				</div>
 			</Modal>
 		</div>

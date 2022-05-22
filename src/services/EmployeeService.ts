@@ -152,19 +152,139 @@ export class EmployeeService {
 		}
 	}
 
-	static async update(employee: Employee): Promise<Employee> {
+	static async update(
+		employee: Employee,
+		roleName: string,
+		token: string
+	): Promise<Employee | void> {
 		try {
-			return {};
+			const endpoint = `${REACT_APP_BACKEND_API}/employees/${employee.id}?include=role,abilities,user,profile`;
+
+			const { data } = await axios.put(
+				endpoint,
+				{
+					employee,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+
+			const {
+				data: { id, attributes },
+				included,
+			} = data;
+
+			const updated_employee: Employee = { id, ...attributes };
+
+			const { data: assignedRole } = await axios.post(
+				endpoint,
+				{
+					name: roleName,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+
+			updated_employee.role = {
+				id: assignedRole.data.id,
+				...assignedRole.data.attributes,
+			};
+
+			included.map((data: any) => {
+				const {
+					data: { id, attributes, type },
+					included,
+				} = data;
+
+				switch (type) {
+					case "users": {
+						const user: User = { id, ...attributes };
+
+						included.map((data: any) => {
+							const { id, attributes, type } = data;
+
+							switch (type) {
+								case "profiles":
+									user.profile = { id, ...attributes };
+									break;
+							}
+						});
+
+						updated_employee.user = user;
+						break;
+					}
+
+					case "abilities": {
+						if (!updated_employee.abilities) {
+							updated_employee.abilities = [];
+						}
+
+						updated_employee.abilities = [
+							...updated_employee.abilities!,
+							{ id, ...attributes },
+						];
+						break;
+					}
+
+					default:
+						break;
+				}
+			});
+
+			return updated_employee;
 		} catch (error) {
-			return {};
+			if (error instanceof AxiosError) {
+				const {
+					status,
+					data: { errors },
+				} = error.response as AxiosResponse;
+
+				console.log(error);
+
+				// BAD REQUEST
+				if (status === HTTPResponse.BAD_REQUEST) {
+					throw errors.map((error: {}) => {
+						return new InvalidAttributeError(error as InvalidAttribute);
+					});
+				}
+			}
 		}
 	}
 
-	static async delete(id: number): Promise<number> {
+	static async delete(
+		id: number,
+		token: string
+	): Promise<SuccessResponse | void> {
 		try {
-			return 0;
+			const endpoint = `${REACT_APP_BACKEND_API}/employees/${id}`;
+
+			const { data } = await axios.delete(endpoint, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			return data as SuccessResponse;
 		} catch (error) {
-			return 0;
+			if (error instanceof AxiosError) {
+				const {
+					status,
+					data: { errors },
+				} = error.response as AxiosResponse;
+
+				// BAD REQUEST
+				if (status === HTTPResponse.BAD_REQUEST) {
+					throw errors.map((error: {}) => {
+						return new InvalidAttributeError(error as InvalidAttribute);
+					});
+				}
+			}
 		}
 	}
 }

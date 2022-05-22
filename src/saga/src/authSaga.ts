@@ -5,12 +5,15 @@ import {
 	resend_pin_success,
 	sign_auth_failure,
 	sign_auth_success,
+	verify_email_success,
+	verify_pin_success,
 } from "actions/auth";
 import { AuthService } from "services/AuthService";
 import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
 import { syncAuthStore } from "utils/auth/syncAuthStore";
 import { Employee } from "types/Employee";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
+import { User } from "types/User";
 
 function* me(action: any): any {
 	try {
@@ -57,7 +60,7 @@ function* register(action: any): any {
 	} catch (error) {}
 }
 
-function* resend_pin(action: any) {
+function* resendPin(action: any) {
 	try {
 		const { email } = action.payload;
 
@@ -67,9 +70,44 @@ function* resend_pin(action: any) {
 	} catch (error) {}
 }
 
+function* verifyPin(action: any) {
+	try {
+		const { email_token } = action.payload;
+
+		const success: SuccessResponse = yield call(
+			AuthService.verifyPin,
+			email_token
+		);
+
+		yield put(verify_pin_success(success));
+	} catch (error) {}
+}
+
+function* verifyEmail(action: any) {
+	try {
+		const {
+			email_token,
+			user,
+		}: {
+			email_token: string;
+			user: User;
+		} = action.payload;
+
+		const success: SuccessResponse = yield call(
+			AuthService.verifyEmail,
+			user,
+			email_token
+		);
+
+		yield put(verify_email_success(success));
+	} catch (error) {}
+}
+
 export function* authSaga() {
 	yield takeEvery("@me/auth/request", me);
 	yield takeEvery("@sign/auth/request", sign);
 	yield takeEvery("@register/auth/request", register);
-	yield takeEvery("@resend/pin/request", resend_pin);
+	yield takeEvery("@resend/pin/request", resendPin);
+	yield takeEvery("@verify/pin/request", verifyPin);
+	yield takeEvery("@verify/email/request", verifyEmail);
 }

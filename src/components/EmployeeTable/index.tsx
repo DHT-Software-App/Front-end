@@ -5,11 +5,13 @@ import { EmployeeRow } from "components/EmployeeRow";
 type EmployeeTableProps = {
 	values: Employee[];
 	onEdit: (employee: Employee) => void;
+	onDelete: (employee: Employee) => void;
 };
 
 export const EmployeeTable = ({
 	values: employees,
 	onEdit,
+	onDelete,
 }: EmployeeTableProps) => {
 	return (
 		<div className="overflow-auto">
@@ -47,7 +49,12 @@ export const EmployeeTable = ({
 				</thead>
 				<tbody className="divide-y divide-gray-100">
 					{employees.map((employee, index) => (
-						<EmployeeRow key={index} value={employee} onEdit={onEdit} />
+						<EmployeeRow
+							key={index}
+							value={employee}
+							onEdit={onEdit}
+							onDelete={onDelete}
+						/>
 					))}
 				</tbody>
 			</table>

@@ -13,7 +13,7 @@ import { SuccessResponse } from "utils/Responses/SuccessResponse";
 const { REACT_APP_BACKEND_API } = process.env;
 
 export class AuthService {
-	static async me(token: string): Promise<Employee> {
+	static async me(token: string): Promise<Employee | void> {
 		try {
 			const { employee_id } = decodeToken(token) as any;
 			const endpoint = `${REACT_APP_BACKEND_API}/employees/${employee_id}?include=role,abilities,user,profile`;
@@ -81,7 +81,19 @@ export class AuthService {
 
 			return employee;
 		} catch (error) {
-			throw error;
+			if (error instanceof AxiosError) {
+				const {
+					status,
+					data: { errors },
+				} = error.response as AxiosResponse;
+
+				// BAD REQUEST
+				if (status === HTTPResponse.BAD_REQUEST) {
+					throw errors.map((error: {}) => {
+						return new InvalidAttributeError(error as InvalidAttribute);
+					});
+				}
+			}
 		}
 	}
 
@@ -128,7 +140,21 @@ export class AuthService {
 			});
 
 			return data as SuccessResponse;
-		} catch (error) {}
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				const {
+					status,
+					data: { errors },
+				} = error.response as AxiosResponse;
+
+				// BAD REQUEST
+				if (status === HTTPResponse.BAD_REQUEST) {
+					throw errors.map((error: {}) => {
+						return new InvalidAttributeError(error as InvalidAttribute);
+					});
+				}
+			}
+		}
 	}
 
 	static async resend(email: string): Promise<SuccessResponse | void> {
@@ -139,5 +165,60 @@ export class AuthService {
 
 			return data as SuccessResponse;
 		} catch (error) {}
+	}
+
+	static async verifyPin(email_token: string): Promise<SuccessResponse | void> {
+		try {
+			const endpoint = `${REACT_APP_BACKEND_API}/auth/verify/pin`;
+
+			const { data } = await axios.post(endpoint, { token: email_token });
+			return data as SuccessResponse;
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				const {
+					status,
+					data: { errors },
+				} = error.response as AxiosResponse;
+
+				// BAD REQUEST
+				if (status === HTTPResponse.BAD_REQUEST) {
+					throw errors.map((error: {}) => {
+						return new InvalidAttributeError(error as InvalidAttribute);
+					});
+				}
+			}
+		}
+	}
+
+	static async verifyEmail(
+		user: User,
+		email_token: string
+	): Promise<SuccessResponse | void> {
+		try {
+			const endpoint = `${REACT_APP_BACKEND_API}/auth/email/verify`;
+
+			const { password, password_confirmation } = user;
+			const { data } = await axios.post(endpoint, {
+				token: email_token,
+				password,
+				password_confirmation,
+			});
+
+			return data as SuccessResponse;
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				const {
+					status,
+					data: { errors },
+				} = error.response as AxiosResponse;
+
+				// BAD REQUEST
+				if (status === HTTPResponse.BAD_REQUEST) {
+					throw errors.map((error: {}) => {
+						return new InvalidAttributeError(error as InvalidAttribute);
+					});
+				}
+			}
+		}
 	}
 }
