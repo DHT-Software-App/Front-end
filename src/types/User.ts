@@ -5,6 +5,6 @@ export interface User {
 	email?: string;
 	email_verified_at?: any;
 	password?: string;
-	confirm_password?: string;
+	password_confirmation?: string;
 	profile?: Profile;
 }

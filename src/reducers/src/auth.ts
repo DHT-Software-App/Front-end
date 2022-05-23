@@ -144,6 +144,64 @@ export const authReducer = (
 			};
 		}
 
+		// verify pin
+		case "@verify/pin/request": {
+			return {
+				...state,
+				loading: true,
+			};
+		}
+
+		case "@verify/pin/success": {
+			const { success } = payload;
+
+			return {
+				...state,
+				loading: false,
+				error: null,
+				success,
+			};
+		}
+
+		case "@verify/pin/failure": {
+			const { error } = payload;
+
+			return {
+				...state,
+				loading: false,
+				error,
+			};
+		}
+
+		// verify email
+		case "@verify/email/request": {
+			return {
+				...state,
+				loading: true,
+			};
+		}
+
+		case "@verify/email/success": {
+			const { success } = payload;
+
+			return {
+				...state,
+				loading: false,
+				error: null,
+				success,
+			};
+		}
+
+		case "@verify/email/failure": {
+			const { error } = payload;
+
+			return {
+				...state,
+				loading: false,
+				error,
+			};
+		}
+
 		// clean
 		case "@clean/auth": {
 			return {

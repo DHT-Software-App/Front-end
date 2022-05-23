@@ -7,8 +7,6 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Employee } from "types/Employee";
 import { TextField } from "utils/components/TextField";
-import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
-import { SuccessResponse } from "utils/Responses/SuccessResponse";
 import * as yup from "yup";
 import "yup-phone";
 
@@ -51,7 +49,6 @@ const validate = yup.object({
 		.string()
 		.oneOf(["active", "desactive"])
 		.required("Status required"),
-	role: yup.string(),
 });
 
 const statusOptions: DropMetaOption[] = [
@@ -139,7 +136,8 @@ export const EmployeeForm = ({
 		},
 	});
 
-	const { isSubmitting, isValid, setFieldValue, setFieldError } = formikBag;
+	const { isSubmitting, isValid, setFieldValue, setFieldError, errors } =
+		formikBag;
 
 	// when server errors
 	useEffect(() => {
@@ -273,6 +271,7 @@ export const EmployeeForm = ({
 							Save Employee
 						</button>
 
+						{/* {JSON.stringify(errors)} */}
 						{/* <button
 							type="reset"
 							disabled={isSubmitting}

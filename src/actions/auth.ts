@@ -101,6 +101,51 @@ export const resend_pin_failure = (error: any) => ({
 	},
 });
 
+// verify pin
+export const verify_pin_request = (email_token: string) => ({
+	type: "@verify/pin/request",
+	payload: {
+		email_token,
+	},
+});
+
+export const verify_pin_success = (success: SuccessResponse) => ({
+	type: "@verify/pin/success",
+	payload: {
+		success,
+	},
+});
+
+export const verify_pin_failure = (error: any) => ({
+	type: "@verify/pin/failure",
+	payload: {
+		error,
+	},
+});
+
+// verify email
+export const verify_email_request = (user: User, email_token: string) => ({
+	type: "@verify/email/request",
+	payload: {
+		email_token,
+		user,
+	},
+});
+
+export const verify_email_success = (success: SuccessResponse) => ({
+	type: "@verify/email/success",
+	payload: {
+		success,
+	},
+});
+
+export const verify_email_failure = (error: any) => ({
+	type: "@verify/email/failure",
+	payload: {
+		error,
+	},
+});
+
 // reset
 export const reset_password_request = (user: User) => ({
 	type: "@reset/password/request",

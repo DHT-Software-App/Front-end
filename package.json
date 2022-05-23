@@ -39,7 +39,7 @@
 		"yup": "^0.32.11",
 		"yup-phone": "^1.3.2"
 	},
-	"homepage": "https://dht.impulsohost.com",
+	"homepage": "https://dht.impulso.host",
 	"scripts": {
 		"dev": "react-scripts start",
 		"build": "react-scripts build",
