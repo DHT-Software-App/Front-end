@@ -114,13 +114,15 @@ export const EmployeesView = () => {
 
 	return (
 		<div className="flex flex-col gap-y-12 p-12 bg-gray-100 relative">
-			{successes.map((success, index) => (
-				<Feedback
-					key={index}
-					response={success}
-					quit={() => removeSuccess(index)}
-				/>
-			))}
+			<div className="absolute top-0 left-0 w-full z-50">
+				{successes.map((success, index) => (
+					<Feedback
+						key={index}
+						response={success}
+						quit={() => removeSuccess(index)}
+					/>
+				))}
+			</div>
 
 			<div className="flex justify-between items-baseline">
 				<span className="uppercase font-bold text-xl text-blue-dark">

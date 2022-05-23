@@ -8,10 +8,9 @@ import {
 } from "actions/employee";
 import { Employee } from "types/Employee";
 import { EmployeeService } from "services/EmployeeService";
-import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
 import { register_auth_request } from "actions/auth";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
-import { HTTPResponse } from "utils/Responses/HTTPResponse";
+import { EmployeeEnum } from "enum/EmployeeEnum";
 
 function* getAll(action: any): any {
 	try {
@@ -32,12 +31,13 @@ function* create(action: any): any {
 			token
 		);
 
-		yield put(
-			create_employee_success(newEmployee, {
-				message: "Employee created successfully",
-				success: true,
-			})
-		);
+		const message: SuccessResponse = {
+			message: "Employee created successfully",
+			success: true,
+			code: EmployeeEnum.CREATED,
+		};
+
+		yield put(create_employee_success(newEmployee, message));
 
 		//To create employee's user
 		yield put(register_auth_request(newEmployee, token));
@@ -57,14 +57,15 @@ function* update(action: any): any {
 			token
 		);
 
-		yield put(
-			update_employee_success(updated_employee, {
-				message: "Employee updated successfully.",
-				success: true,
-				statusCode: HTTPResponse.OK,
-				objectId: employee.id,
-			})
-		);
+		const message: SuccessResponse = {
+			message: "Employee updated successfully.",
+			success: true,
+			code: EmployeeEnum.UPDATED,
+		};
+
+		console.log(updated_employee);
+
+		yield put(update_employee_success(updated_employee, message));
 	} catch (errors) {
 		yield put(create_employee_failure(errors));
 	}

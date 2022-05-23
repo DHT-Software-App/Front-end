@@ -15,7 +15,7 @@ export const Feedback = ({ response, quit }: FeedbackProps) => {
 	return (
 		<div
 			className={`flex justify-between items-center px-3 py-3 text-white 
-            absolute top-0 left-0 w-full z-50
+            w-full
             ${response.success ? "bg-green-500" : "bg-rose-500"}`}
 		>
 			<div className="flex items-center gap-3">

@@ -50,6 +50,7 @@ function* register(action: any): any {
 	try {
 		const { owner, token }: { owner: Employee; token: string } = action.payload;
 
+		console.log(owner);
 		const success: SuccessResponse = yield call(
 			AuthService.register,
 			owner,

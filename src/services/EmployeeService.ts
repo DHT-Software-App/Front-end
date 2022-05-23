@@ -106,6 +106,8 @@ export class EmployeeService {
 			const { data: createdEmployee } = await axios.post(endpoint, employee, {
 				headers: {
 					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+					Accept: "application/json",
 				},
 			});
 
@@ -125,6 +127,8 @@ export class EmployeeService {
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/json",
+						Accept: "application/json",
 					},
 				}
 			);
@@ -158,16 +162,16 @@ export class EmployeeService {
 		token: string
 	): Promise<Employee | void> {
 		try {
-			const endpoint = `${REACT_APP_BACKEND_API}/employees/${employee.id}?include=role,abilities,user,profile`;
+			let endpoint = `${REACT_APP_BACKEND_API}/employees/${employee.id}`;
 
 			const { data } = await axios.put(
-				endpoint,
-				{
-					employee,
-				},
+				`${endpoint}?include=role,abilities,user,profile`,
+				employee,
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/json",
+						Accept: "application/json",
 					},
 				}
 			);
@@ -179,6 +183,8 @@ export class EmployeeService {
 
 			const updated_employee: Employee = { id, ...attributes };
 
+			endpoint = `${endpoint}/relationships/role`;
+
 			const { data: assignedRole } = await axios.post(
 				endpoint,
 				{
@@ -187,6 +193,8 @@ export class EmployeeService {
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/json",
+						Accept: "application/json",
 					},
 				}
 			);
@@ -267,6 +275,8 @@ export class EmployeeService {
 			const { data } = await axios.delete(endpoint, {
 				headers: {
 					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+					Accept: "application/json",
 				},
 			});
 

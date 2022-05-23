@@ -21,6 +21,8 @@ export class AuthService {
 			const { data } = await axios.get(endpoint, {
 				headers: {
 					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+					Accept: "application/json",
 				},
 			});
 
@@ -103,7 +105,12 @@ export class AuthService {
 
 			const {
 				data: { access_token: token, expires_in: maxAge },
-			} = await axios.post(endpoint, user);
+			} = await axios.post(endpoint, user, {
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+				},
+			});
 
 			return {
 				token,
@@ -136,6 +143,8 @@ export class AuthService {
 			const { data } = await axios.post(endpoint, {
 				headers: {
 					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+					Accept: "application/json",
 				},
 			});
 
@@ -161,7 +170,16 @@ export class AuthService {
 		try {
 			const endpoint = `${REACT_APP_BACKEND_API}/auth/resend/email/token`;
 
-			const { data } = await axios.post(endpoint, { email });
+			const { data } = await axios.post(
+				endpoint,
+				{ email },
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Accept: "application/json",
+					},
+				}
+			);
 
 			return data as SuccessResponse;
 		} catch (error) {}
@@ -171,7 +189,16 @@ export class AuthService {
 		try {
 			const endpoint = `${REACT_APP_BACKEND_API}/auth/verify/pin`;
 
-			const { data } = await axios.post(endpoint, { token: email_token });
+			const { data } = await axios.post(
+				endpoint,
+				{ token: email_token },
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Accept: "application/json",
+					},
+				}
+			);
 			return data as SuccessResponse;
 		} catch (error) {
 			if (error instanceof AxiosError) {
@@ -198,11 +225,20 @@ export class AuthService {
 			const endpoint = `${REACT_APP_BACKEND_API}/auth/email/verify`;
 
 			const { password, password_confirmation } = user;
-			const { data } = await axios.post(endpoint, {
-				token: email_token,
-				password,
-				password_confirmation,
-			});
+			const { data } = await axios.post(
+				endpoint,
+				{
+					token: email_token,
+					password,
+					password_confirmation,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Accept: "application/json",
+					},
+				}
+			);
 
 			return data as SuccessResponse;
 		} catch (error) {

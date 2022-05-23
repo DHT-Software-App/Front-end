@@ -110,13 +110,13 @@ export const employeeReducer = (
 		}
 
 		case "@update/employee/success": {
-			const { employee: updatedEmployee, success } = payload;
+			const { employee: updated_employee, success } = payload;
 			return {
 				...state,
 				loading: false,
 				error: null,
 				employees: state.employees.map((employee) =>
-					employee.id == payload.id ? updatedEmployee : employee
+					employee.id == updated_employee.id ? updated_employee : employee
 				),
 				success,
 			};
