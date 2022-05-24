@@ -9,18 +9,19 @@ import { Employee } from "types/Employee";
 import { decodeToken } from "react-jwt";
 import { Role } from "types/Role";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
+import { ResponseError } from "utils/errors/ResponseError";
 
 const { REACT_APP_BACKEND_API } = process.env;
 
 export class AuthService {
-	static async me(token: string): Promise<Employee | void> {
+	static async me(access_token: string): Promise<Employee | void> {
 		try {
-			const { employee_id } = decodeToken(token) as any;
+			const { employee_id } = decodeToken(access_token) as any;
 			const endpoint = `${REACT_APP_BACKEND_API}/employees/${employee_id}?include=role,abilities,user,profile`;
 
 			const { data } = await axios.get(endpoint, {
 				headers: {
-					Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${access_token}`,
 					"Content-Type": "application/json",
 					Accept: "application/json",
 				},
@@ -103,9 +104,7 @@ export class AuthService {
 		try {
 			const endpoint = `${REACT_APP_BACKEND_API}/auth/login`;
 
-			const {
-				data: { access_token: token, expires_in: maxAge },
-			} = await axios.post(endpoint, user, {
+			const { data } = await axios.post(endpoint, user, {
 				headers: {
 					"Content-Type": "application/json",
 					Accept: "application/json",
@@ -113,21 +112,27 @@ export class AuthService {
 			});
 
 			return {
-				token,
-				maxAge,
+				access_token: data.access_token,
+				maxAge: data.expires_in,
+				success: data as SuccessResponse,
 			};
 		} catch (error) {
 			if (error instanceof AxiosError) {
-				const {
-					status,
-					data: { errors },
-				} = error.response as AxiosResponse;
+				const { status, data } = error.response as AxiosResponse;
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {
-					throw errors.map((error: {}) => {
-						return new InvalidAttributeError(error as InvalidAttribute);
-					});
+					if (data.errors) {
+						const { errors } = data;
+
+						throw errors.map((error: {}) => {
+							return new InvalidAttributeError(error as InvalidAttribute);
+						});
+					}
+
+					if (data.success) {
+						throw [new ResponseError(data as SuccessResponse)];
+					}
 				}
 			}
 		}
@@ -135,14 +140,14 @@ export class AuthService {
 
 	static async register(
 		owner: Employee,
-		token: string
+		access_token: string
 	): Promise<SuccessResponse | void> {
 		try {
 			const endpoint = `${REACT_APP_BACKEND_API}/employees/${owner.id}/user`;
 
 			const { data } = await axios.post(endpoint, {
 				headers: {
-					Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${access_token}`,
 					"Content-Type": "application/json",
 					Accept: "application/json",
 				},

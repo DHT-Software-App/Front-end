@@ -17,9 +17,9 @@ import { User } from "types/User";
 
 function* me(action: any): any {
 	try {
-		const { token } = action.payload;
+		const { access_token } = action.payload;
 
-		const employee = yield call(AuthService.me, token);
+		const employee = yield call(AuthService.me, access_token);
 
 		yield put(me_auth_success(employee));
 	} catch (error) {
@@ -31,12 +31,15 @@ function* sign(action: any) {
 	try {
 		const { user } = action.payload;
 
-		const { token, maxAge } = yield call(AuthService.sign, user);
+		const { access_token, maxAge, success } = yield call(
+			AuthService.sign,
+			user
+		);
 
 		// store token in cookie, with specified max-age
-		syncAuthStore(token, maxAge);
+		syncAuthStore(access_token, maxAge);
 
-		yield put(sign_auth_success(token));
+		yield put(sign_auth_success(access_token, success));
 	} catch (errors) {
 		if (Array.isArray(errors)) {
 			if (errors.every((er) => er instanceof InvalidAttributeError)) {
@@ -48,13 +51,13 @@ function* sign(action: any) {
 
 function* register(action: any): any {
 	try {
-		const { owner, token }: { owner: Employee; token: string } = action.payload;
+		const { owner, access_token } = action.payload;
 
 		console.log(owner);
 		const success: SuccessResponse = yield call(
 			AuthService.register,
 			owner,
-			token
+			access_token
 		);
 
 		yield put(register_auth_success(success));

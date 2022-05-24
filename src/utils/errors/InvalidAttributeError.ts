@@ -9,7 +9,7 @@ export type InvalidAttribute = {
 export class InvalidAttributeError extends Error {
 	public content: { attribute: string; detail: string };
 
-	constructor(error: InvalidAttribute) {
+	constructor(invalidAttribute: InvalidAttribute) {
 		super();
 
 		this.name = "InvalidAttributeError";
@@ -17,7 +17,7 @@ export class InvalidAttributeError extends Error {
 		const {
 			source: { pointer },
 			detail,
-		} = error;
+		} = invalidAttribute;
 
 		this.content = {
 			attribute: pointer.split("/").pop()!,

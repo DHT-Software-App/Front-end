@@ -5,6 +5,8 @@ import {
 	delete_employee_success,
 	get_employees_success,
 	create_employee_failure,
+	delete_employee_failure,
+	get_employees_failure,
 } from "actions/employee";
 import { Employee } from "types/Employee";
 import { EmployeeService } from "services/EmployeeService";
@@ -14,21 +16,27 @@ import { EmployeeEnum } from "enum/EmployeeEnum";
 
 function* getAll(action: any): any {
 	try {
-		const { token } = action.payload;
-		const employees: Employee[] = yield call(EmployeeService.getAll, token);
+		const { access_token } = action.payload;
+		const employees: Employee[] = yield call(
+			EmployeeService.getAll,
+			access_token
+		);
 
 		yield put(get_employees_success(employees));
-	} catch (error) {}
+	} catch (errors) {
+		yield put(get_employees_failure(errors as Error[]));
+	}
 }
+
 function* create(action: any): any {
 	try {
-		const { employee, roleName, token } = action.payload;
+		const { employee, roleName, access_token } = action.payload;
 
 		const newEmployee: Employee = yield call(
 			EmployeeService.create,
 			employee,
 			roleName,
-			token
+			access_token
 		);
 
 		const message: SuccessResponse = {
@@ -40,21 +48,21 @@ function* create(action: any): any {
 		yield put(create_employee_success(newEmployee, message));
 
 		//To create employee's user
-		yield put(register_auth_request(newEmployee, token));
+		yield put(register_auth_request(newEmployee, access_token));
 	} catch (errors) {
-		yield put(create_employee_failure(errors));
+		yield put(create_employee_failure(errors as Error[]));
 	}
 }
 
 function* update(action: any): any {
 	try {
-		const { employee, roleName, token } = action.payload;
+		const { employee, roleName, access_token } = action.payload;
 
 		const updated_employee: Employee = yield call(
 			EmployeeService.update,
 			employee,
 			roleName,
-			token
+			access_token
 		);
 
 		const message: SuccessResponse = {
@@ -63,26 +71,26 @@ function* update(action: any): any {
 			code: EmployeeEnum.UPDATED,
 		};
 
-		console.log(updated_employee);
-
 		yield put(update_employee_success(updated_employee, message));
 	} catch (errors) {
-		yield put(create_employee_failure(errors));
+		yield put(create_employee_failure(errors as Error[]));
 	}
 }
 
 function* remove(action: any): any {
 	try {
-		const { id, token } = action.payload;
+		const { id, access_token } = action.payload;
 
 		const success: SuccessResponse = yield call(
 			EmployeeService.delete,
 			id,
-			token
+			access_token
 		);
 
 		yield put(delete_employee_success(id, success));
-	} catch (error) {}
+	} catch (errors) {
+		yield put(delete_employee_failure(errors as Error[]));
+	}
 }
 
 export function* employeeSaga() {

@@ -5,7 +5,7 @@ const initialState: {
 	employees: Employee[];
 	authenticated?: Employee;
 	loading: boolean;
-	error?: any;
+	errors?: Error[];
 	success?: SuccessResponse;
 } = {
 	employees: [],
@@ -32,18 +32,18 @@ export const employeeReducer = (
 			return {
 				...state,
 				loading: false,
-				error: null,
+				errors: null,
 				employees,
 			};
 		}
 
 		case "@get/employees/failure": {
-			const { error } = payload;
+			const { errors } = payload;
 
 			return {
 				...state,
 				loading: false,
-				error,
+				errors,
 			};
 		}
 
@@ -61,18 +61,18 @@ export const employeeReducer = (
 			return {
 				...state,
 				loading: false,
-				error: null,
+				errors: null,
 				authenticated: employee,
 			};
 		}
 
 		case "@get/employee/failure": {
-			const { error } = payload;
+			const { errors } = payload;
 
 			return {
 				...state,
 				loading: false,
-				error,
+				errors,
 			};
 		}
 
@@ -86,18 +86,18 @@ export const employeeReducer = (
 			return {
 				...state,
 				loading: false,
-				error: null,
+				errors: null,
 				employees: [...state.employees, employee],
 				success,
 			};
 		}
 
 		case "@create/employee/failure": {
-			const { error } = payload;
+			const { errors } = payload;
 			return {
 				...state,
 				loading: false,
-				error,
+				errors,
 			};
 		}
 
@@ -114,7 +114,7 @@ export const employeeReducer = (
 			return {
 				...state,
 				loading: false,
-				error: null,
+				errors: null,
 				employees: state.employees.map((employee) =>
 					employee.id == updated_employee.id ? updated_employee : employee
 				),
@@ -123,12 +123,12 @@ export const employeeReducer = (
 		}
 
 		case "@update/employee/failure": {
-			const { error } = payload;
+			const { errors } = payload;
 
 			return {
 				...state,
 				loading: false,
-				error,
+				errors,
 			};
 		}
 
@@ -146,18 +146,34 @@ export const employeeReducer = (
 			return {
 				...state,
 				loading: false,
-				error: null,
+				errors: null,
 				employees: state.employees.filter((employee) => employee.id !== id),
 				success,
 			};
 		}
 
 		case "@delete/employee/failure": {
-			const { error } = payload;
+			const { errors } = payload;
 			return {
 				...state,
 				loading: false,
-				error,
+				errors,
+			};
+		}
+
+		// clean
+
+		case "@clear/employee/errors": {
+			return {
+				...state,
+				errors: null,
+			};
+		}
+
+		case "@clear/employee/success": {
+			return {
+				...state,
+				success: null,
 			};
 		}
 

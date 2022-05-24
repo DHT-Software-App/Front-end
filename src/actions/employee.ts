@@ -2,10 +2,10 @@ import { Employee } from "types/Employee";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 // GET ALL
-export const get_employees_request = (token: string) => ({
+export const get_employees_request = (access_token: string) => ({
 	type: "@get/employees/request",
 	payload: {
-		token,
+		access_token,
 	},
 });
 
@@ -16,15 +16,15 @@ export const get_employees_success = (employees: Employee[]) => ({
 	},
 });
 
-export const get_employees_failure = (error: any) => ({
+export const get_employees_failure = (errors: Error[]) => ({
 	type: "@get/employees/failure",
 	payload: {
-		error,
+		errors,
 	},
 });
 
 // GET ONE
-export const get_employee_request = (id: number) => ({
+export const get_employee_request = (id: number, access_token: string) => ({
 	type: "@get/employee/request",
 	payload: {
 		id,
@@ -38,10 +38,10 @@ export const get_employee_success = (employee: Employee) => ({
 	},
 });
 
-export const get_employee_failed = (error: Error) => ({
+export const get_employee_failed = (errors: Error[]) => ({
 	type: "@get/employee/success",
 	payload: {
-		error,
+		errors,
 	},
 });
 
@@ -49,12 +49,12 @@ export const get_employee_failed = (error: Error) => ({
 export const create_employee_request = (
 	employee: Employee,
 	roleName: string,
-	token: string
+	access_token: string
 ) => ({
 	type: "@create/employee/request",
 	payload: {
 		employee,
-		token,
+		access_token,
 		roleName,
 	},
 });
@@ -70,10 +70,10 @@ export const create_employee_success = (
 	},
 });
 
-export const create_employee_failure = (error: any) => ({
+export const create_employee_failure = (errors: Error[]) => ({
 	type: "@create/employee/failure",
 	payload: {
-		error,
+		errors,
 	},
 });
 
@@ -81,13 +81,13 @@ export const create_employee_failure = (error: any) => ({
 export const update_employee_request = (
 	employee: Employee,
 	roleName: string,
-	token: string
+	access_token: string
 ) => ({
 	type: "@update/employee/request",
 	payload: {
 		employee,
 		roleName,
-		token,
+		access_token,
 	},
 });
 
@@ -102,19 +102,19 @@ export const update_employee_success = (
 	},
 });
 
-export const update_employee_failure = (error: any) => ({
+export const update_employee_failure = (errors: Error[]) => ({
 	type: "@update/employee/failure",
 	payload: {
-		error,
+		errors,
 	},
 });
 
 // DELETE
-export const delete_employee_request = (id: number, token: string) => ({
+export const delete_employee_request = (id: number, access_token: string) => ({
 	type: "@delete/employee/request",
 	payload: {
 		id,
-		token,
+		access_token,
 	},
 });
 
@@ -129,9 +129,19 @@ export const delete_employee_success = (
 	},
 });
 
-export const delete_employee_failure = (error: any) => ({
+export const delete_employee_failure = (errors: Error[]) => ({
 	type: "@delete/employee/failure",
 	payload: {
-		error,
+		errors,
 	},
+});
+
+// Clean actions
+
+export const clear_employee_errors = () => ({
+	type: "@clear/employee/errors",
+});
+
+export const clear_employee_success = () => ({
+	type: "@clear/employee/success",
 });

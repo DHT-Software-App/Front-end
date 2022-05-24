@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-	clean_auth,
+	clear_auth_errors,
+	clear_auth_success,
 	verify_email_request,
 	verify_pin_request,
 } from "actions/auth";
@@ -27,7 +28,8 @@ export const NewPasswordView = () => {
 
 	useEffect(() => {
 		return () => {
-			dispatch(clean_auth());
+			dispatch(clear_auth_errors());
+			dispatch(clear_auth_success());
 		};
 	}, []);
 

@@ -3,10 +3,10 @@ import { Employee } from "types/Employee";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 // ME
-export const me_auth_request = (token: string) => ({
+export const me_auth_request = (access_token: string) => ({
 	type: "@me/auth/request",
 	payload: {
-		token,
+		access_token,
 	},
 });
 
@@ -17,10 +17,10 @@ export const me_auth_success = (employee: Employee) => ({
 	},
 });
 
-export const me_auth_failure = (error: Error) => ({
+export const me_auth_failure = (errors: Error[]) => ({
 	type: "@me/auth/failure",
 	payload: {
-		error,
+		errors,
 	},
 });
 
@@ -32,30 +32,33 @@ export const sign_auth_request = (user: User) => ({
 	},
 });
 
-export const sign_auth_success = (token: string) => ({
+export const sign_auth_success = (
+	access_token: string,
+	success?: SuccessResponse
+) => ({
 	type: "@sign/auth/success",
 	payload: {
-		token,
+		access_token,
+		success,
 	},
 });
 
-export const sign_auth_failure = (error: any) => ({
+export const sign_auth_failure = (errors: Error[]) => ({
 	type: "@sign/auth/failure",
 	payload: {
-		error,
+		errors,
 	},
-});
-
-export const clean_auth = () => ({
-	type: "@clean/auth",
 });
 
 // register
-export const register_auth_request = (owner: Employee, token: string) => ({
+export const register_auth_request = (
+	owner: Employee,
+	access_token: string
+) => ({
 	type: "@register/auth/request",
 	payload: {
 		owner,
-		token,
+		access_token,
 	},
 });
 
@@ -66,9 +69,9 @@ export const register_auth_success = (success?: SuccessResponse) => ({
 	},
 });
 
-export const register_auth_failure = (error: any) => ({
+export const register_auth_failure = (errors: Error[]) => ({
 	type: "@register/auth/failure",
-	payload: { error },
+	payload: { errors },
 });
 
 // signout
@@ -94,10 +97,10 @@ export const resend_pin_success = (success: SuccessResponse) => ({
 	},
 });
 
-export const resend_pin_failure = (error: any) => ({
+export const resend_pin_failure = (errors: Error[]) => ({
 	type: "@resend/pin/failure",
 	payload: {
-		error,
+		errors,
 	},
 });
 
@@ -116,10 +119,10 @@ export const verify_pin_success = (success: SuccessResponse) => ({
 	},
 });
 
-export const verify_pin_failure = (error: any) => ({
+export const verify_pin_failure = (errors: Error[]) => ({
 	type: "@verify/pin/failure",
 	payload: {
-		error,
+		errors,
 	},
 });
 
@@ -139,10 +142,10 @@ export const verify_email_success = (success: SuccessResponse) => ({
 	},
 });
 
-export const verify_email_failure = (error: any) => ({
+export const verify_email_failure = (errors: Error[]) => ({
 	type: "@verify/email/failure",
 	payload: {
-		error,
+		errors,
 	},
 });
 
@@ -159,9 +162,9 @@ export const reset_password_success = (user: User) => ({
 	payload: user,
 });
 
-export const reset_password_failure = (error: any) => ({
+export const reset_password_failure = (errors: Error[]) => ({
 	type: "@reset/password/failure",
-	payload: error,
+	payload: errors,
 });
 
 export const exists_user_request = (email: string) => ({
@@ -174,7 +177,16 @@ export const exists_user_success = (confirmation: boolean) => ({
 	payload: confirmation,
 });
 
-export const exists_user_failure = (error: any) => ({
+export const exists_user_failure = (errors: Error[]) => ({
 	type: "@exists/user/failure",
-	payload: error,
+	payload: errors,
+});
+
+// clean
+export const clear_auth_errors = () => ({
+	type: "@clear/auth/errors",
+});
+
+export const clear_auth_success = () => ({
+	type: "@clear/auth/success",
 });

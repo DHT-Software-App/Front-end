@@ -5,8 +5,8 @@ const initialState: {
 	auth?: string;
 	loading: boolean;
 	isAuthenticated: boolean;
-	error?: any;
 	employee?: Employee;
+	errors?: Error[];
 	success?: SuccessResponse;
 } = {
 	isAuthenticated: false,
@@ -35,18 +35,18 @@ export const authReducer = (
 			return {
 				...state,
 				loading: false,
-				error: null,
+				errors: null,
 				employee,
 			};
 		}
 
 		case "@me/auth/failed": {
-			const { error } = payload;
+			const { errors } = payload;
 
 			return {
 				...state,
 				loading: false,
-				error,
+				errors,
 			};
 		}
 
@@ -59,23 +59,23 @@ export const authReducer = (
 		}
 
 		case "@sign/auth/success": {
-			const { token } = payload;
+			const { access_token } = payload;
 			return {
 				...state,
 				loading: false,
-				error: null,
-				auth: token,
+				errors: null,
+				auth: access_token,
 				isAuthenticated: true,
 			};
 		}
 
 		case "@sign/auth/failure": {
-			const { error } = payload;
+			const { errors } = payload;
 
 			return {
 				...state,
 				loading: false,
-				error,
+				errors,
 			};
 		}
 
@@ -100,18 +100,18 @@ export const authReducer = (
 			return {
 				...state,
 				loading: false,
-				error: null,
+				errors: null,
 				success,
 			};
 		}
 
 		case "@register/auth/failure": {
-			const { error } = payload;
+			const { errors } = payload;
 
 			return {
 				...state,
 				loading: false,
-				error,
+				errors,
 			};
 		}
 
@@ -129,18 +129,18 @@ export const authReducer = (
 			return {
 				...state,
 				loading: false,
-				error: null,
+				errors: null,
 				success,
 			};
 		}
 
 		case "@resend/pin/failure": {
-			const { error } = payload;
+			const { errors } = payload;
 
 			return {
 				...state,
 				loading: false,
-				error,
+				errors,
 			};
 		}
 
@@ -158,18 +158,18 @@ export const authReducer = (
 			return {
 				...state,
 				loading: false,
-				error: null,
+				errors: null,
 				success,
 			};
 		}
 
 		case "@verify/pin/failure": {
-			const { error } = payload;
+			const { errors } = payload;
 
 			return {
 				...state,
 				loading: false,
-				error,
+				errors,
 			};
 		}
 
@@ -193,21 +193,12 @@ export const authReducer = (
 		}
 
 		case "@verify/email/failure": {
-			const { error } = payload;
+			const { errors } = payload;
 
 			return {
 				...state,
 				loading: false,
-				error,
-			};
-		}
-
-		// clean
-		case "@clean/auth": {
-			return {
-				...state,
-				error: null,
-				success: undefined,
+				errors,
 			};
 		}
 
@@ -218,6 +209,21 @@ export const authReducer = (
 				...state,
 				auth,
 				isAuthenticated: false,
+			};
+		}
+
+		// clean state
+		case "@clear/auth/errors": {
+			return {
+				...state,
+				errors: null,
+			};
+		}
+
+		case "@clear/auth/success": {
+			return {
+				...state,
+				success: null,
 			};
 		}
 

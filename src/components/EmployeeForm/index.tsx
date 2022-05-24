@@ -7,48 +7,49 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Employee } from "types/Employee";
 import { TextField } from "utils/components/TextField";
+import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
 import * as yup from "yup";
 import "yup-phone";
 
 const validate = yup.object({
-	firstname: yup
-		.string()
-		.max(50, "First name must be max 50 characters")
-		.required("First name required."),
-	lastname: yup
-		.string()
-		.max(50, "First name must be max 50 characters")
-		.required("Last name required."),
-	email_address: yup
-		.string()
-		.email()
-		.max(100, "Must be max 45 characters.")
-		.required("Email address required"),
-	contact_1: yup
-		.string()
-		.phone("IN", false, "Invalid regional phone")
-		.required("Phone required"),
-	contact_2: yup
-		.string()
-		.phone("IN", false, "Invalid regional phone")
-		.required("Phone required"),
-	state: yup
-		.string()
-		.max(45, "State must be max 45 characters")
-		.required("State required."),
-	street: yup
-		.string()
-		.max(45, "State must be max 45 characters")
-		.required("Street required."),
-	city: yup
-		.string()
-		.max(45, "State must be max 45 characters")
-		.required("City required"),
-	zip: yup.string().required("Zip required"),
-	status: yup
-		.string()
-		.oneOf(["active", "desactive"])
-		.required("Status required"),
+	// firstname: yup
+	// 	.string()
+	// 	.max(50, "First name must be max 50 characters")
+	// 	.required("First name required."),
+	// lastname: yup
+	// 	.string()
+	// 	.max(50, "First name must be max 50 characters")
+	// 	.required("Last name required."),
+	// email_address: yup
+	// 	.string()
+	// 	.email()
+	// 	.max(100, "Must be max 45 characters.")
+	// 	.required("Email address required"),
+	// contact_1: yup
+	// 	.string()
+	// 	.phone("IN", false, "Invalid regional phone")
+	// 	.required("Phone required"),
+	// contact_2: yup
+	// 	.string()
+	// 	.phone("IN", false, "Invalid regional phone")
+	// 	.required("Phone required"),
+	// state: yup
+	// 	.string()
+	// 	.max(45, "State must be max 45 characters")
+	// 	.required("State required."),
+	// street: yup
+	// 	.string()
+	// 	.max(45, "State must be max 45 characters")
+	// 	.required("Street required."),
+	// city: yup
+	// 	.string()
+	// 	.max(45, "State must be max 45 characters")
+	// 	.required("City required"),
+	// zip: yup.string().required("Zip required"),
+	// status: yup
+	// 	.string()
+	// 	.oneOf(["active", "desactive"])
+	// 	.required("Status required"),
 });
 
 const statusOptions: DropMetaOption[] = [
@@ -73,10 +74,10 @@ export const EmployeeForm = ({
 		({ auth }: any) => auth
 	);
 	const {
-		error,
+		errors: employee_errors,
 		loading,
 	}: {
-		error: any;
+		errors: Error[];
 		loading: boolean;
 	} = useSelector(({ employee }: any) => employee);
 	const [selectedStatus, setSelectedStatus] = useState(
@@ -141,13 +142,18 @@ export const EmployeeForm = ({
 
 	// when server errors
 	useEffect(() => {
-		if (error) {
-			error.forEach((error: any) => {
-				const { attribute, detail } = error.content;
-				setFieldError(attribute, detail);
-			});
+		if (employee_errors) {
+			// InvalidAttributeError
+			if (employee_errors.some((e) => e instanceof InvalidAttributeError)) {
+				const errors = employee_errors as InvalidAttributeError[];
+
+				errors.forEach((error: InvalidAttributeError) => {
+					const { attribute, detail } = error.content;
+					setFieldError(attribute, detail);
+				});
+			}
 		}
-	}, [error]);
+	}, [employee_errors]);
 
 	useEffect(() => {
 		if (selectedStatus) {
@@ -271,7 +277,7 @@ export const EmployeeForm = ({
 							Save Employee
 						</button>
 
-						{/* {JSON.stringify(errors)} */}
+						{JSON.stringify(errors)}
 						{/* <button
 							type="reset"
 							disabled={isSubmitting}

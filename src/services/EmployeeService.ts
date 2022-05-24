@@ -8,17 +8,20 @@ import {
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 import { Role } from "types/Role";
 import { User } from "types/User";
+import { ResponseError } from "utils/errors/ResponseError";
 
 const { REACT_APP_BACKEND_API } = process.env;
 
 export class EmployeeService {
-	static async getAll(token: string): Promise<Employee[]> {
+	static async getAll(access_token: string): Promise<Employee[]> {
 		try {
 			const endpoint = `${REACT_APP_BACKEND_API}/employees?include=role, user, profile`;
 
 			const { data } = await axios.get(endpoint, {
 				headers: {
-					Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${access_token}`,
+					"Content-Type": "application/json",
+					Accept: "application/json",
 				},
 			});
 
@@ -87,7 +90,7 @@ export class EmployeeService {
 		}
 	}
 
-	static async getById(id: number): Promise<Employee> {
+	static async getById(id: number, access_token: string): Promise<Employee> {
 		try {
 			return {};
 		} catch (error) {
@@ -98,14 +101,14 @@ export class EmployeeService {
 	static async create(
 		employee: Employee,
 		roleName: string,
-		token: string
+		access_token: string
 	): Promise<Employee | void> {
 		try {
 			let endpoint = `${REACT_APP_BACKEND_API}/employees`;
 
 			const { data: createdEmployee } = await axios.post(endpoint, employee, {
 				headers: {
-					Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${access_token}`,
 					"Content-Type": "application/json",
 					Accept: "application/json",
 				},
@@ -126,7 +129,7 @@ export class EmployeeService {
 				},
 				{
 					headers: {
-						Authorization: `Bearer ${token}`,
+						Authorization: `Bearer ${access_token}`,
 						"Content-Type": "application/json",
 						Accept: "application/json",
 					},
@@ -141,16 +144,22 @@ export class EmployeeService {
 			return new_employee;
 		} catch (error) {
 			if (error instanceof AxiosError) {
-				const {
-					status,
-					data: { errors },
-				} = error.response as AxiosResponse;
+				const { status, data } = error.response as AxiosResponse;
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {
-					throw errors.map((error: {}) => {
-						return new InvalidAttributeError(error as InvalidAttribute);
-					});
+					// InvalidAttribute
+					if (data.errors) {
+						const { errors } = data;
+
+						throw errors.map((error: {}) => {
+							return new InvalidAttributeError(error as InvalidAttribute);
+						});
+					}
+
+					if (data.success) {
+						throw [new ResponseError(data as SuccessResponse)];
+					}
 				}
 			}
 		}
@@ -159,7 +168,7 @@ export class EmployeeService {
 	static async update(
 		employee: Employee,
 		roleName: string,
-		token: string
+		access_token: string
 	): Promise<Employee | void> {
 		try {
 			let endpoint = `${REACT_APP_BACKEND_API}/employees/${employee.id}`;
@@ -169,7 +178,7 @@ export class EmployeeService {
 				employee,
 				{
 					headers: {
-						Authorization: `Bearer ${token}`,
+						Authorization: `Bearer ${access_token}`,
 						"Content-Type": "application/json",
 						Accept: "application/json",
 					},
@@ -192,7 +201,7 @@ export class EmployeeService {
 				},
 				{
 					headers: {
-						Authorization: `Bearer ${token}`,
+						Authorization: `Bearer ${access_token}`,
 						"Content-Type": "application/json",
 						Accept: "application/json",
 					},
@@ -267,14 +276,14 @@ export class EmployeeService {
 
 	static async delete(
 		id: number,
-		token: string
+		access_token: string
 	): Promise<SuccessResponse | void> {
 		try {
 			const endpoint = `${REACT_APP_BACKEND_API}/employees/${id}`;
 
 			const { data } = await axios.delete(endpoint, {
 				headers: {
-					Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${access_token}`,
 					"Content-Type": "application/json",
 					Accept: "application/json",
 				},

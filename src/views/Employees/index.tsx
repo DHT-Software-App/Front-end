@@ -1,4 +1,4 @@
-import { clean_auth } from "actions/auth";
+import { clear_auth_errors, clear_auth_success } from "actions/auth";
 import {
 	create_employee_request,
 	delete_employee_request,
@@ -62,7 +62,8 @@ export const EmployeesView = () => {
 		dispatch(get_employees_request(token));
 
 		return () => {
-			dispatch(clean_auth());
+			dispatch(clear_auth_errors());
+			dispatch(clear_auth_success());
 		};
 	}, []);
 
