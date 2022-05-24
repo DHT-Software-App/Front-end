@@ -1,17 +1,21 @@
 import { call, put, takeEvery } from "redux-saga/effects";
 import {
+	me_auth_failure,
 	me_auth_success,
+	register_auth_failure,
 	register_auth_success,
+	resend_pin_failure,
 	resend_pin_success,
 	sign_auth_failure,
 	sign_auth_success,
+	verify_email_failure,
 	verify_email_success,
+	verify_pin_failure,
 	verify_pin_success,
 } from "actions/auth";
 import { AuthService } from "services/AuthService";
 import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
 import { syncAuthStore } from "utils/auth/syncAuthStore";
-import { Employee } from "types/Employee";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 import { User } from "types/User";
 
@@ -22,8 +26,8 @@ function* me(action: any): any {
 		const employee = yield call(AuthService.me, access_token);
 
 		yield put(me_auth_success(employee));
-	} catch (error) {
-		console.log(error);
+	} catch (errors) {
+		yield put(me_auth_failure(errors as Error[]));
 	}
 }
 
@@ -41,11 +45,7 @@ function* sign(action: any) {
 
 		yield put(sign_auth_success(access_token, success));
 	} catch (errors) {
-		if (Array.isArray(errors)) {
-			if (errors.every((er) => er instanceof InvalidAttributeError)) {
-				yield put(sign_auth_failure(errors));
-			}
-		}
+		yield put(sign_auth_failure(errors as Error[]));
 	}
 }
 
@@ -61,7 +61,9 @@ function* register(action: any): any {
 		);
 
 		yield put(register_auth_success(success));
-	} catch (error) {}
+	} catch (errors) {
+		yield put(register_auth_failure(errors as Error[]));
+	}
 }
 
 function* resendPin(action: any) {
@@ -71,7 +73,9 @@ function* resendPin(action: any) {
 		const success: SuccessResponse = yield call(AuthService.resend, email);
 
 		yield put(resend_pin_success(success));
-	} catch (error) {}
+	} catch (errors) {
+		yield put(resend_pin_failure(errors as Error[]));
+	}
 }
 
 function* verifyPin(action: any) {
@@ -84,7 +88,9 @@ function* verifyPin(action: any) {
 		);
 
 		yield put(verify_pin_success(success));
-	} catch (error) {}
+	} catch (errors) {
+		yield put(verify_pin_failure(errors as Error[]));
+	}
 }
 
 function* verifyEmail(action: any) {
@@ -104,7 +110,9 @@ function* verifyEmail(action: any) {
 		);
 
 		yield put(verify_email_success(success));
-	} catch (error) {}
+	} catch (errors) {
+		yield put(verify_email_failure(errors as Error[]));
+	}
 }
 
 export function* authSaga() {

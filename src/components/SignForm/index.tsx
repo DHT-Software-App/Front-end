@@ -6,6 +6,11 @@ import { useEffect } from "react";
 import { User } from "types/User";
 import { TextField } from "utils/components/TextField";
 import { Logo } from "components/Logo";
+import { useDispatch } from "react-redux";
+import { clear_auth_errors, clear_auth_success } from "actions/auth";
+import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
+import { ResponseError } from "utils/errors/ResponseError";
+import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 const user: User = {
 	email: "",
@@ -17,7 +22,15 @@ const validate = yup.object({
 });
 
 export const SignForm = () => {
-	const { auth, error, sign, cleanErrors, loading } = useAuth();
+	const dispatch = useDispatch();
+
+	const {
+		auth,
+		errors: auth_errors,
+		sign,
+		loading,
+		success: auth_success,
+	} = useAuth();
 	const navigate = useNavigate();
 	const { state } = useLocation();
 
@@ -31,25 +44,43 @@ export const SignForm = () => {
 		},
 	});
 
-	const { setFieldError, errors } = formikBag;
+	const { setFieldError } = formikBag;
+
+	// when server errors
+	useEffect(() => {
+		if (auth_errors) {
+			// InvalidAttributeError
+			if (auth_errors.some((e: {}) => e instanceof InvalidAttributeError)) {
+				const errors = auth_errors as InvalidAttributeError[];
+
+				errors.forEach((error: InvalidAttributeError) => {
+					const { attribute, detail } = error.content;
+					setFieldError(attribute, detail);
+				});
+			}
+
+			if (auth_errors.some((e: {}) => e instanceof ResponseError)) {
+			}
+		}
+	}, [auth_errors]);
+
+	// when success
+	useEffect(() => {
+		if (auth_success) {
+			const success = auth_success as SuccessResponse;
+		}
+	}, [auth_success]);
 
 	useEffect(() => {
-		if (error) {
-			error.forEach((error: any) => {
-				const { attribute, detail } = error.content;
-				setFieldError(attribute, detail);
-			});
-		}
-
 		if (auth) {
 			navigate("/");
 		}
 
 		return () => {
-			// clean errors in global state
-			cleanErrors();
+			dispatch(clear_auth_errors());
+			dispatch(clear_auth_success());
 		};
-	}, [error, auth]);
+	}, [auth]);
 
 	return (
 		<div className="SignForm bg-white rounded-md">

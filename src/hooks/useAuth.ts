@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { User } from "types/User";
 
 export const useAuth = () => {
-	const { isAuthenticated, loading, auth, error } = useSelector(
+	const { isAuthenticated, loading, auth, errors, success } = useSelector(
 		({ auth }: any) => auth
 	);
 
@@ -24,11 +24,6 @@ export const useAuth = () => {
 		dispatch(signout_auth_request());
 	};
 
-	const cleanErrors = () => {
-		dispatch(clear_auth_errors());
-		dispatch(clear_auth_success());
-	};
-
 	useEffect(() => {
 		if (auth && isExpired(auth)) {
 			signout();
@@ -39,9 +34,9 @@ export const useAuth = () => {
 		isAuthenticated,
 		loading,
 		auth,
-		error,
+		errors,
 		sign,
 		signout,
-		cleanErrors,
+		success,
 	};
 };

@@ -85,16 +85,22 @@ export class AuthService {
 			return employee;
 		} catch (error) {
 			if (error instanceof AxiosError) {
-				const {
-					status,
-					data: { errors },
-				} = error.response as AxiosResponse;
+				const { status, data } = error.response as AxiosResponse;
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {
-					throw errors.map((error: {}) => {
-						return new InvalidAttributeError(error as InvalidAttribute);
-					});
+					// InvalidAttribute
+					if (data.errors) {
+						const { errors } = data;
+
+						throw errors.map((error: {}) => {
+							return new InvalidAttributeError(error as InvalidAttribute);
+						});
+					}
+
+					if (data.success) {
+						throw [new ResponseError(data as SuccessResponse)];
+					}
 				}
 			}
 		}
@@ -104,7 +110,9 @@ export class AuthService {
 		try {
 			const endpoint = `${REACT_APP_BACKEND_API}/auth/login`;
 
-			const { data } = await axios.post(endpoint, user, {
+			const {
+				data: { access_token, expires_in, success, message, code },
+			} = await axios.post(endpoint, user, {
 				headers: {
 					"Content-Type": "application/json",
 					Accept: "application/json",
@@ -112,9 +120,13 @@ export class AuthService {
 			});
 
 			return {
-				access_token: data.access_token,
-				maxAge: data.expires_in,
-				success: data as SuccessResponse,
+				access_token: access_token,
+				maxAge: expires_in,
+				success: {
+					success,
+					message,
+					code,
+				},
 			};
 		} catch (error) {
 			if (error instanceof AxiosError) {
@@ -122,6 +134,7 @@ export class AuthService {
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {
+					// InvalidAttribute
 					if (data.errors) {
 						const { errors } = data;
 
@@ -156,16 +169,22 @@ export class AuthService {
 			return data as SuccessResponse;
 		} catch (error) {
 			if (error instanceof AxiosError) {
-				const {
-					status,
-					data: { errors },
-				} = error.response as AxiosResponse;
+				const { status, data } = error.response as AxiosResponse;
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {
-					throw errors.map((error: {}) => {
-						return new InvalidAttributeError(error as InvalidAttribute);
-					});
+					// InvalidAttribute
+					if (data.errors) {
+						const { errors } = data;
+
+						throw errors.map((error: {}) => {
+							return new InvalidAttributeError(error as InvalidAttribute);
+						});
+					}
+
+					if (data.success) {
+						throw [new ResponseError(data as SuccessResponse)];
+					}
 				}
 			}
 		}
@@ -187,7 +206,27 @@ export class AuthService {
 			);
 
 			return data as SuccessResponse;
-		} catch (error) {}
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				const { status, data } = error.response as AxiosResponse;
+
+				// BAD REQUEST
+				if (status === HTTPResponse.BAD_REQUEST) {
+					// InvalidAttribute
+					if (data.errors) {
+						const { errors } = data;
+
+						throw errors.map((error: {}) => {
+							return new InvalidAttributeError(error as InvalidAttribute);
+						});
+					}
+
+					if (data.success) {
+						throw [new ResponseError(data as SuccessResponse)];
+					}
+				}
+			}
+		}
 	}
 
 	static async verifyPin(email_token: string): Promise<SuccessResponse | void> {
@@ -207,16 +246,22 @@ export class AuthService {
 			return data as SuccessResponse;
 		} catch (error) {
 			if (error instanceof AxiosError) {
-				const {
-					status,
-					data: { errors },
-				} = error.response as AxiosResponse;
+				const { status, data } = error.response as AxiosResponse;
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {
-					throw errors.map((error: {}) => {
-						return new InvalidAttributeError(error as InvalidAttribute);
-					});
+					// InvalidAttribute
+					if (data.errors) {
+						const { errors } = data;
+
+						throw errors.map((error: {}) => {
+							return new InvalidAttributeError(error as InvalidAttribute);
+						});
+					}
+
+					if (data.success) {
+						throw [new ResponseError(data as SuccessResponse)];
+					}
 				}
 			}
 		}
@@ -248,16 +293,22 @@ export class AuthService {
 			return data as SuccessResponse;
 		} catch (error) {
 			if (error instanceof AxiosError) {
-				const {
-					status,
-					data: { errors },
-				} = error.response as AxiosResponse;
+				const { status, data } = error.response as AxiosResponse;
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {
-					throw errors.map((error: {}) => {
-						return new InvalidAttributeError(error as InvalidAttribute);
-					});
+					// InvalidAttribute
+					if (data.errors) {
+						const { errors } = data;
+
+						throw errors.map((error: {}) => {
+							return new InvalidAttributeError(error as InvalidAttribute);
+						});
+					}
+
+					if (data.success) {
+						throw [new ResponseError(data as SuccessResponse)];
+					}
 				}
 			}
 		}

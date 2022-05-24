@@ -12,44 +12,44 @@ import * as yup from "yup";
 import "yup-phone";
 
 const validate = yup.object({
-	// firstname: yup
-	// 	.string()
-	// 	.max(50, "First name must be max 50 characters")
-	// 	.required("First name required."),
-	// lastname: yup
-	// 	.string()
-	// 	.max(50, "First name must be max 50 characters")
-	// 	.required("Last name required."),
-	// email_address: yup
-	// 	.string()
-	// 	.email()
-	// 	.max(100, "Must be max 45 characters.")
-	// 	.required("Email address required"),
-	// contact_1: yup
-	// 	.string()
-	// 	.phone("IN", false, "Invalid regional phone")
-	// 	.required("Phone required"),
-	// contact_2: yup
-	// 	.string()
-	// 	.phone("IN", false, "Invalid regional phone")
-	// 	.required("Phone required"),
-	// state: yup
-	// 	.string()
-	// 	.max(45, "State must be max 45 characters")
-	// 	.required("State required."),
-	// street: yup
-	// 	.string()
-	// 	.max(45, "State must be max 45 characters")
-	// 	.required("Street required."),
-	// city: yup
-	// 	.string()
-	// 	.max(45, "State must be max 45 characters")
-	// 	.required("City required"),
-	// zip: yup.string().required("Zip required"),
-	// status: yup
-	// 	.string()
-	// 	.oneOf(["active", "desactive"])
-	// 	.required("Status required"),
+	firstname: yup
+		.string()
+		.max(50, "First name must be max 50 characters")
+		.required("First name required."),
+	lastname: yup
+		.string()
+		.max(50, "First name must be max 50 characters")
+		.required("Last name required."),
+	email_address: yup
+		.string()
+		.email()
+		.max(100, "Must be max 45 characters.")
+		.required("Email address required"),
+	contact_1: yup
+		.string()
+		.phone("IN", false, "Invalid regional phone")
+		.required("Phone required"),
+	contact_2: yup
+		.string()
+		.phone("IN", false, "Invalid regional phone")
+		.required("Phone required"),
+	state: yup
+		.string()
+		.max(45, "State must be max 45 characters")
+		.required("State required."),
+	street: yup
+		.string()
+		.max(45, "State must be max 45 characters")
+		.required("Street required."),
+	city: yup
+		.string()
+		.max(45, "State must be max 45 characters")
+		.required("City required"),
+	zip: yup.string().required("Zip required"),
+	status: yup
+		.string()
+		.oneOf(["active", "desactive"])
+		.required("Status required"),
 });
 
 const statusOptions: DropMetaOption[] = [
@@ -272,12 +272,11 @@ export const EmployeeForm = ({
 						<button
 							type="submit"
 							disabled={isSubmitting || !isValid}
-							className="bg-blue text-white text-xs w-full md:w-auto hover:cursor-pointer font-semibold px-5 py-3"
+							className="bg-blue text-white text-xs w-full md:w-auto font-semibold px-5 py-3 disabled:bg-slate-100 disabled:text-slate-300"
 						>
 							Save Employee
 						</button>
 
-						{JSON.stringify(errors)}
 						{/* <button
 							type="reset"
 							disabled={isSubmitting}

@@ -30,13 +30,14 @@ export const authReducer = (
 		}
 
 		case "@me/auth/success": {
-			const { employee } = payload;
+			const { employee, success } = payload;
 
 			return {
 				...state,
 				loading: false,
 				errors: null,
 				employee,
+				success,
 			};
 		}
 
@@ -59,11 +60,12 @@ export const authReducer = (
 		}
 
 		case "@sign/auth/success": {
-			const { access_token } = payload;
+			const { access_token, success } = payload;
 			return {
 				...state,
 				loading: false,
 				errors: null,
+				success,
 				auth: access_token,
 				isAuthenticated: true,
 			};

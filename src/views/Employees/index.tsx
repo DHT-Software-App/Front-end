@@ -12,6 +12,7 @@ import { EmployeeForm } from "components/EmployeeForm";
 import { EmployeeTable } from "components/EmployeeTable";
 import { Feedback } from "components/Feedback";
 import { Modal } from "components/Modal";
+import { EmployeeEnum } from "enum/EmployeeEnum";
 import { useCan } from "hooks/useCan";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -69,6 +70,16 @@ export const EmployeesView = () => {
 
 	useEffect(() => {
 		if (successFromEmployee) {
+			switch (successFromEmployee.code) {
+				case EmployeeEnum.CREATED:
+					setOpenNew(false);
+					break;
+
+				case EmployeeEnum.UPDATED:
+					setOpenEdit(false);
+					break;
+			}
+
 			setSuccesses([...successes, successFromEmployee]);
 		}
 	}, [successFromEmployee]);
