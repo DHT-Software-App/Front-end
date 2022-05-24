@@ -124,13 +124,13 @@ export const EmployeesView = () => {
 				))}
 			</div>
 
-			<div className="flex justify-between items-baseline">
+			<div className="flex flex-col sm:flex-row justify-between items-baseline gap-5">
 				<span className="uppercase font-bold text-xl text-blue-dark">
 					manage employees
 				</span>
-				<div>
+				<div className="w-full sm:w-auto">
 					<button
-						className="bg-blue-light text-white uppercase text-xs font-semibold px-5 py-3 rounded-md"
+						className="bg-blue-light w-full text-white uppercase text-xs font-semibold px-5 py-3 rounded-md"
 						onClick={() => setOpenNew(true)}
 					>
 						create a new employee
@@ -138,14 +138,16 @@ export const EmployeesView = () => {
 				</div>
 			</div>
 			<div className="flex justify-between">
-				<div className="flex justify-between items-center space-x-6">
-					<span className="text-slate-500">Search Employee</span>
+				<div className="flex items-center gap-x-6 w-full">
+					<span className="text-slate-500 hidden sm:inline focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100">
+						Search Employee
+					</span>
 					<input
 						type="search"
 						name="search"
 						placeholder="Search..."
 						onChange={handleSearch}
-						className="text-sm placeholder-slate-400 font-normal shadow-sm shadow-gray rounded-md outline-none pl-6 pr-4 py-2 w-80"
+						className="text-sm w-full sm:w-80 placeholder-slate-400 font-normal shadow-sm shadow-gray rounded-md outline-none pl-6 pr-4 py-2"
 					/>
 				</div>
 				{/* <div className="flex justify-between items-center space-x-6">

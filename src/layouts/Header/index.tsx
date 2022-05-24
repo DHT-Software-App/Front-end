@@ -32,7 +32,7 @@ export const Header = () => {
 						<div className="relative flex items-center justify-between h-16">
 							<div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
 								{/* Mobile menu button*/}
-								<Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-blue focus:outline-none focus:ring-2 focus:ring-inset focus:to-slate-800">
+								<Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-blue focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100">
 									<span className="sr-only">Open main menu</span>
 									{open ? (
 										<XIcon className="block h-6 w-6" aria-hidden="true" />
@@ -50,7 +50,7 @@ export const Header = () => {
 										<input
 											type="search"
 											placeholder="Search"
-											className="text-sm shadow-sm placeholder-slate-500 bg-slate-100 font-normal rounded-md outline-none pl-6 pr-6 py-3 w-full min-w-fit focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"
+											className="text-sm shadow-sm placeholder-slate-500 bg-slate-100 font-normal rounded-md outline-none pl-6 pr-6 py-3 w-full min-w-fit focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100"
 										/>
 									</div>
 								</div>
@@ -58,7 +58,7 @@ export const Header = () => {
 							<div className="absolute inset-y-0 right-0 flex items-center gap-x-4 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
 								<button
 									type="button"
-									className="hidden sm:block  p-1 rounded-full text-slate-400 hover:text-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"
+									className="hidden sm:block  p-1 rounded-full text-slate-400 hover:text-blue focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100"
 								>
 									<span className="sr-only">View more</span>
 									<ViewGridIcon className="h-6 w-6" aria-hidden="true" />
@@ -66,7 +66,7 @@ export const Header = () => {
 
 								<button
 									type="button"
-									className="p-1 rounded-full text-slate-400 hover:text-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"
+									className="p-1 rounded-full text-slate-400 hover:text-blue focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100"
 								>
 									<span className="sr-only">View notifications</span>
 									<BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -75,7 +75,7 @@ export const Header = () => {
 								{/* Profile dropdown */}
 								<Menu as="div" className="ml-3 relative">
 									<div>
-										<Menu.Button className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white">
+										<Menu.Button className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100">
 											<span className="sr-only">Open user menu</span>
 
 											<Avatar

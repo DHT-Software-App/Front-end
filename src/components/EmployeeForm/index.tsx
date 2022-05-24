@@ -44,7 +44,7 @@ const validate = yup.object({
 		.string()
 		.max(45, "State must be max 45 characters")
 		.required("City required"),
-	zip: yup.number().integer().required("Zip required"),
+	zip: yup.string().required("Zip required"),
 	status: yup
 		.string()
 		.oneOf(["active", "desactive"])
@@ -159,7 +159,7 @@ export const EmployeeForm = ({
 		<FormikProvider value={formikBag}>
 			<Form>
 				<div className="flex flex-col py-14 px-10 max-w-screen-lg space-y-6">
-					<div className="flex justify-between items-center">
+					<div className="flex flex-col md:flex-row justify-between items-center">
 						<h3 className="font-bold text-xl">Employee Information</h3>
 						<div className="space-x-2">
 							<span className="text-xs  text-blue">Your Current Ubication</span>
@@ -168,7 +168,7 @@ export const EmployeeForm = ({
 					</div>
 
 					<div>
-						<div className="grid grid-cols-6 gap-4">
+						<div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
 							<div className="col-span-2">
 								<TextField
 									label="First Name"
@@ -252,11 +252,11 @@ export const EmployeeForm = ({
 							</div>
 
 							<div className="col-span-1">
-								<TextField label="Zip" name="zip" type="number" required />
+								<TextField label="Zip" name="zip" type="text" required />
 							</div>
 						</div>
 
-						<p className="text-xs text-slate-400 font-semibold mt-3">
+						<p className="text-xs text-center md:text-left  text-slate-400 font-semibold mt-3">
 							In order to process registration provide the following
 							information. All fields marked with an asterisk (*) are required.
 						</p>
@@ -266,7 +266,7 @@ export const EmployeeForm = ({
 						<button
 							type="submit"
 							disabled={isSubmitting || !isValid}
-							className="bg-blue text-white text-xs hover:cursor-pointer font-semibold px-5 py-3"
+							className="bg-blue text-white text-xs w-full md:w-auto hover:cursor-pointer font-semibold px-5 py-3"
 						>
 							Save Employee
 						</button>

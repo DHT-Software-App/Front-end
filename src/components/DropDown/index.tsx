@@ -30,7 +30,7 @@ export const DropDown = ({
 						{label} {required && <span className="text-red-400">*</span>}
 					</label>
 				)}
-				<Listbox.Button className="text-sm flex justify-between items-center placeholder-slate-400 bg-neutral-100 font-normal rounded-md outline-none pl-6 pr-6 py-3">
+				<Listbox.Button className="text-sm flex justify-between items-center placeholder-slate-400 bg-neutral-100 font-normal rounded-md outline-none pl-6 pr-6 py-3 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100">
 					{value.display}
 					<FontAwesomeIcon icon={faCaretDown} className="text-sm" />
 				</Listbox.Button>
