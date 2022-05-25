@@ -21,14 +21,14 @@ export const useAuth = () => {
 	};
 
 	const signout = () => {
-		dispatch(signout_auth_request());
+		dispatch(signout_auth_request(auth));
 	};
 
 	useEffect(() => {
 		if (auth && isExpired(auth)) {
 			signout();
 		}
-	});
+	}, [auth]);
 
 	return {
 		isAuthenticated,

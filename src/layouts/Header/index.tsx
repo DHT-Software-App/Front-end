@@ -5,13 +5,13 @@ import { Menu, Transition, Disclosure } from "@headlessui/react";
 import { useSelector } from "react-redux";
 import { Employee } from "types/Employee";
 
-/* This example requires Tailwind CSS v2.0+ */
 import { Fragment } from "react";
 import {
 	BellIcon,
 	MenuIcon,
 	XIcon,
 	ViewGridIcon,
+	SearchIcon,
 } from "@heroicons/react/outline";
 import { Logo } from "components/Logo";
 
@@ -50,7 +50,7 @@ export const Header = () => {
 										<input
 											type="search"
 											placeholder="Search"
-											className="text-sm shadow-sm placeholder-slate-500 bg-slate-100 font-normal rounded-md outline-none pl-6 pr-6 py-3 w-full min-w-fit focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100"
+											className="text-sm font-semibold shadow-sm placeholder-slate-400 bg-slate-100 rounded-md outline-none pl-6 pr-6 py-3 w-full min-w-fit focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100"
 										/>
 									</div>
 								</div>
@@ -146,6 +146,10 @@ export const Header = () => {
 																? "bg-slate-50 text-blue-light"
 																: "text-slate-700"
 														}`}
+														onClick={(e) => {
+															e.preventDefault();
+															signout();
+														}}
 													>
 														Sign out
 													</a>

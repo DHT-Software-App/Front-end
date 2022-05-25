@@ -22,7 +22,6 @@ function App() {
 				store.dispatch(sign_auth_success(token));
 				setLoadedToken(true);
 			} else {
-				store.dispatch(signout_auth_request());
 				setLoadedToken(false);
 			}
 		});

@@ -151,6 +151,37 @@ export class AuthService {
 		}
 	}
 
+	static async signout(access_token: string): Promise<SuccessResponse | void> {
+		try {
+			const endpoint = `${REACT_APP_BACKEND_API}/auth/logout`;
+
+			const { data } = await axios.post(
+				endpoint,
+				{},
+				{
+					headers: {
+						Authorization: `Bearer ${access_token}`,
+						"Content-Type": "application/json",
+						Accept: "application/json",
+					},
+				}
+			);
+
+			return data as SuccessResponse;
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				const { status, data } = error.response as AxiosResponse;
+
+				// BAD REQUEST
+				if (status === HTTPResponse.BAD_REQUEST) {
+					if (data.success) {
+						throw [new ResponseError(data as SuccessResponse)];
+					}
+				}
+			}
+		}
+	}
+
 	static async register(
 		owner: Employee,
 		access_token: string

@@ -67,10 +67,10 @@ export const EmployeeRow = ({
 			<td className="p-3 text-slate-700 whitespace-nowrap">
 				<EmployeeStatusBadge status={employee.status} />
 			</td>
-			<td className="text-center p-3 text-slate-700 whitespace-nowrap">
+			<td className="flex justify-center p-3  text-slate-700 whitespace-nowrap">
 				{employee.user &&
 					(employee.user.email_verified_at ? (
-						<Avatar />
+						<Avatar className="h-8" />
 					) : (
 						<ResendConfirmation to={employee.user.email!} />
 					))}

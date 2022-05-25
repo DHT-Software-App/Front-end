@@ -189,7 +189,7 @@ export const authReducer = (
 			return {
 				...state,
 				loading: false,
-				error: null,
+				errors: null,
 				success,
 			};
 		}
@@ -204,13 +204,34 @@ export const authReducer = (
 			};
 		}
 
+		// signout
 		case "@signout/auth/request": {
-			const { auth } = payload;
+			return {
+				...state,
+				loading: true,
+			};
+		}
+
+		case "@signout/auth/success": {
+			const { success } = payload;
 
 			return {
 				...state,
-				auth,
+				auth: null,
+				loading: false,
+				errors: null,
 				isAuthenticated: false,
+				success,
+			};
+		}
+
+		case "@signout/auth/failure": {
+			const { errors } = payload;
+
+			return {
+				...state,
+				loading: false,
+				errors,
 			};
 		}
 

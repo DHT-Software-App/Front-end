@@ -75,11 +75,23 @@ export const register_auth_failure = (errors: Error[]) => ({
 });
 
 // signout
-export const signout_auth_request = () => ({
+export const signout_auth_request = (access_token: string) => ({
 	type: "@signout/auth/request",
 	payload: {
-		auth: null,
+		access_token,
 	},
+});
+
+export const signout_auth_success = (success?: SuccessResponse) => ({
+	type: "@signout/auth/success",
+	payload: {
+		success,
+	},
+});
+
+export const signout_auth_failure = (errors: Error[]) => ({
+	type: "@signout/auth/failure",
+	payload: { errors },
 });
 
 // resend pin

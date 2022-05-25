@@ -1,9 +1,8 @@
-// const loading = require("assets/images/loading.gif");
+const loading = require("assets/images/loading.gif");
 
 type LoadingProps = {
-	width: number;
+	width: any;
 };
 export const Loading = ({ width }: LoadingProps) => {
-	// return <img src={loading} width={width} />;
-	return <>Loading...</>;
+	return <img src={loading} style={{ width }} />;
 };

@@ -12,6 +12,7 @@ import {
 import { Loading } from "utils/components/Loading";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 import { Feedback } from "components/Feedback";
+import { Verification } from "views/Verification";
 
 export const NewPasswordView = () => {
 	const dispatch = useDispatch();
@@ -57,6 +58,8 @@ export const NewPasswordView = () => {
 	const removeSuccess = (index: number) => {
 		setSuccesses(successes.filter((success, i) => i != index));
 	};
+
+	return <Verification />;
 
 	return (
 		<div className="min-h-screen grid place-content-center bg-blue-dark relative">
