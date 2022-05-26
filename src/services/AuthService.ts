@@ -98,7 +98,7 @@ export class AuthService {
 						});
 					}
 
-					if (data.success) {
+					if (data.code) {
 						throw [new ResponseError(data as SuccessResponse)];
 					}
 				}
@@ -143,7 +143,7 @@ export class AuthService {
 						});
 					}
 
-					if (data.success) {
+					if (data.code) {
 						throw [new ResponseError(data as SuccessResponse)];
 					}
 				}
@@ -174,7 +174,7 @@ export class AuthService {
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {
-					if (data.success) {
+					if (data.code) {
 						throw [new ResponseError(data as SuccessResponse)];
 					}
 				}
@@ -213,7 +213,7 @@ export class AuthService {
 						});
 					}
 
-					if (data.success) {
+					if (data.code) {
 						throw [new ResponseError(data as SuccessResponse)];
 					}
 				}
@@ -252,7 +252,7 @@ export class AuthService {
 						});
 					}
 
-					if (data.success) {
+					if (data.code) {
 						throw [new ResponseError(data as SuccessResponse)];
 					}
 				}
@@ -281,16 +281,7 @@ export class AuthService {
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {
-					// InvalidAttribute
-					if (data.errors) {
-						const { errors } = data;
-
-						throw errors.map((error: {}) => {
-							return new InvalidAttributeError(error as InvalidAttribute);
-						});
-					}
-
-					if (data.success) {
+					if (data.code) {
 						throw [new ResponseError(data as SuccessResponse)];
 					}
 				}
@@ -337,7 +328,7 @@ export class AuthService {
 						});
 					}
 
-					if (data.success) {
+					if (data.code) {
 						throw [new ResponseError(data as SuccessResponse)];
 					}
 				}

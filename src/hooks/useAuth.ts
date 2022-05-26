@@ -1,18 +1,29 @@
-import {
-	signout_auth_request,
-	sign_auth_request,
-	clear_auth_errors,
-	clear_auth_success,
-} from "actions/auth";
+import { signout_auth_request, sign_auth_request } from "actions/auth";
 import { useEffect } from "react";
 import { isExpired } from "react-jwt";
 import { useDispatch, useSelector } from "react-redux";
+import { Employee } from "types/Employee";
 import { User } from "types/User";
+import { SuccessResponse } from "utils/Responses/SuccessResponse";
+
+type AuthProps = {
+	isAuthenticated: boolean;
+	loading: boolean;
+	auth: string;
+	errors: Error[];
+	success: SuccessResponse;
+	employee: Employee;
+};
 
 export const useAuth = () => {
-	const { isAuthenticated, loading, auth, errors, success } = useSelector(
-		({ auth }: any) => auth
-	);
+	const {
+		isAuthenticated,
+		loading,
+		auth,
+		errors,
+		success,
+		employee,
+	}: AuthProps = useSelector(({ auth }: any) => auth);
 
 	const dispatch = useDispatch();
 
@@ -38,5 +49,6 @@ export const useAuth = () => {
 		sign,
 		signout,
 		success,
+		employee,
 	};
 };

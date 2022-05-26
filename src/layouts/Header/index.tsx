@@ -1,9 +1,6 @@
 import { useAuth } from "hooks/useAuth";
 import { Avatar } from "components/Avatar";
-import { ProfileCollapse } from "components/ProfileCollapse";
 import { Menu, Transition, Disclosure } from "@headlessui/react";
-import { useSelector } from "react-redux";
-import { Employee } from "types/Employee";
 
 import { Fragment } from "react";
 import {
@@ -11,20 +8,16 @@ import {
 	MenuIcon,
 	XIcon,
 	ViewGridIcon,
-	SearchIcon,
 } from "@heroicons/react/outline";
 import { Logo } from "components/Logo";
 
-export const Header = () => {
-	const { signout } = useAuth();
-	const {
-		employee: authEmployee,
-		loading,
-	}: { employee: Employee; loading: boolean } = useSelector(
-		({ auth }: any) => auth
-	);
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-	return authEmployee ? (
+export const Header = () => {
+	const { signout, employee: auth_employee } = useAuth();
+
+	return (
 		<Disclosure as="nav" className="bg-slate-50 ">
 			{({ open }) => (
 				<>
@@ -32,45 +25,78 @@ export const Header = () => {
 						<div className="relative flex items-center justify-between h-16">
 							<div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
 								{/* Mobile menu button*/}
-								<Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-blue focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100">
-									<span className="sr-only">Open main menu</span>
-									{open ? (
-										<XIcon className="block h-6 w-6" aria-hidden="true" />
-									) : (
-										<MenuIcon className="block h-6 w-6" aria-hidden="true" />
-									)}
-								</Disclosure.Button>
+								{auth_employee ? (
+									<Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-blue focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100">
+										<span className="sr-only">Open main menu</span>
+										{open ? (
+											<XIcon className="block h-6 w-6" aria-hidden="true" />
+										) : (
+											<MenuIcon className="block h-6 w-6" aria-hidden="true" />
+										)}
+									</Disclosure.Button>
+								) : (
+									<Skeleton height="100%" containerClassName="block h-6 w-6" />
+								)}
 							</div>
 							<div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
 								<div className="flex-shrink-0 flex items-center">
-									<Logo className="block sm:hidden h-8 w-auto" />
+									{auth_employee ? (
+										<Logo className="block sm:hidden h-8 w-auto" />
+									) : (
+										<Skeleton
+											height="100%"
+											containerClassName="block sm:hidden h-8 w-auto"
+										/>
+									)}
 								</div>
 								<div className="hidden sm:block sm:ml-6">
 									<div className="flex space-x-4">
-										<input
-											type="search"
-											placeholder="Search"
-											className="text-sm font-semibold shadow-sm placeholder-slate-400 bg-slate-100 rounded-md outline-none pl-6 pr-6 py-3 w-full min-w-fit focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100"
-										/>
+										{auth_employee ? (
+											<input
+												type="search"
+												placeholder="Search"
+												className="text-sm font-semibold shadow-sm placeholder-slate-400 bg-slate-100 rounded-md outline-none pl-6 pr-6 py-3 w-full min-w-fit focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100"
+											/>
+										) : (
+											<Skeleton className="block text-sm rounded-md pl-6 pr-6 py-3 w-full min-w-fit" />
+										)}
 									</div>
 								</div>
 							</div>
 							<div className="absolute inset-y-0 right-0 flex items-center gap-x-4 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-								<button
-									type="button"
-									className="hidden sm:block  p-1 rounded-full text-slate-400 hover:text-blue focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100"
-								>
-									<span className="sr-only">View more</span>
-									<ViewGridIcon className="h-6 w-6" aria-hidden="true" />
-								</button>
+								{auth_employee ? (
+									<>
+										<button
+											type="button"
+											className="hidden sm:block  p-1 rounded-full text-slate-400 hover:text-blue focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100"
+										>
+											<span className="sr-only">View more</span>
+											<ViewGridIcon className="h-6 w-6" aria-hidden="true" />
+										</button>
 
-								<button
-									type="button"
-									className="p-1 rounded-full text-slate-400 hover:text-blue focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100"
-								>
-									<span className="sr-only">View notifications</span>
-									<BellIcon className="h-6 w-6" aria-hidden="true" />
-								</button>
+										<button
+											type="button"
+											className="p-1 rounded-full text-slate-400 hover:text-blue focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100"
+										>
+											<span className="sr-only">View notifications</span>
+											<BellIcon className="h-6 w-6" aria-hidden="true" />
+										</button>
+									</>
+								) : (
+									<>
+										<Skeleton
+											circle
+											height="100%"
+											containerClassName="w-6 h-6"
+										/>
+
+										<Skeleton
+											circle
+											height="100%"
+											containerClassName="w-6 h-6"
+										/>
+									</>
+								)}
 
 								{/* Profile dropdown */}
 								<Menu as="div" className="ml-3 relative">
@@ -78,11 +104,19 @@ export const Header = () => {
 										<Menu.Button className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100">
 											<span className="sr-only">Open user menu</span>
 
-											<Avatar
-												src={authEmployee.user?.profile?.url || undefined}
-												alt=""
-												className="w-8 h-8 rounded-full"
-											/>
+											{auth_employee ? (
+												<Avatar
+													src={auth_employee.user?.profile?.url}
+													alt=""
+													className="w-8 h-8 rounded-full"
+												></Avatar>
+											) : (
+												<Skeleton
+													circle
+													height="100%"
+													containerClassName="w-8 h-8"
+												/>
+											)}
 										</Menu.Button>
 									</div>
 
@@ -98,13 +132,17 @@ export const Header = () => {
 										<Menu.Items className="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
 											<Menu.Item>
 												<div className="px-4 py-2 flex flex-col justify-center">
-													<span className="text-sm font-medium text-slate-800">
-														{authEmployee.user?.profile?.nickname ||
-															`${authEmployee.firstname} ${authEmployee.lastname}`}
-													</span>
-													<span className="text-xs text-slate-500 mt-1">
-														{authEmployee.role?.title}
-													</span>
+													{auth_employee && (
+														<>
+															<span className="text-sm font-medium text-slate-800">
+																{auth_employee.user?.profile?.nickname ||
+																	`${auth_employee.firstname} ${auth_employee.lastname}`}
+															</span>
+															<span className="text-xs text-slate-500 mt-1">
+																{auth_employee.role?.title}
+															</span>
+														</>
+													)}
 												</div>
 											</Menu.Item>
 
@@ -177,7 +215,5 @@ export const Header = () => {
 				</>
 			)}
 		</Disclosure>
-	) : (
-		<>Loading</>
 	);
 };

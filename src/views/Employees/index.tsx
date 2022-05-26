@@ -15,6 +15,8 @@ import { Modal } from "components/Modal";
 import { EmployeeEnum } from "enum/EmployeeEnum";
 import { useCan } from "hooks/useCan";
 import React, { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Employee } from "types/Employee";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
@@ -141,26 +143,38 @@ export const EmployeesView = () => {
 					manage employees
 				</span>
 				<div className="w-full sm:w-auto">
-					<button
-						className="bg-blue-light w-full text-white uppercase text-xs font-semibold px-5 py-3 rounded-md"
-						onClick={() => setOpenNew(true)}
-					>
-						create a new employee
-					</button>
+					{loading ? (
+						<Skeleton className="px-5 py-3 rounded-md" height="100%" />
+					) : (
+						<button
+							className="bg-blue-light w-full text-white uppercase text-xs font-semibold px-5 py-3 rounded-md"
+							onClick={() => setOpenNew(true)}
+						>
+							create a new employee
+						</button>
+					)}
 				</div>
 			</div>
 			<div className="flex justify-between">
 				<div className="flex items-center gap-x-6 w-full">
 					<span className="text-slate-500 hidden sm:inline focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-600 duration-100">
-						Search Employee
+						{loading || "Search Employee"}
 					</span>
-					<input
-						type="search"
-						name="search"
-						placeholder="Search..."
-						onChange={handleSearch}
-						className="text-sm w-full sm:w-80 placeholder-slate-400 font-normal shadow-sm shadow-gray rounded-md outline-none pl-6 pr-4 py-2"
-					/>
+
+					{loading ? (
+						<Skeleton
+							height="100%"
+							className="w-full sm:w-80 rounded-md pl-6 pr-4 py-2"
+						/>
+					) : (
+						<input
+							type="search"
+							name="search"
+							placeholder="Search..."
+							onChange={handleSearch}
+							className="text-sm w-full sm:w-80 placeholder-slate-400 font-normal shadow-sm shadow-gray rounded-md outline-none pl-6 pr-4 py-2"
+						/>
+					)}
 				</div>
 				{/* <div className="flex justify-between items-center space-x-6">
 					<span className="text-slate-500">Filtered Employee</span>

@@ -8,8 +8,10 @@ import {
 	faEdit,
 	faCircleQuestion,
 } from "@fortawesome/free-regular-svg-icons";
-import { useDispatch, useSelector } from "react-redux";
+
 import { ResendConfirmation } from "components/ResendConfirmation";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 type EmployeeStatus = "active" | "desactive";
 
@@ -49,52 +51,80 @@ export const EmployeeRow = ({
 	return (
 		<tr className="bg-white border-b-2 border-slate-100">
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.firstname}
+				{employee.firstname || <Skeleton />}
 			</td>
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.lastname}
+				{employee.lastname || <Skeleton />}
 			</td>
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.contact_1}
+				{employee.contact_1 || <Skeleton />}
 			</td>
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.contact_2}
-			</td>
-			<td className="p-3 text-slate-700 whitespace-nowrap">{`${employee.street}, ${employee.city}`}</td>
-			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.role?.name}
+				{employee.contact_2 || <Skeleton />}
 			</td>
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				<EmployeeStatusBadge status={employee.status} />
+				{employee.street ? (
+					`${employee.street}, ${employee.city}`
+				) : (
+					<Skeleton />
+				)}
+			</td>
+			<td className="p-3 text-slate-700 whitespace-nowrap">
+				{employee.role?.name || <Skeleton />}
+			</td>
+			<td className="p-3 text-slate-700 whitespace-nowrap">
+				{employee.status ? (
+					<EmployeeStatusBadge status={employee.status} />
+				) : (
+					<Skeleton />
+				)}
 			</td>
 			<td className="flex justify-center p-3  text-slate-700 whitespace-nowrap">
-				{employee.user &&
+				{employee.id ? (
+					employee.user &&
 					(employee.user.email_verified_at ? (
 						<Avatar className="h-8" />
 					) : (
 						<ResendConfirmation to={employee.user.email!} />
-					))}
+					))
+				) : (
+					<Skeleton />
+				)}
 			</td>
 			<td className="text-center p-3 text-slate-700 whitespace-nowrap">
 				<div className="flex space-x-6">
-					<Link to="">
-						<FontAwesomeIcon
-							icon={faCircleQuestion}
-							className="text-lg text-slate-400 hover:text-slate-700"
-						/>
-					</Link>
-					<button onClick={() => onDelete(employee)}>
-						<FontAwesomeIcon
-							icon={faTrashCan}
-							className="text-lg text-slate-400 hover:text-slate-700"
-						/>
-					</button>
-					<button onClick={() => onEdit(employee)}>
-						<FontAwesomeIcon
-							icon={faEdit}
-							className="text-lg text-slate-400 hover:text-slate-700"
-						/>
-					</button>
+					{employee.id ? (
+						<Link to="">
+							<FontAwesomeIcon
+								icon={faCircleQuestion}
+								className="text-lg text-slate-400 hover:text-slate-700"
+							/>
+						</Link>
+					) : (
+						<Skeleton />
+					)}
+
+					{employee.id ? (
+						<button onClick={() => onDelete(employee)}>
+							<FontAwesomeIcon
+								icon={faTrashCan}
+								className="text-lg text-slate-400 hover:text-slate-700"
+							/>
+						</button>
+					) : (
+						<Skeleton />
+					)}
+
+					{employee.id ? (
+						<button onClick={() => onEdit(employee)}>
+							<FontAwesomeIcon
+								icon={faEdit}
+								className="text-lg text-slate-400 hover:text-slate-700"
+							/>
+						</button>
+					) : (
+						<Skeleton />
+					)}
 				</div>
 			</td>
 		</tr>

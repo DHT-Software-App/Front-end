@@ -48,14 +48,23 @@ export const EmployeeTable = ({
 					</tr>
 				</thead>
 				<tbody className="divide-y divide-gray-100">
-					{employees.map((employee, index) => (
-						<EmployeeRow
-							key={index}
-							value={employee}
-							onEdit={onEdit}
-							onDelete={onDelete}
-						/>
-					))}
+					{employees.length
+						? employees.map((employee, index) => (
+								<EmployeeRow
+									key={index}
+									value={employee}
+									onEdit={onEdit}
+									onDelete={onDelete}
+								/>
+						  ))
+						: [...Array(3)].map((val, i) => (
+								<EmployeeRow
+									key={i}
+									value={{}}
+									onEdit={onEdit}
+									onDelete={onDelete}
+								/>
+						  ))}
 				</tbody>
 			</table>
 		</div>
