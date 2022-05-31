@@ -111,7 +111,7 @@ export class AuthService {
 			const endpoint = `${REACT_APP_BACKEND_API}/auth/login`;
 
 			const {
-				data: { access_token, expires_in, success, message, code },
+				data: { access_token, expires_in: maxAge, success, message, code },
 			} = await axios.post(endpoint, user, {
 				headers: {
 					"Content-Type": "application/json",
@@ -120,8 +120,8 @@ export class AuthService {
 			});
 
 			return {
-				access_token: access_token,
-				maxAge: expires_in,
+				access_token,
+				maxAge,
 				success: {
 					success,
 					message,

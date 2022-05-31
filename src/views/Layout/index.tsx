@@ -1,5 +1,5 @@
 import { me_auth_request } from "actions/auth";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { Footer } from "layouts/Footer";
@@ -14,13 +14,13 @@ export const Layout = () => {
 		if (token) {
 			dispatch(me_auth_request(token));
 		}
-	}, [token]);
+	}, []);
 
 	return (
 		<div className="flex w-full font-sans text-gray-900 bg-gray-50">
+			<SideBar />
 			<div className="flex flex-col flex-grow min-w-0 max-h-screen overflow-auto">
 				<Header />
-				<SideBar />
 				<Outlet />
 				<Footer />
 			</div>

@@ -1,7 +1,8 @@
 import { signout_auth_request, sign_auth_request } from "actions/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { isExpired } from "react-jwt";
 import { useDispatch, useSelector } from "react-redux";
+import { Ability } from "types/Ability";
 import { Employee } from "types/Employee";
 import { User } from "types/User";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
@@ -16,6 +17,8 @@ type AuthProps = {
 };
 
 export const useAuth = () => {
+	const dispatch = useDispatch();
+
 	const {
 		isAuthenticated,
 		loading,
@@ -25,7 +28,29 @@ export const useAuth = () => {
 		employee,
 	}: AuthProps = useSelector(({ auth }: any) => auth);
 
-	const dispatch = useDispatch();
+	const [displays, setDisplays] = useState<any>({});
+
+	useEffect(() => {
+		if (auth && isExpired(auth)) {
+			signout();
+		}
+	}, [auth]);
+
+	useEffect(() => {
+		if (employee?.abilities) {
+			const abilitiesForVerb: any = {};
+
+			employee.abilities.forEach(({ name, title }: Ability) => {
+				const [verb] = name!.split(":");
+
+				if (!abilitiesForVerb[verb]?.includes(title)) {
+					abilitiesForVerb[verb] = [...(abilitiesForVerb[verb] ?? []), title];
+				}
+			});
+
+			setDisplays(abilitiesForVerb);
+		}
+	}, [employee]);
 
 	const sign = (user: User) => {
 		dispatch(sign_auth_request(user));
@@ -35,11 +60,9 @@ export const useAuth = () => {
 		dispatch(signout_auth_request(auth));
 	};
 
-	useEffect(() => {
-		if (auth && isExpired(auth)) {
-			signout();
-		}
-	}, [auth]);
+	const can = (verb: string, module: string) => {
+		return !!displays[verb]?.includes(module);
+	};
 
 	return {
 		isAuthenticated,
@@ -50,5 +73,6 @@ export const useAuth = () => {
 		signout,
 		success,
 		employee,
+		can,
 	};
 };

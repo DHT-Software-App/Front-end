@@ -10,8 +10,6 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 
 import { ResendConfirmation } from "components/ResendConfirmation";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 type EmployeeStatus = "active" | "desactive";
 
@@ -51,80 +49,56 @@ export const EmployeeRow = ({
 	return (
 		<tr className="bg-white border-b-2 border-slate-100">
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.firstname || <Skeleton />}
+				{employee.firstname}
 			</td>
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.lastname || <Skeleton />}
+				{employee.lastname}
 			</td>
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.contact_1 || <Skeleton />}
+				{employee.contact_1}
 			</td>
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.contact_2 || <Skeleton />}
+				{employee.contact_2}
 			</td>
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.street ? (
-					`${employee.street}, ${employee.city}`
-				) : (
-					<Skeleton />
-				)}
+				{`${employee.street}, ${employee.city}`}
 			</td>
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.role?.name || <Skeleton />}
+				{employee.role?.name}
 			</td>
 			<td className="p-3 text-slate-700 whitespace-nowrap">
-				{employee.status ? (
-					<EmployeeStatusBadge status={employee.status} />
-				) : (
-					<Skeleton />
-				)}
+				<EmployeeStatusBadge status={employee.status} />
 			</td>
 			<td className="flex justify-center p-3  text-slate-700 whitespace-nowrap">
-				{employee.id ? (
-					employee.user &&
+				{employee.user &&
 					(employee.user.email_verified_at ? (
 						<Avatar className="h-8" />
 					) : (
 						<ResendConfirmation to={employee.user.email!} />
-					))
-				) : (
-					<Skeleton />
-				)}
+					))}
 			</td>
 			<td className="text-center p-3 text-slate-700 whitespace-nowrap">
 				<div className="flex space-x-6">
-					{employee.id ? (
-						<Link to="">
-							<FontAwesomeIcon
-								icon={faCircleQuestion}
-								className="text-lg text-slate-400 hover:text-slate-700"
-							/>
-						</Link>
-					) : (
-						<Skeleton />
-					)}
+					<Link to="">
+						<FontAwesomeIcon
+							icon={faCircleQuestion}
+							className="text-lg text-slate-400 hover:text-slate-700"
+						/>
+					</Link>
 
-					{employee.id ? (
-						<button onClick={() => onDelete(employee)}>
-							<FontAwesomeIcon
-								icon={faTrashCan}
-								className="text-lg text-slate-400 hover:text-slate-700"
-							/>
-						</button>
-					) : (
-						<Skeleton />
-					)}
+					<button onClick={() => onDelete(employee)}>
+						<FontAwesomeIcon
+							icon={faTrashCan}
+							className="text-lg text-slate-400 hover:text-slate-700"
+						/>
+					</button>
 
-					{employee.id ? (
-						<button onClick={() => onEdit(employee)}>
-							<FontAwesomeIcon
-								icon={faEdit}
-								className="text-lg text-slate-400 hover:text-slate-700"
-							/>
-						</button>
-					) : (
-						<Skeleton />
-					)}
+					<button onClick={() => onEdit(employee)}>
+						<FontAwesomeIcon
+							icon={faEdit}
+							className="text-lg text-slate-400 hover:text-slate-700"
+						/>
+					</button>
 				</div>
 			</td>
 		</tr>

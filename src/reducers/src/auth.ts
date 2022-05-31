@@ -3,15 +3,12 @@ import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 const initialState: {
 	auth?: string;
-	loading: boolean;
-	isAuthenticated: boolean;
+	loading?: boolean;
+	isAuthenticated?: boolean;
 	employee?: Employee;
 	errors?: Error[];
 	success?: SuccessResponse;
-} = {
-	isAuthenticated: false,
-	loading: false,
-};
+} = {};
 
 export const authReducer = (
 	state = initialState,

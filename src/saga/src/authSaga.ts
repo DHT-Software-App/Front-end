@@ -16,7 +16,6 @@ import {
 	verify_pin_success,
 } from "actions/auth";
 import { AuthService } from "services/AuthService";
-import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
 import { syncAuthStore } from "utils/auth/syncAuthStore";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 import { User } from "types/User";

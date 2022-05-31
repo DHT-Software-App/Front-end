@@ -13,8 +13,7 @@ import { EmployeeTable } from "components/EmployeeTable";
 import { Feedback } from "components/Feedback";
 import { Modal } from "components/Modal";
 import { EmployeeEnum } from "enum/EmployeeEnum";
-import { useCan } from "hooks/useCan";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,9 +27,6 @@ import { SuccessResponse } from "utils/Responses/SuccessResponse";
 export const EmployeesView = () => {
 	// util hooks
 	const dispatch = useDispatch();
-
-	// for validate abilities
-	const { can, unloadCan } = useCan();
 
 	const [search, setSearch] = useState();
 	const [filteredEmployee, setFilteredEmployee] = useState();

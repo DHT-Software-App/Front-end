@@ -1,4 +1,4 @@
-import "cookie-store";
+import "cookie-store/dist/index";
 
 export class CookieObserver {
 	#cookies = new Map();

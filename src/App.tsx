@@ -1,4 +1,4 @@
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { store } from "./store";
 import { SignView } from "./views/Sign";
 import { EmployeesView } from "./views/Employees";
@@ -9,24 +9,8 @@ import { NewPasswordView } from "views/NewPassword";
 import { ProtectedRoute } from "routes/ProtectedRoute";
 import { ProfileView } from "views/Profile";
 import { ForgotPasswordView } from "views/ForgotPassword";
-import { onAuthChanged } from "utils/auth/onAuthChanged";
-import { signout_auth_request, sign_auth_success } from "actions/auth";
-import { useEffect, useState } from "react";
 
 function App() {
-	const [loadedToken, setLoadedToken] = useState<boolean>();
-
-	useEffect(() => {
-		onAuthChanged((token) => {
-			if (token) {
-				store.dispatch(sign_auth_success(token));
-				setLoadedToken(true);
-			} else {
-				setLoadedToken(false);
-			}
-		});
-	}, []);
-
 	return (
 		<div className="App">
 			<Provider store={store}>
@@ -35,13 +19,9 @@ function App() {
 					<Route
 						path="/"
 						element={
-							loadedToken !== undefined ? (
-								<ProtectedRoute>
-									<Layout />
-								</ProtectedRoute>
-							) : (
-								<div>loading</div>
-							)
+							<ProtectedRoute>
+								<Layout />
+							</ProtectedRoute>
 						}
 					>
 						<Route index element={<DashboardView />} />
