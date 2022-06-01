@@ -1,5 +1,7 @@
 import { call, put, takeEvery } from "redux-saga/effects";
 import {
+	forgot_password_failure,
+	forgot_password_success,
 	me_auth_failure,
 	me_auth_success,
 	register_auth_failure,
@@ -114,7 +116,6 @@ function* verifyEmail(action: any) {
 	try {
 		const {
 			email_token,
-			user,
 		}: {
 			email_token: string;
 			user: User;
@@ -122,13 +123,31 @@ function* verifyEmail(action: any) {
 
 		const success: SuccessResponse = yield call(
 			AuthService.verifyEmail,
-			user,
 			email_token
 		);
 
 		yield put(verify_email_success(success));
 	} catch (errors) {
 		yield put(verify_email_failure(errors as Error[]));
+	}
+}
+
+function* forgotPassword(action: any) {
+	try {
+		const {
+			user,
+		}: {
+			user: User;
+		} = action.payload;
+
+		const success: SuccessResponse = yield call(
+			AuthService.forgetPassword,
+			user
+		);
+
+		yield put(forgot_password_success(success));
+	} catch (errors) {
+		yield put(forgot_password_failure(errors as Error[]));
 	}
 }
 
@@ -140,4 +159,5 @@ export function* authSaga() {
 	yield takeEvery("@resend/pin/request", resendPin);
 	yield takeEvery("@verify/pin/request", verifyPin);
 	yield takeEvery("@verify/email/request", verifyEmail);
+	yield takeEvery("@forgot/password/request", forgotPassword);
 }

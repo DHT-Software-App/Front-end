@@ -247,6 +247,33 @@ export const authReducer = (
 			};
 		}
 
+		// forgot password
+		case "@forgot/password/request": {
+			return {
+				...state,
+				loading: true,
+			};
+		}
+
+		case "@forgot/password/success": {
+			const { success } = payload;
+			return {
+				...state,
+				loading: false,
+				success,
+			};
+		}
+
+		case "@forgot/password/failure": {
+			const { errors } = payload;
+
+			return {
+				...state,
+				loading: false,
+				errors,
+			};
+		}
+
 		default: {
 			return { ...state };
 		}

@@ -20,7 +20,6 @@ export const NewPasswordView = () => {
 	const dispatch = useDispatch();
 
 	const { token } = useParams();
-	const navigate = useNavigate();
 
 	const {
 		loading,
@@ -33,6 +32,8 @@ export const NewPasswordView = () => {
 	} = useSelector(({ auth }: any) => auth);
 
 	const [validPinSuccess, setValidPinSuccess] = useState<SuccessResponse>();
+	const [verifiedAccountSuccess, setVerifiedAccountSuccess] =
+		useState<SuccessResponse>();
 
 	const [verificationCompleted, setVerificationCompleted] =
 		useState<boolean>(false);
@@ -51,10 +52,20 @@ export const NewPasswordView = () => {
 	}, [token]);
 
 	useEffect(() => {
+		if (validPinSuccess?.success) {
+			dispatch(verify_email_request(token!));
+		}
+	}, [validPinSuccess]);
+
+	useEffect(() => {
 		if (successFromAuth) {
 			switch (successFromAuth.code) {
 				case RegisterEnum.VALID_PIN:
 					setValidPinSuccess(successFromAuth);
+					break;
+
+				case RegisterEnum.VERIFIED_ACCOUNT:
+					setVerifiedAccountSuccess(successFromAuth);
 					break;
 
 				default:
@@ -75,42 +86,9 @@ export const NewPasswordView = () => {
 		}
 	}, [auth_errors]);
 
-	const handleOnSubmit = (user: User) => {
-		dispatch(verify_email_request(user, token!));
-	};
+	const handleOnSubmit = (user: User) => {};
 
-	const handleOnSuccess = () => {
-		// should be redirect to the existing account page
-		navigate("/");
-	};
-
-	if (!verificationCompleted) {
-		return (
-			<div className="h-screen">
-				<Stepper>
-					<StepperItem
-						title="Verify token"
-						description={`${
-							validPinSuccess?.message || "Your token was been verified."
-						} `}
-						checked={!!validPinSuccess}
-						loading={!validPinSuccess}
-						invalid={validPinSuccess ? !validPinSuccess.success : false}
-					/>
-					{/* <StepperItem
-						title="Invalid email"
-						description="Your email must be valid."
-						checked
-						invalid
-					/>
-					<StepperItem
-						title="Establish new password"
-						description="You will establish a new password."
-					/> */}
-				</Stepper>
-			</div>
-		);
-	} else {
+	if (verificationCompleted) {
 		return (
 			<div className="min-h-screen grid place-content-center bg-blue-dark relative">
 				{!token || loading ? (
@@ -123,4 +101,46 @@ export const NewPasswordView = () => {
 			</div>
 		);
 	}
+
+	return (
+		<div className="h-screen relative">
+			<Stepper>
+				<StepperItem
+					title="Verify token"
+					description={`${
+						validPinSuccess?.message || "Your token will be verified."
+					} `}
+					checked={!!validPinSuccess}
+					loading={!validPinSuccess && loading}
+					invalid={validPinSuccess ? !validPinSuccess.success : false}
+				/>
+
+				<StepperItem
+					title="Verify email"
+					description={`${
+						verifiedAccountSuccess?.message || "Your email will be verified."
+					} `}
+					checked={!!verifiedAccountSuccess}
+					loading={validPinSuccess && loading}
+					invalid={
+						verifiedAccountSuccess ? !verifiedAccountSuccess.success : false
+					}
+				/>
+			</Stepper>
+
+			{verifiedAccountSuccess?.success && (
+				<footer className="absolute z-10 bottom-0 w-screen px-6 py-3 flex justify-between bg-slate-50 items-center">
+					<p className="text-slate-700 font-semibold text-base">
+						You can now continue with reset your password
+					</p>
+					<button
+						className="px-4 py-2 font-semibold text-sm border-2 rounded-md text-blue border-blue"
+						onClick={() => setVerificationCompleted(true)}
+					>
+						RESET PASSWORD
+					</button>
+				</footer>
+			)}
+		</div>
+	);
 };

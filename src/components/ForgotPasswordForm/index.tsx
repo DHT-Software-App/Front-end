@@ -4,10 +4,14 @@ import * as yup from "yup";
 import { User } from "types/User";
 import { TextField } from "utils/components/TextField";
 import { Logo } from "components/Logo";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
+import { Loading } from "utils/components/Loading";
+import { forgot_password_request } from "actions/auth";
 
 const user: User = {
 	email: "",
-	password: "",
 };
 
 const validate = yup.object({
@@ -15,17 +19,41 @@ const validate = yup.object({
 });
 
 export const ForgotPasswordForm = () => {
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { state } = useLocation();
+	const {
+		loading,
+		errors: auth_errors,
+	}: {
+		loading: boolean;
+		errors: Error[];
+	} = useSelector(({ auth }: any) => auth);
 
 	const formikBag = useFormik({
 		initialValues: user,
 		validationSchema: validate,
-		onSubmit: (values: any, actions: any) => {
-			console.log(values);
-			actions.setSubmitting(true);
+		onSubmit: (values: User) => {
+			dispatch(forgot_password_request(values));
 		},
 	});
+
+	const { isSubmitting, isValid, setFieldError } = formikBag;
+
+	// when server errors
+	useEffect(() => {
+		if (auth_errors) {
+			// InvalidAttributeError
+			if (auth_errors.some((e) => e instanceof InvalidAttributeError)) {
+				const errors = auth_errors as InvalidAttributeError[];
+
+				errors.forEach((error: InvalidAttributeError) => {
+					const { attribute, detail } = error.content;
+					setFieldError(attribute, detail);
+				});
+			}
+		}
+	}, [auth_errors]);
 
 	return (
 		<div className="SignForm bg-white rounded-md">
@@ -43,9 +71,10 @@ export const ForgotPasswordForm = () => {
 							<div className="flex justify-between items-center">
 								<button
 									type="submit"
-									className="bg-blue text-white w-full text-xs hover:cursor-pointer font-semibold px-5 py-3 uppercase tracking-wider"
+									disabled={isSubmitting || !isValid}
+									className="bg-blue text-white w-full text-xs hover:cursor-pointer font-semibold px-5 py-3 uppercase tracking-wider disabled:bg-slate-100 disabled:text-slate-300"
 								>
-									{false ? "loading..." : "Send Recovery Link"}
+									{loading ? <Loading width={24} /> : "Send Recovery Link"}
 								</button>
 							</div>
 						</div>

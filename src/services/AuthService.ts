@@ -290,19 +290,16 @@ export class AuthService {
 	}
 
 	static async verifyEmail(
-		user: User,
 		email_token: string
 	): Promise<SuccessResponse | void> {
 		try {
 			const endpoint = `${REACT_APP_BACKEND_API}/auth/email/verify`;
 
-			const { password, password_confirmation } = user;
+			// const { password, password_confirmation } = user;
 			const { data } = await axios.post(
 				endpoint,
 				{
 					token: email_token,
-					password,
-					password_confirmation,
 				},
 				{
 					headers: {
@@ -312,6 +309,35 @@ export class AuthService {
 				}
 			);
 
+			return data as SuccessResponse;
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				const { status, data } = error.response as AxiosResponse;
+
+				// BAD REQUEST
+				if (status === HTTPResponse.BAD_REQUEST) {
+					if (data.code) {
+						throw [new ResponseError(data as SuccessResponse)];
+					}
+				}
+			}
+		}
+	}
+
+	static async forgetPassword(user: User): Promise<SuccessResponse | void> {
+		try {
+			const endpoint = `${REACT_APP_BACKEND_API}/auth/forgot-password`;
+
+			const { data } = await axios.post(
+				endpoint,
+				{ email: user.email },
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Accept: "application/json",
+					},
+				}
+			);
 			return data as SuccessResponse;
 		} catch (error) {
 			if (error instanceof AxiosError) {

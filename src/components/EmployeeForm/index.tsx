@@ -137,8 +137,7 @@ export const EmployeeForm = ({
 		},
 	});
 
-	const { isSubmitting, isValid, setFieldValue, setFieldError, errors } =
-		formikBag;
+	const { isSubmitting, isValid, setFieldValue, setFieldError } = formikBag;
 
 	// when server errors
 	useEffect(() => {

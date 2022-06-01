@@ -139,11 +139,10 @@ export const verify_pin_failure = (errors: Error[]) => ({
 });
 
 // verify email
-export const verify_email_request = (user: User, email_token: string) => ({
+export const verify_email_request = (email_token: string) => ({
 	type: "@verify/email/request",
 	payload: {
 		email_token,
-		user,
 	},
 });
 
@@ -156,6 +155,28 @@ export const verify_email_success = (success: SuccessResponse) => ({
 
 export const verify_email_failure = (errors: Error[]) => ({
 	type: "@verify/email/failure",
+	payload: {
+		errors,
+	},
+});
+
+// forgot password
+export const forgot_password_request = (user: User) => ({
+	type: "@forgot/password/request",
+	payload: {
+		user,
+	},
+});
+
+export const forgot_password_success = (success: SuccessResponse) => ({
+	type: "@forgot/password/success",
+	payload: {
+		success,
+	},
+});
+
+export const forgot_password_failure = (errors: Error[]) => ({
+	type: "@forgot/password/failure",
 	payload: {
 		errors,
 	},
