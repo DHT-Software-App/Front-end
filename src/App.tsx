@@ -7,10 +7,10 @@ function App() {
     <div className='flex flex-col h-screen'>
       <Header />
 
-      <div className='flex flex-1 bg-slate-400'>
+      <div className='flex flex-1'>
         <Sidebar />
         <main className="flex-1">
-          {/* <Error title="not found" description="The page you was looking for was not found on this server" code={404} /> */}
+          <Error title="not found" description="The page you was looking for was not found on this server" code={404} />
         </main>
       </div>
 
