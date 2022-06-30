@@ -2,6 +2,7 @@ import { useState } from "react"
 
 // icons
 import { ChevronRight } from "@mui/icons-material";
+import { NavLink } from "react-router-dom";
 
 const DashboardIcon = require("assets/icons/DashIcon.png");
 const EmployeesIcon = require("assets/icons/EmployeesIcon.png");
@@ -13,25 +14,37 @@ const InsuranceIcon = require("assets/icons/InsuranceIcon.png");
 const AppointmentsIcon = require("assets/icons/AppointmentsIcon.png");
 
 
-type SidebarItemProps = {
-  urlIcon: string;
+type SidebarLinkItemProps = {
+  iconSrc: string;
   text: string;
-  actived?: boolean;
-  withText: boolean;
+  expanded: boolean;
+  to: string;
 };
 
-const SidebarItem = ({
-  urlIcon,
-  actived = false,
+const SidebarLinkItem = ({
+  iconSrc,
   text,
-  withText
-}: SidebarItemProps) => {
-  return <li className="flex text-white font-bold text-lg px-6 py-6 items-center hover:bg-slate-800 hover:cursor-pointer">
-    <img src={urlIcon} className="w-6 h-full flex-shrink-0 mr-6" />
-    {withText && <span>
-      {text}
-    </span>
-    }
+  expanded,
+  to
+}: SidebarLinkItemProps) => {
+  return <li>
+    <NavLink
+      to={to}
+      className={({ isActive }) => {
+        return `flex 
+        text-white 
+        font-bold 
+        text-lg px-6 py-6 
+        items-center 
+        ${isActive ? 'bg-blue' : 'hover:bg-slate-800'} `
+      }}
+    >
+      <img src={iconSrc} className="w-6 h-full flex-shrink-0 mr-6" />
+      {expanded && <span>
+        {text}
+      </span>
+      }
+    </NavLink>
   </li>
 }
 
@@ -52,14 +65,14 @@ export const Sidebar = () => {
     </div>
 
     <ul>
-      <SidebarItem text="Dashboard" urlIcon={DashboardIcon} withText={expanded} />
-      <SidebarItem text="Employeers" urlIcon={EmployeesIcon} withText={expanded} />
-      <SidebarItem text="Documents" urlIcon={DocumentsIcon} withText={expanded} />
-      <SidebarItem text="Jobs" urlIcon={JobsIcon} withText={expanded} />
-      <SidebarItem text="Customers" urlIcon={CustomersIcon} withText={expanded} />
-      <SidebarItem text="Customers Reference" urlIcon={CustomersReferenceIcon} withText={expanded} />
-      <SidebarItem text="Insurance Companies" urlIcon={InsuranceIcon} withText={expanded} />
-      <SidebarItem text="Appointments" urlIcon={AppointmentsIcon} withText={expanded} />
+      <SidebarLinkItem to="/" text="Dashboard" iconSrc={DashboardIcon} expanded={expanded} />
+      <SidebarLinkItem to="/employees" text="Employees" iconSrc={EmployeesIcon} expanded={expanded} />
+      <SidebarLinkItem to="/documents" text="Documents" iconSrc={DocumentsIcon} expanded={expanded} />
+      <SidebarLinkItem to="/jobs" text="Jobs" iconSrc={JobsIcon} expanded={expanded} />
+      <SidebarLinkItem to="/customers" text="Customers" iconSrc={CustomersIcon} expanded={expanded} />
+      <SidebarLinkItem to="/customers_reference" text="Customers Reference" iconSrc={CustomersReferenceIcon} expanded={expanded} />
+      <SidebarLinkItem to="/insurance_companies" text="Insurance Companies" iconSrc={InsuranceIcon} expanded={expanded} />
+      <SidebarLinkItem to="/appointments" text="Appointments" iconSrc={AppointmentsIcon} expanded={expanded} />
     </ul>
   </aside>
 }
