@@ -97,7 +97,7 @@ export const Customers = () => {
     </div>
 
     {
-      loading ? 'loading' : customers?.length ? <ListBox items={customers} defaultItem={customers[0]} displayName="email" onSelect={(item) => { }} /> : <>Empty</>
+      loading ? 'loading' : customers?.length ? <ListBox label="Customers" required items={customers} defaultItem={customers[0]} displayName="email" onSelect={(item) => { }} /> : <>Empty</>
     }
 
     {/* Customer Table */}

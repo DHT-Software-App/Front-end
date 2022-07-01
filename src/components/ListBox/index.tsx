@@ -33,21 +33,24 @@ export const ListBox = <T extends Record<string, any>>({
 
   return <HeadListBox as="div" value={selectedItem} onChange={setSelectedItem} className="relative">
 
-    {/* Label */}
-    {
-      label &&
-      <HeadListBox.Label className="text-sm font-semibold text-slate-700">
-        {label} {required && <span className="text-red-400">*</span>}
-      </HeadListBox.Label>
-    }
+    <div className="space-y-2">
+      {/* Label */}
+      {
+        label &&
+        <HeadListBox.Label className="text-base font-semibold text-slate-700">
+          {label} {required && <span className="text-red-400">*</span>}
+        </HeadListBox.Label>
+      }
 
-    {/* Button */}
-    <HeadListBox.Button className="text-sm font-semibold tracking-wide text-zinc-500 flex justify-between items-center gap-x-2 placeholder-slate-400 
+      {/* Button */}
+      <HeadListBox.Button className="text-sm font-semibold tracking-wide text-zinc-500 flex justify-between items-center gap-x-2 placeholder-slate-400 
       bg-neutral-100 rounded-md outline-none pl-6 pr-6 py-3 focus:outline-none focus:ring-2 
       focus:ring-inset focus:ring-slate-600 duration-100">
-      {selectedItem[displayName]}
-      <UnfoldMore fontSize="small" color="info" />
-    </HeadListBox.Button>
+        {selectedItem[displayName]}
+        <UnfoldMore fontSize="small" color="info" />
+      </HeadListBox.Button>
+    </div>
+
 
     {/* Options */}
 
