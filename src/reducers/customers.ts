@@ -104,6 +104,7 @@ export const reducer = (state = initialState, action: { type: string; payload: a
 
       return {
         ...state,
+        loading: false,
         error
       }
     }

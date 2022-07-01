@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { cleanErrorFromCustomers, cleanSuccessFromCustomers, createCustomerRequest, CustomersStateProps, deleteCustomerRequest, getAllCustomerRequest, updateCustomerRequest } from "reducers/customers";
 import { Customer } from "types/Customer";
 import { Popup } from "components/Popup";
+import { ListBox } from "components/ListBox";
 
 export const Customers = () => {
   const dispatch = useDispatch();
@@ -94,6 +95,10 @@ export const Customers = () => {
       </div>
 
     </div>
+
+    {
+      loading ? 'loading' : customers?.length ? <ListBox items={customers} defaultItem={customers[0]} displayName="email" onSelect={(item) => { }} /> : <>Empty</>
+    }
 
     {/* Customer Table */}
     {
