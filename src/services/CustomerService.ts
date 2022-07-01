@@ -91,4 +91,81 @@ export class CustomerService {
     }
   }
 
+  // UPDATE CUSTOMER
+  async update(customer: Customer, accessToken:string) {
+    try {
+      const endpoint = `${API_DOMAIN}/customers/${customer.id}`;
+
+      const { data: { success, data } } = await axios.put(endpoint, 
+        customer, {
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+          'Authorization': `Bearer ${accessToken}`
+				},
+			});
+
+      const { attribute, relationships: { city, state } } = data;
+
+      const updatedCustomer: Customer = { ...attribute, id_city: city.data.id, id_state: state.data.id }; 
+
+      return {
+        success,
+        updatedCustomer
+      }
+
+    } catch (error) {
+      if (error instanceof AxiosError) {
+				const { status, data: { data, success, message } } = error.response as AxiosResponse;
+
+        if(status == 404) {
+          if(message.includes('Validation Error')) {
+            throw {
+              message,
+              success,
+              paths: data,
+              code: status
+            };
+  
+          }
+        }
+        
+      }
+    }
+  }
+
+  // DELETE CUSTOMER
+  async remove(id: number, accessToken: string) {
+    try {
+      const endpoint = `${API_DOMAIN}/customers/${id}`;
+
+      const { data: { success } } = await axios.delete(endpoint, {
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+          'Authorization': `Bearer ${accessToken}`
+				},
+			});
+
+    
+
+      return {
+        success
+      }
+
+    } catch (error) {
+      if (error instanceof AxiosError) {
+				const { status, data: { data, success, message } } = error.response as AxiosResponse;
+
+        console.log(error);
+
+        if(status == 404) {
+          
+        }
+        
+      }
+    }
+  }
+
+
 }

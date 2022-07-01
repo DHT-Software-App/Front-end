@@ -6,7 +6,7 @@ import { Toast } from "components/Toast";
 import { useAuth } from "hooks/useAuth";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { cleanErrorFromCustomers, cleanSuccessFromCustomers, createCustomerRequest, CustomersStateProps, getAllCustomerRequest } from "reducers/customers";
+import { cleanErrorFromCustomers, cleanSuccessFromCustomers, createCustomerRequest, CustomersStateProps, getAllCustomerRequest, updateCustomerRequest } from "reducers/customers";
 import { Customer } from "types/Customer";
 
 export const Customers = () => {
@@ -57,7 +57,7 @@ export const Customers = () => {
   }
 
   const handleOnUpdate = (customer: Customer) => {
-
+    dispatch(updateCustomerRequest(customer, accessToken!));
   }
 
   const handleOnDelete = (id: number) => {
