@@ -1,4 +1,4 @@
-import { createCustomerFailed, createCustomerSuccess, CREATE_CUSTOMER_REQUEST, deleteCustomerFailed, deleteCustomerSuccess, getAllCustomerFailed, getAllCustomerSuccess, GET_ALL_CUSTOMER_REQUEST, updateCustomerFailed, updateCustomerSuccess, UPDATE_CUSTOMER_REQUEST } from "reducers/customers";
+import { createCustomerFailed, createCustomerSuccess, CREATE_CUSTOMER_REQUEST, deleteCustomerFailed, deleteCustomerSuccess, DELETE_CUSTOMER_REQUEST, getAllCustomerFailed, getAllCustomerSuccess, GET_ALL_CUSTOMER_REQUEST, updateCustomerFailed, updateCustomerSuccess, UPDATE_CUSTOMER_REQUEST } from "reducers/customers";
 import { call, put, takeEvery } from "redux-saga/effects";
 import { CustomerService } from "services/CustomerService";
 
@@ -57,4 +57,5 @@ export function* customerSaga() {
   yield takeEvery(CREATE_CUSTOMER_REQUEST, create);
   yield takeEvery(GET_ALL_CUSTOMER_REQUEST,all);
   yield takeEvery(UPDATE_CUSTOMER_REQUEST, update);
+  yield takeEvery(DELETE_CUSTOMER_REQUEST, remove);
 }

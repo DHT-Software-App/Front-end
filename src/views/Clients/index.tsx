@@ -1,27 +1,27 @@
 import { Search } from "@mui/icons-material"
-import { CustomersTable } from "components/Customers/Table";
-import { CustomerForm } from "components/Customers/Form";
+import { ClientsTable } from "components/Clients/Table";
+import { ClientForm } from "components/Clients/Form";
 import { Modal } from "components/Modal";
 import { Toast } from "components/Toast";
 import { useAuth } from "hooks/useAuth";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { cleanErrorFromCustomers, cleanSuccessFromCustomers, createCustomerRequest, CustomersStateProps, deleteCustomerRequest, getAllCustomerRequest, updateCustomerRequest } from "reducers/customers";
-import { Customer } from "types/Customer";
+import { cleanErrorFromClients, cleanSuccessFromClients, createClientRequest, ClientsStateProps, deleteClientRequest, getAllClientRequest, updateClientRequest } from "reducers/clients";
+import { Client } from "types/Client";
 import { Popup } from "components/Popup";
 
-export const Customers = () => {
+export const Clients = () => {
   const dispatch = useDispatch();
 
   // Read state
-  const { success, customers, loading }: CustomersStateProps = useSelector(({ customer }: any) => customer);
+  const { success, clients, loading }: ClientsStateProps = useSelector(({ client }: any) => client);
 
   // Auth hook
   const { accessToken } = useAuth();
 
   // local states
-  const [customerToEdit, setCustomerToEdit] = useState<Customer>();
-  const [customerToDelete, setCustomerToDelete] = useState<Customer>();
+  const [clientToEdit, setClientToEdit] = useState<Client>();
+  const [clientToDelete, setClientToDelete] = useState<Client>();
 
   // Manage Modals
   const [openModalToCreate, setOpenModalToCreate] = useState<boolean>(false);
@@ -32,12 +32,12 @@ export const Customers = () => {
 
   // When mount/dismount
   useEffect(() => {
-    // Get all customers
-    dispatch(getAllCustomerRequest(accessToken!));
+    // Get all clients
+    dispatch(getAllClientRequest(accessToken!));
 
     return () => {
-      cleanSuccessFromCustomers();
-      cleanErrorFromCustomers();
+      cleanSuccessFromClients();
+      cleanErrorFromClients();
     }
   }, []);
 
@@ -49,27 +49,27 @@ export const Customers = () => {
   }, [success]);
 
   // handlers
-  const handleOnCreate = (customer: Customer) => {
-    dispatch(createCustomerRequest(customer, accessToken!));
+  const handleOnCreate = (client: Client) => {
+    dispatch(createClientRequest(client, accessToken!));
   }
 
-  const handleOnEdit = (customer: Customer) => {
-    setCustomerToEdit(customer);
+  const handleOnEdit = (client: Client) => {
+    setClientToEdit(client);
     setOpenModalToEdit(true);
   }
 
-  const handleOnUpdate = (customer: Customer) => {
-    dispatch(updateCustomerRequest(customer, accessToken!));
+  const handleOnUpdate = (client: Client) => {
+    dispatch(updateClientRequest(client, accessToken!));
   }
 
-  const handleOnDelete = (customer: Customer) => {
-    setCustomerToDelete(customer);
+  const handleOnDelete = (client: Client) => {
+    setClientToDelete(client);
     setOpenModalToDelete(true);
   }
 
   return <div className="flex flex-col gap-y-12 p-12 bg-gray-100">
     <div className="capitalize font-bold text-2xl text-slate-600 pb-6 mb-6" style={{ borderBottom: "1px solid#e3e3e3" }}>
-      manage customers
+      manage clients reference
     </div>
 
     <div className="flex flex-col md:flex-row justify-between items-baseline gap-8">
@@ -79,7 +79,7 @@ export const Customers = () => {
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <Search className="w-5 h-5 text-zinc-500 dark:text-zinc-400" />
           </div>
-          <input type="text" className="w-full md:w-80 text-base bg-zinc-50 border border-zinc-300 text-zinc-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 p-2.5 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for customers" />
+          <input type="text" className="w-full md:w-80 text-base bg-zinc-50 border border-zinc-300 text-zinc-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 p-2.5 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for clients reference" />
         </div>
       </div>
 
@@ -89,7 +89,7 @@ export const Customers = () => {
           className="bg-blue-light w-full text-white uppercase text-sm font-bold px-8 py-4 rounded-md"
           onClick={() => setOpenModalToCreate(true)}
         >
-          create a new customer
+          create a new client
         </button>
       </div>
 
@@ -97,7 +97,7 @@ export const Customers = () => {
 
     {/* Customer Table */}
     {
-      loading ? 'loading' : customers?.length ? <CustomersTable values={customers!} onDelete={handleOnDelete} onEdit={handleOnEdit} /> : <>Empty</>
+      loading ? 'loading' : clients?.length ? <ClientsTable values={clients!} onDelete={handleOnDelete} onEdit={handleOnEdit} /> : <>Empty</>
     }
 
 
@@ -112,12 +112,13 @@ export const Customers = () => {
       }}
     >
       <div className="px-6">
-        <CustomerForm initialValue={{
-          first_name: '',
-          last_name: '',
+        <ClientForm initialValue={{
+          person_contact: '',
+          company: '',
           email: '',
           street: '',
           zip: 0,
+          client_status: false
         }} submit={handleOnCreate} />
       </div>
     </Modal>
@@ -130,7 +131,7 @@ export const Customers = () => {
       }}
     >
       <div className="px-6">
-        <CustomerForm initialValue={customerToEdit!} submit={handleOnUpdate} />
+        <ClientForm initialValue={clientToEdit!} submit={handleOnUpdate} />
       </div>
     </Modal>
 
@@ -141,10 +142,10 @@ export const Customers = () => {
         setOpenModalToDelete(false);
       }}>
       <Popup
-        title={`Delete Customer.`}
-        description={`Are you sure that you want to delete '${customerToDelete?.first_name} ${customerToDelete?.last_name}'?`}
+        title={`Delete Client.`}
+        description={`Are you sure that you want to delete '${clientToDelete?.person_contact}'?`}
         accept={() => {
-          dispatch(deleteCustomerRequest(customerToDelete?.id!, accessToken!));
+          dispatch(deleteClientRequest(clientToDelete?.id!, accessToken!));
         }}
         cancel={() => {
           setOpenModalToDelete(false);
@@ -157,8 +158,8 @@ export const Customers = () => {
 
     {/* Toast */}
     <Toast isOpen={success!} backgroundColor="success" onClose={() => {
-      cleanSuccessFromCustomers();
-    }} description="Customer created succesfully" />
+      cleanSuccessFromClients();
+    }} description="Client Reference created succesfully" />
 
   </div>
 }

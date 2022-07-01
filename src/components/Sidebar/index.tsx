@@ -70,7 +70,7 @@ export const Sidebar = () => {
       <SidebarLinkItem to="/documents" text="Documents" iconSrc={DocumentsIcon} expanded={expanded} />
       <SidebarLinkItem to="/jobs" text="Jobs" iconSrc={JobsIcon} expanded={expanded} />
       <SidebarLinkItem to="/customers" text="Customers" iconSrc={CustomersIcon} expanded={expanded} />
-      <SidebarLinkItem to="/customers_reference" text="Customers Reference" iconSrc={CustomersReferenceIcon} expanded={expanded} />
+      <SidebarLinkItem to="/clients_reference" text="Clients Reference" iconSrc={CustomersReferenceIcon} expanded={expanded} />
       <SidebarLinkItem to="/insurance_companies" text="Insurance Companies" iconSrc={InsuranceIcon} expanded={expanded} />
       <SidebarLinkItem to="/appointments" text="Appointments" iconSrc={AppointmentsIcon} expanded={expanded} />
     </ul>

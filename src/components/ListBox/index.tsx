@@ -43,7 +43,7 @@ export const ListBox = <T extends Record<string, any>>({
       }
 
       {/* Button */}
-      <HeadListBox.Button className="text-sm font-semibold tracking-wide text-zinc-500 flex justify-between items-center gap-x-2 placeholder-slate-400 
+      <HeadListBox.Button className="text-base font-semibold tracking-wide text-zinc-500 flex justify-between items-center gap-x-2 placeholder-slate-400 
       bg-neutral-100 rounded-md outline-none pl-6 pr-6 py-3 focus:outline-none focus:ring-2 
       focus:ring-inset focus:ring-slate-600 duration-100">
         {selectedItem[displayName]}

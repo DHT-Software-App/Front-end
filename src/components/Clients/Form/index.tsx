@@ -1,22 +1,23 @@
 // form controls
+import { ListBox } from "components/ListBox";
 import { TextField } from "components/TextField";
 import { Form, FormikProvider, useFormik } from "formik";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { cleanErrorFromCustomers, cleanSuccessFromCustomers, CustomersStateProps } from "reducers/customers";
-import { Customer } from "types/Customer";
+import { cleanErrorFromClients, cleanSuccessFromClients, ClientsStateProps } from "reducers/clients";
+import { Client } from "types/Client";
 import * as yup from "yup";
 
 // Validation Schema
 const validationSchema = yup.object({
-  first_name: yup
+  person_contact: yup
     .string()
-    .max(50, "First name must be max 50 characters")
-    .required("First name required."),
-  last_name: yup
+    .max(70, "Person contact must be max 70 characters")
+    .required("Person contact required."),
+  company: yup
     .string()
-    .max(50, "Last name must be max 50 characters")
-    .required("Last name required."),
+    .max(100, "Company must be max 100 characters")
+    .required("Company required."),
   email: yup
     .string()
     .email()
@@ -28,32 +29,49 @@ const validationSchema = yup.object({
     .max(40, "Must be max 40 characters.")
     .required("Street required"),
   zip: yup.number(),
+  client_status: yup.boolean().required("Status required"),
   id_state: yup.number().required("State required"),
   id_city: yup.number().required("City required"),
 });
 
 // Type Props
-type CustomerTypeProps = {
-  initialValue: Customer;
-  submit: (employee: Customer) => void;
+type ClientTypeProps = {
+  initialValue: Client;
+  submit: (client: Client) => void;
 }
 
+type ClientStatusListItem = {
+  value: boolean;
+  display: string;
+}
+
+const clientStatusListItems: ClientStatusListItem[] = [
+  {
+    display: 'Active',
+    value: true
+  },
+  {
+    display: 'Desactive',
+    value: false
+  }
+]
+
 // Form Component
-export const CustomerForm = (
+export const ClientForm = (
   {
     initialValue,
     submit
-  }: CustomerTypeProps
+  }: ClientTypeProps
 ) => {
   // Read state
-  const { error, loading }: CustomersStateProps = useSelector(({ customer }: any) => customer);
+  const { error, loading }: ClientsStateProps = useSelector(({ client }: any) => client);
 
   // Formig Bag
   const formikBag = useFormik({
     initialValues: initialValue,
     // validationSchema,
     onSubmit: (values, { setSubmitting }) => {
-      submit(values as Customer);
+      submit(values as Client);
       setSubmitting(false);
     },
   });
@@ -64,8 +82,8 @@ export const CustomerForm = (
   // When mount/dismount
   useEffect(() => {
     return () => {
-      cleanSuccessFromCustomers();
-      cleanErrorFromCustomers();
+      cleanSuccessFromClients();
+      cleanErrorFromClients();
     }
   }, []);
 
@@ -82,31 +100,36 @@ export const CustomerForm = (
     }
   }, [error]);
 
+  // handlers
+  const handleSelectedClientStatus = (selectedClientStatus: ClientStatusListItem) => {
+    setFieldValue('client_status', selectedClientStatus.value);
+  }
+
 
   return <FormikProvider value={formikBag}>
     <Form>
       <div className="flex flex-col py-14 px-10 max-w-screen-lg space-y-12">
         <header>
-          <h3 className="font-bold text-2xl">Customer Information</h3>
+          <h3 className="font-bold text-2xl">Client Reference Information</h3>
         </header>
 
         <section>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {/* First Name */}
+            {/* Person Contact */}
             <div className="col-span-2">
               <TextField
-                label="First Name"
-                name="first_name"
+                label="Person Contact"
+                name="person_contact"
                 type="text"
                 required
               />
             </div>
 
-            {/* Last Name */}
+            {/* Company */}
             <div className="col-span-2">
               <TextField
-                label="Last Name"
-                name="last_name"
+                label="Company"
+                name="company"
                 type="text"
                 required
               />
@@ -131,6 +154,18 @@ export const CustomerForm = (
             <div className="col-span-1">
               <TextField label="Zip" name="zip" type="text" required />
             </div>
+
+            {/* Client Status */}
+            {/* <div className="col-span-1">
+              <ListBox
+                items={clientStatusListItems}
+                defaultItem={clientStatusListItems.find((status) => status.value == initialValue.client_status)!}
+                onSelect={handleSelectedClientStatus}
+                displayName="display"
+                label="Status"
+                required
+              />
+            </div> */}
 
             {/* City */}
             <div className="col-span-1">
@@ -157,7 +192,7 @@ export const CustomerForm = (
             disabled={isSubmitting || !isValid || loading}
             className="bg-blue text-white text-base w-full md:w-auto font-semibold px-5 py-3 disabled:bg-slate-100 disabled:text-slate-300"
           >
-            {loading ? 'Processing' : 'Save Employee'}
+            {loading ? 'Processing' : 'Save Client'}
           </button>
 
         </footer>

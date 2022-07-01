@@ -1,5 +1,4 @@
 import { Customer } from "types/Customer";
-import { boolean } from "yup";
 
 // Initial State
 export type CustomersStateProps = {
@@ -168,7 +167,7 @@ export const createCustomerRequest = (customer: Customer, accessToken: string) =
 export const createCustomerSuccess = (success: boolean) => ({
   type: CREATE_CUSTOMER_SUCCESS,
   payload: {
-    success: true
+    success
   }
 });
 
