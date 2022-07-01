@@ -1,8 +1,11 @@
 import { Customer } from "types/Customer";
 
+// icons
+import { Delete, Edit, QuestionMark } from "@mui/icons-material";
+
 type CustomerRowProps = {
   value: Customer,
-  onDelete: (id: number) => void;
+  onDelete: (customer: Customer) => void;
   onEdit: (customer: Customer) => void;
 };
 
@@ -20,7 +23,7 @@ export const CustomerRow = (
   }
 
   const handleOnDelete = () => {
-    onDelete(customer.id!);
+    onDelete(customer);
   }
 
   return <tr>
@@ -41,10 +44,25 @@ export const CustomerRow = (
     </td>
 
     {/* ACTIONS */}
-    <td className="px-6 py-4 text-center">
+    <td className="px-6 py-4 text-center flex justify-center">
 
-      <button onClick={handleOnDelete}>Delete</button>
-      <button onClick={handleOnEdit}>Edit</button>
+      <div className="flex py-2 rounded-full bg-zinc-100 divide-x-2 divide-zinc-200">
+        <button className="text-lg  text-zinc-600 px-4 hover:text-zinc-900">
+          <QuestionMark fontSize="inherit" />
+        </button>
+
+        <button className="text-lg  text-zinc-600 px-4 hover:text-zinc-900" onClick={handleOnDelete}>
+          <Delete
+            fontSize="inherit"
+          />
+        </button>
+
+        <button className="text-lg  text-zinc-600 px-4 hover:text-zinc-900" onClick={handleOnEdit}>
+          <Edit
+            fontSize="inherit"
+          />
+        </button>
+      </div>
     </td>
   </tr>
 }

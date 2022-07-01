@@ -6,8 +6,9 @@ import { Toast } from "components/Toast";
 import { useAuth } from "hooks/useAuth";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { cleanErrorFromCustomers, cleanSuccessFromCustomers, createCustomerRequest, CustomersStateProps, getAllCustomerRequest, updateCustomerRequest } from "reducers/customers";
+import { cleanErrorFromCustomers, cleanSuccessFromCustomers, createCustomerRequest, CustomersStateProps, deleteCustomerRequest, getAllCustomerRequest, updateCustomerRequest } from "reducers/customers";
 import { Customer } from "types/Customer";
+import { Popup } from "components/Popup";
 
 export const Customers = () => {
   const dispatch = useDispatch();
@@ -20,11 +21,12 @@ export const Customers = () => {
 
   // local states
   const [customerToEdit, setCustomerToEdit] = useState<Customer>();
-  const [customerToDelete, setCustomerToDelete] = useState<number>();
+  const [customerToDelete, setCustomerToDelete] = useState<Customer>();
 
   // Manage Modals
   const [openModalToCreate, setOpenModalToCreate] = useState<boolean>(false);
   const [openModalToEdit, setOpenModalToEdit] = useState<boolean>(false);
+  const [openModalToDelete, setOpenModalToDelete] = useState<boolean>(false);
 
   // hooks
 
@@ -60,8 +62,9 @@ export const Customers = () => {
     dispatch(updateCustomerRequest(customer, accessToken!));
   }
 
-  const handleOnDelete = (id: number) => {
-    setCustomerToDelete(id);
+  const handleOnDelete = (customer: Customer) => {
+    setCustomerToDelete(customer);
+    setOpenModalToDelete(true);
   }
 
   return <div className="flex flex-col gap-y-12 p-12 bg-gray-100">
@@ -131,6 +134,26 @@ export const Customers = () => {
       </div>
     </Modal>
 
+    {/* Confirm delete */}
+    <Modal
+      isOpen={openModalToDelete}
+      closeModal={() => {
+        setOpenModalToDelete(false);
+      }}>
+      <Popup
+        title={`Eliminar empleado.`}
+        description={`Seguro que quieres eliminar a '${customerToDelete?.first_name} ${customerToDelete?.last_name}'?`}
+        accept={() => {
+          dispatch(deleteCustomerRequest(customerToDelete?.id!, accessToken!));
+        }}
+        cancel={() => {
+          setOpenModalToDelete(false);
+        }}
+        acceptClasses="text-white hover:bg-red-600 bg-red-500"
+        iconBg="bg-red-100"
+        acceptTitle="Remove"
+        icon={<div></div>} />
+    </Modal>
 
     {/* Toast */}
     <Toast isOpen={success!} backgroundColor="success" onClose={() => {

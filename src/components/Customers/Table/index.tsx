@@ -3,7 +3,7 @@ import { CustomerRow } from "../Row"
 
 type CustomersTableProps = {
   values: Customer[],
-  onDelete: (id: number) => void;
+  onDelete: (customer: Customer) => void;
   onEdit: (customer: Customer) => void;
 }
 
