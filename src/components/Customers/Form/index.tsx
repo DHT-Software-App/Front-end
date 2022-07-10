@@ -1,11 +1,18 @@
 // form controls
+import { ListBox } from "components/ListBox";
 import { TextField } from "components/TextField";
 import { Form, FormikProvider, useFormik } from "formik";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useAuth } from "hooks/useAuth";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { CitiesStateProps, getAllCityRequest } from "reducers/cities";
 import { cleanErrorFromCustomers, cleanSuccessFromCustomers, CustomersStateProps } from "reducers/customers";
+import { City } from "types/City";
 import { Customer } from "types/Customer";
+import { State } from "types/State";
 import * as yup from "yup";
+
+const loadingIcon = require('assets/images/loading.gif');
 
 // Validation Schema
 const validationSchema = yup.object({
@@ -45,16 +52,23 @@ export const CustomerForm = (
     submit
   }: CustomerTypeProps
 ) => {
+  const dispatch = useDispatch();
+
   // Read state
   const { error, loading }: CustomersStateProps = useSelector(({ customer }: any) => customer);
+  const { loading: cityLoading, cities }: CitiesStateProps = useSelector(({ city }: any) => city);
+  const { accessToken } = useAuth();
+  const [selectedCity, setSelectedCity] = useState<City>();
+  const [selectedState, setSelectedState] = useState<State>();
 
   // Formig Bag
   const formikBag = useFormik({
     initialValues: initialValue,
-    // validationSchema,
+    validationSchema,
     onSubmit: (values, { setSubmitting }) => {
-      submit(values as Customer);
-      setSubmitting(false);
+      console.log(values);
+      // submit(values as Customer);
+      // setSubmitting(false);
     },
   });
 
@@ -63,11 +77,32 @@ export const CustomerForm = (
 
   // When mount/dismount
   useEffect(() => {
+
+    dispatch(getAllCityRequest(accessToken!));
+
     return () => {
       cleanSuccessFromCustomers();
       cleanErrorFromCustomers();
     }
   }, []);
+
+  // cities
+  useEffect(() => {
+    if (cities) {
+      if (initialValue.id_city) {
+        setSelectedCity(cities.find((city) => city.id == initialValue.id_city));
+      } else {
+        setSelectedCity(cities[0]);
+      }
+    }
+  }, [cities]);
+
+  useEffect(() => {
+    if (selectedCity) {
+      setFieldValue('id_city', selectedCity.id);
+    }
+  }, [selectedCity])
+
 
   // Manage Error From Backend
   useEffect(() => {
@@ -127,19 +162,28 @@ export const CustomerForm = (
               <TextField label="Street" name="street" type="text" required />
             </div>
 
-            {/* Zip */}
-            <div className="col-span-1">
-              <TextField label="Zip" name="zip" type="text" required />
-            </div>
+
 
             {/* City */}
-            <div className="col-span-1">
-              <TextField label="City" name="id_city" type="text" required />
+            <div className="col-span-2">
+              {/* <TextField label="City" name="id_city" type="text" required /> */}
+              {
+                !selectedCity ?
+                  <img src={loadingIcon} className="w-2 h-2" />
+                  :
+                  <ListBox defaultItem={selectedCity} items={cities!} displayName="city" onSelect={setSelectedCity} label="City" required />
+              }
+
             </div>
 
             {/* State */}
+            <div className="col-span-2">
+              {/* <TextField label="State" name="id_state" type="text" required /> */}
+            </div>
+
+            {/* Zip */}
             <div className="col-span-1">
-              <TextField label="State" name="id_state" type="text" required />
+              <TextField label="Zip" name="zip" type="text" required />
             </div>
 
           </div>

@@ -17,6 +17,6 @@ function* all(action:any) : any {
   }
 }
 
-export function* customerSaga() {
+export function* citySaga() {
   yield takeEvery(GET_ALL_CITY_REQUEST, all);
 }

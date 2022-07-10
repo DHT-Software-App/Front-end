@@ -33,7 +33,7 @@ export const ListBox = <T extends Record<string, any>>({
 
   return <HeadListBox as="div" value={selectedItem} onChange={setSelectedItem} className="relative">
 
-    <div className="space-y-2">
+    <div className="space-y-2 py-2">
       {/* Label */}
       {
         label &&

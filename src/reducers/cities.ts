@@ -167,7 +167,7 @@ export const createCityRequest = (city: City, accessToken: string) => ({
 export const createCitySuccess = (success: boolean) => ({
   type: CREATE_CITY_SUCCESS,
   payload: {
-    success: true
+    success
   }
 });
 
