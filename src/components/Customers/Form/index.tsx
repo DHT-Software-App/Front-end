@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CitiesStateProps, getAllCityRequest } from "reducers/cities";
 import { cleanErrorFromCustomers, cleanSuccessFromCustomers, CustomersStateProps } from "reducers/customers";
+import { getAllStateRequest, StatesStateProps } from "reducers/states";
 import { City } from "types/City";
 import { Customer } from "types/Customer";
 import { State } from "types/State";
@@ -56,10 +57,11 @@ export const CustomerForm = (
 
   // Read state
   const { error, loading }: CustomersStateProps = useSelector(({ customer }: any) => customer);
-  const { loading: cityLoading, cities }: CitiesStateProps = useSelector(({ city }: any) => city);
-  const { accessToken } = useAuth();
+  const { cities }: CitiesStateProps = useSelector(({ city }: any) => city);
+  const { states }: StatesStateProps = useSelector(({ state }: any) => state);
   const [selectedCity, setSelectedCity] = useState<City>();
   const [selectedState, setSelectedState] = useState<State>();
+  const { accessToken } = useAuth();
 
   // Formig Bag
   const formikBag = useFormik({
@@ -77,9 +79,8 @@ export const CustomerForm = (
 
   // When mount/dismount
   useEffect(() => {
-
     dispatch(getAllCityRequest(accessToken!));
-
+    dispatch(getAllStateRequest(accessToken!));
     return () => {
       cleanSuccessFromCustomers();
       cleanErrorFromCustomers();
@@ -102,6 +103,23 @@ export const CustomerForm = (
       setFieldValue('id_city', selectedCity.id);
     }
   }, [selectedCity])
+
+  // states
+  useEffect(() => {
+    if (states) {
+      if (initialValue.id_state) {
+        setSelectedState(states.find((state) => state.id == initialValue.id_state));
+      } else {
+        setSelectedState(states[0]);
+      }
+    }
+  }, [states]);
+
+  useEffect(() => {
+    if (selectedState) {
+      setFieldValue('id_state', selectedState.id);
+    }
+  }, [selectedState])
 
 
   // Manage Error From Backend
@@ -162,23 +180,24 @@ export const CustomerForm = (
               <TextField label="Street" name="street" type="text" required />
             </div>
 
-
-
             {/* City */}
             <div className="col-span-2">
-              {/* <TextField label="City" name="id_city" type="text" required /> */}
               {
                 !selectedCity ?
-                  <img src={loadingIcon} className="w-2 h-2" />
+                  <img src={loadingIcon} className="w-5 h-5" />
                   :
                   <ListBox defaultItem={selectedCity} items={cities!} displayName="city" onSelect={setSelectedCity} label="City" required />
               }
-
             </div>
 
             {/* State */}
             <div className="col-span-2">
-              {/* <TextField label="State" name="id_state" type="text" required /> */}
+              {
+                !selectedState ?
+                  <img src={loadingIcon} className="w-5 h-5" />
+                  :
+                  <ListBox defaultItem={selectedState} items={states!} displayName="state" onSelect={setSelectedState} label="State" required />
+              }
             </div>
 
             {/* Zip */}
