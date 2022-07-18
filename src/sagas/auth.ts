@@ -10,9 +10,10 @@ function* sign(action:any) : any {
   try {
     const { user } = action.payload;
 
-    const { accessToken } = yield call(authService.sign, user);
+    const { accessToken, expires, userid } = yield call(authService.sign, user);
 
-    setCookie('access-token', accessToken, 5000);
+    setCookie('userid', `${userid}`, expires);
+    setCookie('access-token', accessToken, expires);
 
     yield put(signAuthSuccess(accessToken));
   } catch (error) {

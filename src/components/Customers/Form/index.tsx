@@ -1,4 +1,5 @@
 // form controls
+import { DynamicList } from "components/DynamicList";
 import { ListBox } from "components/ListBox";
 import { TextField } from "components/TextField";
 import { Form, FormikProvider, useFormik } from "formik";
@@ -61,6 +62,7 @@ export const CustomerForm = (
   const { states }: StatesStateProps = useSelector(({ state }: any) => state);
   const [selectedCity, setSelectedCity] = useState<City>();
   const [selectedState, setSelectedState] = useState<State>();
+  const [contacts, setContacts] = useState<string[]>(initialValue.contact);
   const { accessToken } = useAuth();
 
   // Formig Bag
@@ -68,9 +70,8 @@ export const CustomerForm = (
     initialValues: initialValue,
     validationSchema,
     onSubmit: (values, { setSubmitting }) => {
-      console.log(values);
-      // submit(values as Customer);
-      // setSubmitting(false);
+      submit(values as Customer);
+      setSubmitting(false);
     },
   });
 
@@ -198,6 +199,11 @@ export const CustomerForm = (
                   :
                   <ListBox defaultItem={selectedState} items={states!} displayName="state" onSelect={setSelectedState} label="State" required />
               }
+            </div>
+
+            {/* Contacts */}
+            <div className="col-span-2">
+              <DynamicList title="manage contacts" values={contacts} onChange={setContacts} />
             </div>
 
             {/* Zip */}

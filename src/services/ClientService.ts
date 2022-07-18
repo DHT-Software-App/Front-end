@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 
 // type
 import { Client } from "types/Client";
+import { getCookie } from "utils/cookies/cookies";
 
 // DOMAIN API
 const { REACT_APP_API_DOMAIN: API_DOMAIN} = process.env;
@@ -58,7 +59,7 @@ export class ClientService {
     try {
       const endpoint = `${API_DOMAIN}/clients`;
 
-      const { data: { success } } = await axios.post(endpoint, 
+      const { data: { success, data } } = await axios.post(endpoint, 
         client, {
 				headers: {
 					"Content-Type": "application/json",
@@ -67,8 +68,17 @@ export class ClientService {
 				},
 			});
 
+      const newClient: Client = { ...data.attribute };
+
+      const { city, state } = data.relationships;
+
+      newClient.id_city = city.data.id;
+      newClient.id_state = state.data.id;
+
+
       return {
         success,
+        newClient
       }
 
     } catch (error) {
@@ -94,7 +104,7 @@ export class ClientService {
   // UPDATE CLIENT
   async update(client: Client, accessToken:string) {
     try {
-      const endpoint = `${API_DOMAIN}/customers/${client.id}`;
+      const endpoint = `${API_DOMAIN}/clients/${client.id}`;
 
       const { data: { success, data } } = await axios.put(endpoint, 
         client, {
@@ -145,6 +155,9 @@ export class ClientService {
 					Accept: "application/json",
           'Authorization': `Bearer ${accessToken}`
 				},
+        data: {
+          userid: getCookie('userid')
+        }
 			});
 
     

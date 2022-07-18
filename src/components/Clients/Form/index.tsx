@@ -1,12 +1,20 @@
 // form controls
+import { DynamicList } from "components/DynamicList";
 import { ListBox } from "components/ListBox";
 import { TextField } from "components/TextField";
 import { Form, FormikProvider, useFormik } from "formik";
+import { useAuth } from "hooks/useAuth";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { CitiesStateProps, getAllCityRequest } from "reducers/cities";
 import { cleanErrorFromClients, cleanSuccessFromClients, ClientsStateProps } from "reducers/clients";
+import { getAllStateRequest, StatesStateProps } from "reducers/states";
+import { City } from "types/City";
 import { Client } from "types/Client";
+import { State } from "types/State";
 import * as yup from "yup";
+
+const loadingIcon = require('assets/images/loading.gif');
 
 // Validation Schema
 const validationSchema = yup.object({
@@ -18,18 +26,17 @@ const validationSchema = yup.object({
     .string()
     .max(100, "Company must be max 100 characters")
     .required("Company required."),
-  email: yup
-    .string()
-    .email()
-    .max(100, "Must be max 45 characters.")
-    .required("Email address required"),
+  // email: yup
+  //   .string()
+  //   .email()
+  //   .max(100, "Must be max 45 characters.")
+  //   .required("Email address required"),
   street: yup
     .string()
-    .email()
     .max(40, "Must be max 40 characters.")
     .required("Street required"),
   zip: yup.number(),
-  client_status: yup.boolean().required("Status required"),
+  // client_status: yup.boolean().required("Status required"),
   id_state: yup.number().required("State required"),
   id_city: yup.number().required("City required"),
 });
@@ -63,13 +70,20 @@ export const ClientForm = (
     submit
   }: ClientTypeProps
 ) => {
+  const dispatch = useDispatch();
   // Read state
   const { error, loading }: ClientsStateProps = useSelector(({ client }: any) => client);
+  const { cities }: CitiesStateProps = useSelector(({ city }: any) => city);
+  const { states }: StatesStateProps = useSelector(({ state }: any) => state);
+  const [selectedCity, setSelectedCity] = useState<City>();
+  const [selectedState, setSelectedState] = useState<State>();
+  const [contacts, setContacts] = useState<string[]>(initialValue.contact);
+  const { accessToken } = useAuth();
 
   // Formig Bag
   const formikBag = useFormik({
     initialValues: initialValue,
-    // validationSchema,
+    validationSchema,
     onSubmit: (values, { setSubmitting }) => {
       submit(values as Client);
       setSubmitting(false);
@@ -81,11 +95,54 @@ export const ClientForm = (
 
   // When mount/dismount
   useEffect(() => {
+    dispatch(getAllCityRequest(accessToken!));
+    dispatch(getAllStateRequest(accessToken!));
+
     return () => {
       cleanSuccessFromClients();
       cleanErrorFromClients();
     }
   }, []);
+
+  // cities
+  useEffect(() => {
+    if (cities) {
+      if (initialValue.id_city) {
+        setSelectedCity(cities.find((city) => city.id == initialValue.id_city));
+      } else {
+        setSelectedCity(cities[0]);
+      }
+    }
+  }, [cities]);
+
+  useEffect(() => {
+    if (selectedCity) {
+      setFieldValue('id_city', selectedCity.id);
+    }
+  }, [selectedCity])
+
+  // states
+  useEffect(() => {
+    if (states) {
+      if (initialValue.id_state) {
+        setSelectedState(states.find((state) => state.id == initialValue.id_state));
+      } else {
+        setSelectedState(states[0]);
+      }
+    }
+  }, [states]);
+
+  useEffect(() => {
+    if (selectedState) {
+      setFieldValue('id_state', selectedState.id);
+    }
+  }, [selectedState])
+
+  useEffect(() => {
+    if (contacts) {
+      setFieldValue('contact', contacts);
+    }
+  }, [contacts])
 
   // Manage Error From Backend
   useEffect(() => {
@@ -150,9 +207,24 @@ export const ClientForm = (
               <TextField label="Street" name="street" type="text" required />
             </div>
 
-            {/* Zip */}
-            <div className="col-span-1">
-              <TextField label="Zip" name="zip" type="text" required />
+            {/* City */}
+            <div className="col-span-2">
+              {
+                !selectedCity ?
+                  <img src={loadingIcon} className="w-5 h-5" />
+                  :
+                  <ListBox defaultItem={selectedCity} items={cities!} displayName="city" onSelect={setSelectedCity} label="City" required />
+              }
+            </div>
+
+            {/* State */}
+            <div className="col-span-2">
+              {
+                !selectedState ?
+                  <img src={loadingIcon} className="w-5 h-5" />
+                  :
+                  <ListBox defaultItem={selectedState} items={states!} displayName="state" onSelect={setSelectedState} label="State" required />
+              }
             </div>
 
             {/* Client Status */}
@@ -167,14 +239,14 @@ export const ClientForm = (
               />
             </div> */}
 
-            {/* City */}
-            <div className="col-span-1">
-              <TextField label="City" name="id_city" type="text" required />
+            {/* Contacts */}
+            <div className="col-span-2">
+              <DynamicList title="manage contacts" values={contacts} onChange={setContacts} />
             </div>
 
-            {/* State */}
+            {/* Zip */}
             <div className="col-span-1">
-              <TextField label="State" name="id_state" type="text" required />
+              <TextField label="Zip" name="zip" type="text" required />
             </div>
 
           </div>

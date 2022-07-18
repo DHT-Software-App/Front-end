@@ -62,13 +62,14 @@ export const reducer = (state = initialState, action: { type: string; payload: a
     }
 
     case CREATE_CLIENT_SUCCESS:{
-      const { success } = payload;
+      const { success, client } = payload;
 
       return {
         ...state,
         loading: false,
         error: null,
-        success
+        success,
+        clients: [ ...state.clients!, client ]
       }
     }
     
@@ -83,9 +84,11 @@ export const reducer = (state = initialState, action: { type: string; payload: a
         clients: state.clients?.map((client) => client.id == updatedClient.id ? updatedClient : client)
       }
 
-    case UPDATE_CLIENT_SUCCESS:
-      const { id } = payload;
-      
+    case DELETE_CLIENT_SUCCESS:{
+      const { id, success } = payload;
+
+      console.log(success);
+
       return {
         ...state,
         loading: false,
@@ -93,7 +96,7 @@ export const reducer = (state = initialState, action: { type: string; payload: a
         success,
         clients: state.clients?.filter((client) => client.id != id)
       }
-    
+    }
     // FAILED 
     case GET_ALL_CLIENT_FAILED:
     case CREATE_CLIENT_FAILED:
@@ -156,18 +159,19 @@ export const getAllClientFailed = (error: any) => ({
 
 // CREATE
 
-export const createClientRequest = (clients: Client, accessToken: string) => ({
+export const createClientRequest = (client: Client, accessToken: string) => ({
   type: CREATE_CLIENT_REQUEST,
   payload: {
-    clients,
+    client,
     accessToken
   }
 });
 
-export const createClientSuccess = (success: boolean) => ({
+export const createClientSuccess = (client:Client, success: boolean) => ({
   type: CREATE_CLIENT_SUCCESS,
   payload: {
-    success
+    success,
+    client
   }
 });
 

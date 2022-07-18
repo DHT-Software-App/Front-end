@@ -22,9 +22,9 @@ function* create(action:any) : any {
   try {
     const { client, accessToken } = action.payload;
 
-    const { success }= yield call(clientService.create, client, accessToken);
+    const { success, newClient }= yield call(clientService.create, client, accessToken);
 
-    yield put(createClientSuccess(success));
+    yield put(createClientSuccess(newClient, success));
   } catch (error) {
     yield put(createClientFailed(error));
   }
@@ -46,9 +46,9 @@ function* remove(action: any) : any {
   try {
     const { id, accessToken } = action.payload;
 
-    const { updatedClient, success }= yield call(clientService.remove, id, accessToken);
+    const { success }= yield call(clientService.remove, id, accessToken);
 
-    yield put(deleteClientSuccess(updatedClient, success));
+    yield put(deleteClientSuccess(id, success));
   } catch (error) {
     yield put(deleteClientFailed(error));
   }

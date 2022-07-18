@@ -36,8 +36,8 @@ export const Customers = () => {
     dispatch(getAllCustomerRequest(accessToken!));
 
     return () => {
-      cleanSuccessFromCustomers();
-      cleanErrorFromCustomers();
+      dispatch(cleanSuccessFromCustomers());
+      dispatch(cleanErrorFromCustomers());
     }
   }, []);
 
@@ -118,6 +118,7 @@ export const Customers = () => {
           email: '',
           street: '',
           zip: 0,
+          contact: []
         }} submit={handleOnCreate} />
       </div>
     </Modal>
@@ -157,7 +158,7 @@ export const Customers = () => {
 
     {/* Toast */}
     <Toast isOpen={success!} backgroundColor="success" onClose={() => {
-      cleanSuccessFromCustomers();
+      dispatch(cleanSuccessFromCustomers());
     }} description="Customer created succesfully" />
 
   </div>

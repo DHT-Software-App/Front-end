@@ -14,8 +14,8 @@ export const getCookie = (name: string) => {
   return "";
 }
 
-export const setCookie = (name: string, value: string, maxAge: number) => {
-  document.cookie = `${name}=${value}; max-age: ${maxAge}`;
+export const setCookie = (name: string, value: string, expires: Date) => {
+  document.cookie = `${name}=${value}; expires: ${expires.toUTCString()}`;
 }
 
 export const removeCookie = (name: string) => {

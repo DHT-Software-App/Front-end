@@ -7,4 +7,5 @@ export interface Customer {
   zip:number;
   id_city?:number;
   id_state?:number;
+  contact: string[];
 }

@@ -36,8 +36,8 @@ export const Clients = () => {
     dispatch(getAllClientRequest(accessToken!));
 
     return () => {
-      cleanSuccessFromClients();
-      cleanErrorFromClients();
+      dispatch(cleanSuccessFromClients());
+      dispatch(cleanErrorFromClients());
     }
   }, []);
 
@@ -45,6 +45,7 @@ export const Clients = () => {
     if (success) {
       setOpenModalToCreate(false);
       setOpenModalToEdit(false);
+      setOpenModalToDelete(false);
     }
   }, [success]);
 
@@ -66,6 +67,7 @@ export const Clients = () => {
     setClientToDelete(client);
     setOpenModalToDelete(true);
   }
+
 
   return <div className="flex flex-col gap-y-12 p-12 bg-gray-100">
     <div className="capitalize font-bold text-2xl text-slate-600 pb-6 mb-6" style={{ borderBottom: "1px solid#e3e3e3" }}>
@@ -118,7 +120,8 @@ export const Clients = () => {
           email: '',
           street: '',
           zip: 0,
-          client_status: false
+          client_status: false,
+          contact: []
         }} submit={handleOnCreate} />
       </div>
     </Modal>
@@ -158,8 +161,8 @@ export const Clients = () => {
 
     {/* Toast */}
     <Toast isOpen={success!} backgroundColor="success" onClose={() => {
-      cleanSuccessFromClients();
-    }} description="Client Reference created succesfully" />
+      dispatch(cleanSuccessFromClients());
+    }} description="Process done succesfully" />
 
   </div>
 }
