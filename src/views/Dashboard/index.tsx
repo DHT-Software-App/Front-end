@@ -7,6 +7,6 @@ export const Dashboard = () => {
 
   return <div>
 
-    <DynamicList title="manage contacts" values={phones} onChange={setPhones} />
+    {/* <DynamicList title="manage contacts" values={phones} onChange={setPhones} /> */}
   </div>
 }

@@ -62,7 +62,7 @@ export const ListBox = <T extends Record<string, any>>({
       leaveFrom="transform scale-100 opacity-100"
       leaveTo="transform scale-95 opacity-0">
 
-      <HeadListBox.Options className="absolute left-0 mt-2 rounded-md bg-white border-zinc-200 shadow-lg border w-64 pt-2">
+      <HeadListBox.Options className="absolute left-0 mt-2 rounded-md bg-white border-zinc-200 shadow-lg border w-64 pt-2 h-48 overflow-auto">
         {
           items.map((item: T, index: number) => (
             <HeadListBox.Option key={index} value={item}>

@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 
 // type
 import { Customer } from "types/Customer";
+import { getCookie } from "utils/cookies/cookies";
 
 // DOMAIN API
 const { REACT_APP_API_DOMAIN: API_DOMAIN} = process.env;
@@ -58,7 +59,7 @@ export class CustomerService {
     try {
       const endpoint = `${API_DOMAIN}/customers`;
 
-      const { data: { success } } = await axios.post(endpoint, 
+      const { data } = await axios.post(endpoint, 
         customer, {
 				headers: {
 					"Content-Type": "application/json",
@@ -66,6 +67,10 @@ export class CustomerService {
           'Authorization': `Bearer ${accessToken}`
 				},
 			});
+
+      const { success } = data;
+
+      console.log(data)
 
       return {
         success,
@@ -137,6 +142,7 @@ export class CustomerService {
   // DELETE CUSTOMER
   async remove(id: number, accessToken: string) {
     try {
+ 
       const endpoint = `${API_DOMAIN}/customers/${id}`;
 
       const { data: { success } } = await axios.delete(endpoint, {
@@ -145,19 +151,25 @@ export class CustomerService {
 					Accept: "application/json",
           'Authorization': `Bearer ${accessToken}`
 				},
+        data: {
+          idusers: getCookie('userid')
+        },
+        params: {
+          idusers: getCookie('userid')
+        }
 			});
 
-    
 
       return {
         success
       }
 
     } catch (error) {
+
       if (error instanceof AxiosError) {
 				const { status, data: { data, success, message } } = error.response as AxiosResponse;
 
-        console.log(error);
+        
 
         if(status == 404) {
           

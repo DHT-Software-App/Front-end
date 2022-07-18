@@ -138,6 +138,7 @@ export const Clients = () => {
       </div>
     </Modal>
 
+
     {/* Confirm delete */}
     <Modal
       isOpen={openModalToDelete}

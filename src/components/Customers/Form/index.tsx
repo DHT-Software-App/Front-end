@@ -33,7 +33,6 @@ const validationSchema = yup.object({
     .required("Email address required"),
   street: yup
     .string()
-    .email()
     .max(40, "Must be max 40 characters.")
     .required("Street required"),
   zip: yup.number(),
@@ -116,11 +115,18 @@ export const CustomerForm = (
     }
   }, [states]);
 
+
   useEffect(() => {
     if (selectedState) {
       setFieldValue('id_state', selectedState.id);
     }
-  }, [selectedState])
+  }, [selectedState]);
+
+  useEffect(() => {
+    if (contacts) {
+      setFieldValue('contact', contacts);
+    }
+  }, [contacts])
 
 
   // Manage Error From Backend
@@ -202,9 +208,9 @@ export const CustomerForm = (
             </div>
 
             {/* Contacts */}
-            <div className="col-span-2">
+            {/* <div className="col-span-2">
               <DynamicList title="manage contacts" values={contacts} onChange={setContacts} />
-            </div>
+            </div> */}
 
             {/* Zip */}
             <div className="col-span-1">

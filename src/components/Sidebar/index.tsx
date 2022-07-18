@@ -35,8 +35,8 @@ const SidebarLinkItem = ({
         text-white 
         font-bold 
         text-lg px-6 py-6 
-        items-center 
-        ${isActive ? 'bg-blue' : 'hover:bg-slate-800'} `
+        items-center
+        ${isActive ? 'bg-blue-strong' : 'hover:opacity-100 opacity-60'} border-b-2 border-blue-strong`
       }}
     >
       <img src={iconSrc} className="w-6 h-full flex-shrink-0 mr-6" />
@@ -56,7 +56,7 @@ export const Sidebar = () => {
     setExpanded(!expanded);
   };
 
-  return <aside className={`max-w-xs bg-blue-dark relative duration-300 ${expanded ? "w-72" : "w-20"}`}>
+  return <aside className={`max-w-xs bg-blue-semistrong relative duration-300 ${expanded ? "w-72" : "w-20"}`}>
 
     {/* expand icon */}
     <div className="text-3xl absolute cursor-pointer -right-3 top-6" onClick={toggleExpanded}>

@@ -45,9 +45,9 @@ function* remove(action: any) : any {
   try {
     const { id, accessToken } = action.payload;
 
-    const { updatedCustomer, success }= yield call(customerService.remove, id, accessToken);
+    const { success }= yield call(customerService.remove, id, accessToken);
 
-    yield put(deleteCustomerSuccess(updatedCustomer, success));
+    yield put(deleteCustomerSuccess(id, success));
   } catch (error) {
     yield put(deleteCustomerFailed(error));
   }

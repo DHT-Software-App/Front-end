@@ -72,7 +72,7 @@ export const reducer = (state = initialState, action: { type: string; payload: a
       }
     }
     
-    case UPDATE_CUSTOMER_SUCCESS:
+    case UPDATE_CUSTOMER_SUCCESS:{
       const { customer: updatedCustomer, success } = payload;
 
       return {
@@ -82,9 +82,10 @@ export const reducer = (state = initialState, action: { type: string; payload: a
         success,
         customers: state.customers?.map((customer) => customer.id == updatedCustomer.id ? updatedCustomer : customer)
       }
-
-    case UPDATE_CUSTOMER_SUCCESS:
-      const { id } = payload;
+    }
+    
+    case DELETE_CUSTOMER_SUCCESS:{
+      const { id, success } = payload;
       
       return {
         ...state,
@@ -93,6 +94,7 @@ export const reducer = (state = initialState, action: { type: string; payload: a
         success,
         customers: state.customers?.filter((customer) => customer.id != id)
       }
+    }
     
     // FAILED 
     case GET_ALL_CUSTOMER_FAILED:

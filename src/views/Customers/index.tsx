@@ -45,6 +45,7 @@ export const Customers = () => {
     if (success) {
       setOpenModalToCreate(false);
       setOpenModalToEdit(false);
+      setOpenModalToDelete(false)
     }
   }, [success]);
 
@@ -135,6 +136,7 @@ export const Customers = () => {
       </div>
     </Modal>
 
+
     {/* Confirm delete */}
     <Modal
       isOpen={openModalToDelete}
@@ -156,10 +158,11 @@ export const Customers = () => {
         icon={<div></div>} />
     </Modal>
 
+
     {/* Toast */}
     <Toast isOpen={success!} backgroundColor="success" onClose={() => {
       dispatch(cleanSuccessFromCustomers());
-    }} description="Customer created succesfully" />
+    }} description="Process done succesfully" />
 
   </div>
 }
