@@ -22,17 +22,14 @@ const validationSchema = yup.object({
 });
 
 export const SignForm = () => {
-
   // Auth hook
-  const { loading, error, sign, cleanError, isAuthenticated } = useAuth();
+  const { loading, error, sign, cleanError } = useAuth();
 
   useEffect(() => {
-
     return () => {
       cleanError();
     }
   }, []);
-
 
 
   // Formig Bag
