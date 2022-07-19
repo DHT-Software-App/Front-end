@@ -36,6 +36,7 @@ const SidebarLinkItem = ({
         font-bold 
         text-lg px-6 py-6 
         items-center
+        duration-100
         ${isActive ? 'bg-blue-strong' : 'hover:opacity-100 opacity-60'} border-b-2 border-blue-strong`
       }}
     >

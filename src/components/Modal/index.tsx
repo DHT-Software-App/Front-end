@@ -1,6 +1,9 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
+// icons
+import { Close } from "@mui/icons-material"
+
 type ModalProps = {
   children?: any;
   isOpen?: boolean;
@@ -34,9 +37,17 @@ export const Modal = ({ children, isOpen = false, closeModal }: ModalProps) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all">
-                {children}
-              </Dialog.Panel>
+
+              <div className="relative">
+                <div className="z-50 bg-zinc-700 text-zinc-50 flex justify-center items-center w-8 h-8 text-lg opacity-80 rounded-full absolute -right-3 -top-3 cursor-pointer"
+                  onClick={closeModal}>
+                  <Close fontSize="inherit" ></Close>
+                </div>
+                <Dialog.Panel className="transform overflow-hidden  bg-white text-left rounded-2xl align-middle shadow-xl transition-all">
+
+                  {children}
+                </Dialog.Panel>
+              </div>
             </Transition.Child>
           </div>
         </div>
