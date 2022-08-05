@@ -1,11 +1,15 @@
 export interface Customer {
   id?:number;
-  first_name:string;
-  last_name:string;
-  email:string;
-  street:string;
-  zip:number;
-  id_city?:number;
-  id_state?:number;
-  contact: string[];
+  firstname?:string;
+  lastname?:string;
+  insured_firstname?:string;
+  insured_lastname?:string;
+  email_address?:string;
+  contact_1?:string;
+  contact_2?:string;
+  state?:string;
+  street?:string;
+  city?:string;
+  zip?:number;
+  has_insured?:boolean;
 }

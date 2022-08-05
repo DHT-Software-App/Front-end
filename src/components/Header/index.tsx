@@ -9,9 +9,9 @@ import {
 const avatarImg = require('assets/images/avatar.png');
 
 export const Header = () => {
-  return <header className="flex items-center justify-between px-6 py-3 shadow-lg">
-    <div className="flex ml-8 gap-x-8">
-      <div className="w-52">
+  return <header className="flex items-center justify-between px-6 py-1 shadow-md">
+    <div className="flex gap-x-4">
+      <div className="w-64">
         <Logo />
       </div>
 

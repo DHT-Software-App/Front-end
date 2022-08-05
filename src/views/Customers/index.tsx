@@ -69,22 +69,12 @@ export const Customers = () => {
   }
 
   return <div className="flex flex-col gap-y-12 p-12 bg-gray-100">
-    <div className="capitalize font-bold text-2xl text-slate-600 pb-6 mb-6" style={{ borderBottom: "1px solid#e3e3e3" }}>
-      manage customers
-    </div>
+    <div className="capitalize font-bold text-2xl text-slate-600 pb-6 mb-6 flex flex-col md:flex-row justify-between items-baseline gap-8" style={{ borderBottom: "1px solid#e3e3e3" }}>
 
-    <div className="flex flex-col md:flex-row justify-between items-baseline gap-8">
-      {/* Buscador de clientes */}
       <div className="p-4 w-full md:w-auto">
-        <div className="relative mt-1">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <Search className="w-5 h-5 text-zinc-500 dark:text-zinc-400" />
-          </div>
-          <input type="text" className="w-full md:w-80 text-base bg-zinc-50 border border-zinc-300 text-zinc-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 p-2.5 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for customers" />
-        </div>
+        manage customers
       </div>
 
-      {/* Boton de crear clientes */}
       <div className="w-full md:w-auto">
         <button
           className="bg-blue-light w-full text-white uppercase text-sm font-bold px-8 py-4 rounded-md"
@@ -93,6 +83,21 @@ export const Customers = () => {
           create a new customer
         </button>
       </div>
+    </div>
+
+    <div className="flex flex-col md:flex-row justify-between items-baseline gap-8">
+      <div className="p-4 w-full md:w-auto">
+        <div className="relative mt-1">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <Search className="w-5 h-5 text-zinc-500 dark:text-zinc-400" />
+          </div>
+          <input type="text" className="w-full md:w-80 text-base bg-zinc-50 border border-zinc-300 text-zinc-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 p-2.5 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for customers" />
+        </div>
+      </div>
+      {/* 
+<div className="w-full md:w-auto">
+  <ListBox defaultItem={filteredClientsOption} displayName="display" items={filterClientsOptions} label="Filtered clients" onSelect={setFilteredClientsOption}></ListBox>
+</div> */}
 
     </div>
 

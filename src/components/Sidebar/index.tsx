@@ -61,8 +61,7 @@ export const Sidebar = () => {
 
     {/* expand icon */}
     <div className="text-3xl absolute cursor-pointer -right-3 top-6" onClick={toggleExpanded}>
-      <ChevronRight fontSize="inherit" className={`"text-blue-dark 
-      bg-white rounded-full shadow-md ${expanded && "rotate-180"}"`}></ChevronRight>
+      <ChevronRight fontSize="inherit" className={`" text-white bg-blue-light rounded-full shadow-md ${expanded && "rotate-180"}"`}></ChevronRight>
     </div>
 
     <ul>

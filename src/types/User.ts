@@ -1,6 +1,10 @@
+import { Profile } from "./Profile";
+
 export interface User {
-  name?:string;
-  email:string;
-  password:string;
-  c_password?: string;
+	id?: number;
+	email?: string;
+	email_verified_at?: any;
+	password?: string;
+	password_confirmation?: string;
+	profile?: Profile;
 }

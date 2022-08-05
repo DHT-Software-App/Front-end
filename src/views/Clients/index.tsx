@@ -9,9 +9,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { cleanErrorFromClients, cleanSuccessFromClients, createClientRequest, ClientsStateProps, deleteClientRequest, getAllClientRequest, updateClientRequest } from "reducers/clients";
 import { Client } from "types/Client";
 import { Popup } from "components/Popup";
+import { ListBox } from "components/ListBox";
+
+type FilterClientsOptionsType = {
+  display: string;
+}
+
+const filterClientsOptions: FilterClientsOptionsType[] = [
+  {
+    display: 'All Clients'
+  },
+  {
+    display: 'Client No.1'
+  },
+  {
+    display: 'Client No.2'
+  }
+]
 
 export const Clients = () => {
   const dispatch = useDispatch();
+
+  const [filteredClientsOption, setFilteredClientsOption] = useState<FilterClientsOptionsType>(filterClientsOptions[0]);
 
   // Read state
   const { success, clients, loading }: ClientsStateProps = useSelector(({ client }: any) => client);
@@ -70,8 +89,21 @@ export const Clients = () => {
 
 
   return <div className="flex flex-col gap-y-12 p-12 bg-gray-100">
-    <div className="capitalize font-bold text-2xl text-slate-600 pb-6 mb-6" style={{ borderBottom: "1px solid#e3e3e3" }}>
-      manage clients reference
+    <div className="capitalize font-bold text-2xl text-slate-600 pb-6 mb-6 flex flex-col md:flex-row justify-between items-baseline gap-8" style={{ borderBottom: "1px solid#e3e3e3" }}>
+
+      <div className="p-4 w-full md:w-auto">
+        manage clients reference
+      </div>
+
+      {/* Boton de crear clientes */}
+      <div className="w-full md:w-auto">
+        <button
+          className="bg-blue-light w-full text-white uppercase text-sm font-bold px-8 py-4 rounded-md"
+          onClick={() => setOpenModalToCreate(true)}
+        >
+          create a new client
+        </button>
+      </div>
     </div>
 
     <div className="flex flex-col md:flex-row justify-between items-baseline gap-8">
@@ -84,16 +116,10 @@ export const Clients = () => {
           <input type="text" className="w-full md:w-80 text-base bg-zinc-50 border border-zinc-300 text-zinc-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 p-2.5 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for clients reference" />
         </div>
       </div>
-
-      {/* Boton de crear clientes */}
+      {/* 
       <div className="w-full md:w-auto">
-        <button
-          className="bg-blue-light w-full text-white uppercase text-sm font-bold px-8 py-4 rounded-md"
-          onClick={() => setOpenModalToCreate(true)}
-        >
-          create a new client
-        </button>
-      </div>
+        <ListBox defaultItem={filteredClientsOption} displayName="display" items={filterClientsOptions} label="Filtered clients" onSelect={setFilteredClientsOption}></ListBox>
+      </div> */}
 
     </div>
 

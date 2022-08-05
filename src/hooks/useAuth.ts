@@ -1,44 +1,78 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux"
-import { AuthStateProps, cleanErrorFromAuth, signAuthRequest, signAuthSuccess, unAUTHORIZED } from "reducers/auth";
+import { signout_auth_request, sign_auth_request } from "actions/auth";
+import { useEffect, useState } from "react";
+import { isExpired } from "react-jwt";
+import { useDispatch, useSelector } from "react-redux";
+import { Ability } from "types/Ability";
+import { Employee } from "types/Employee";
 import { User } from "types/User";
-import { getCookie } from "utils/cookies/cookies";
+import { SuccessResponse } from "utils/Responses/SuccessResponse";
+
+type AuthProps = {
+	isAuthenticated: boolean;
+	loading: boolean;
+	auth: string;
+	errors: Error[];
+	success: SuccessResponse;
+	employee: Employee;
+};
 
 export const useAuth = () => {
-  // read auth state
-  const { isAuthenticated, loading, accessToken, error } : AuthStateProps = useSelector(({auth}:any) => auth);
+	const dispatch = useDispatch();
 
-  useEffect(() => {
-      if(isAuthenticated == undefined) {
-        const accessToken = getCookie('access-token');
+	const {
+		isAuthenticated,
+		loading,
+		auth,
+		errors,
+		success,
+		employee,
+	}: AuthProps = useSelector(({ auth }: any) => auth);
 
-        if(accessToken) {
-          dispatch(signAuthSuccess(accessToken));
-        } else {
-          dispatch(unAUTHORIZED());
-        }
-       
-      }
+	const [displays, setDisplays] = useState<any>({});
 
-  }, [isAuthenticated]);
+	useEffect(() => {
+		if (auth && isExpired(auth)) {
+			signout();
+		}
+	}, [auth]);
 
-  // To dispatch actions
-  const dispatch = useDispatch();
+	useEffect(() => {
+		if (employee?.abilities) {
+			const abilitiesForVerb: any = {};
 
-  const sign = (user: User) => {
-    dispatch(signAuthRequest(user));
-  }
+			employee.abilities.forEach(({ name, title }: Ability) => {
+				const [verb] = name!.split(":");
 
-  const cleanError = () => {
-    dispatch(cleanErrorFromAuth());
-  }
+				if (!abilitiesForVerb[verb]?.includes(title)) {
+					abilitiesForVerb[verb] = [...(abilitiesForVerb[verb] ?? []), title];
+				}
+			});
 
-  return {
-    isAuthenticated,
-    sign,
-    accessToken,
-    loading,
-    error,
-    cleanError
-  }
-}
+			setDisplays(abilitiesForVerb);
+		}
+	}, [employee]);
+
+	const sign = (user: User) => {
+		dispatch(sign_auth_request(user));
+	};
+
+	const signout = () => {
+		dispatch(signout_auth_request(auth));
+	};
+
+	const can = (verb: string, module: string) => {
+		return !!displays[verb]?.includes(module);
+	};
+
+	return {
+		isAuthenticated,
+		loading,
+		auth,
+		errors,
+		sign,
+		signout,
+		success,
+		employee,
+		can,
+	};
+};

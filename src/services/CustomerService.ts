@@ -1,183 +1,174 @@
-// axios 
-import axios, { AxiosError, AxiosResponse } from "axios";
-
-// type
 import { Customer } from "types/Customer";
-import { getCookie } from "utils/cookies/cookies";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { HTTPResponse } from "utils/Responses/HTTPResponse";
+import {
+	InvalidAttribute,
+	InvalidAttributeError,
+} from "utils/errors/InvalidAttributeError";
+import { SuccessResponse } from "utils/Responses/SuccessResponse";
+import { ResponseError } from "utils/errors/ResponseError";
 
-// DOMAIN API
-const { REACT_APP_API_DOMAIN: API_DOMAIN} = process.env;
+const { REACT_APP_BACKEND_API } = process.env;
 
 export class CustomerService {
-  
-  // GET ALL CUSTOMER
-  async all(accessToken:string) {
-    try {
-      const endpoint = `${API_DOMAIN}/customers`;
+  static async getAll(access_token: string): Promise<Customer[]> {
+		try {
+			const endpoint = `${REACT_APP_BACKEND_API}/customers`;
 
-      const { data: { data, success, message } } = await axios.get(endpoint, {
+			const { data } = await axios.get(endpoint, {
 				headers: {
+					Authorization: `Bearer ${access_token}`,
 					"Content-Type": "application/json",
 					Accept: "application/json",
-          'Authorization': `Bearer ${accessToken}`
 				},
 			});
 
+			const customers: Customer[] = data.data.map((data: any) => {
+				const {
+					data: { id, attributes },
+				} = data;
 
-      const customers: Customer[] = data.map(({ attribute, relationships }: any) => {
-        const customer: Customer = { ...attribute };
+				const customer: Customer = { id, ...attributes };
+				
+				return customer;
+			});
 
-        const { city, state } = relationships;
+			return customers;
+		} catch (error) {
+			return [];
+		}
+	}
 
-        customer.id_city = city.data.id;
-        customer.id_state = state.data.id;
+	static async getById(id: number, access_token: string): Promise<Customer> {
+		try {
+			return {};
+		} catch (error) {
+			throw error;
+		}
+	}
 
-        return customer;
-      });
+	static async create(
+		customer: Customer,
+		access_token: string
+	): Promise<Customer | void> {
+		try {
+			let endpoint = `${REACT_APP_BACKEND_API}/customers`;
 
-
-      return {
-        customers,
-        success,
-        message
-      }
-
-    } catch (error) {
-      if (error instanceof AxiosError) {
-				const { status, data: { data, success, message } } = error.response as AxiosResponse;
-
-        if(status == 404) {
-          throw error;
-        }
-        
-      }
-    }
-  }
-
-  // CREATE CUSTOMER
-  async create(customer: Customer, accessToken:string){
-    try {
-      const endpoint = `${API_DOMAIN}/customers`;
-
-      const { data } = await axios.post(endpoint, 
-        customer, {
+			const { data } = await axios.post(endpoint, customer, {
 				headers: {
+					Authorization: `Bearer ${access_token}`,
 					"Content-Type": "application/json",
 					Accept: "application/json",
-          'Authorization': `Bearer ${accessToken}`
 				},
 			});
 
-      const { success } = data;
+      const {
+				data: { id, attributes },
+			} = data;
 
-      console.log(data)
+			const created_customer: Customer = {
+				id,
+        ...attributes
+			};
 
-      return {
-        success,
-      }
+			return created_customer;
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				const { status, data } = error.response as AxiosResponse;
 
-    } catch (error) {
-      if (error instanceof AxiosError) {
-				const { status, data: { data, success, message } } = error.response as AxiosResponse;
+				// BAD REQUEST
+				if (status === HTTPResponse.BAD_REQUEST) {
+					// InvalidAttribute
+					if (data.errors) {
+						const { errors } = data;
 
-        if(status == 404) {
-          if(message.includes('Validation Error')) {
-            throw {
-              message,
-              success,
-              paths: data,
-              code: status
-            };
-  
-          }
-        }
-        
-      }
-    }
-  }
+						throw errors.map((error: {}) => {
+							return new InvalidAttributeError(error as InvalidAttribute);
+						});
+					}
 
-  // UPDATE CUSTOMER
-  async update(customer: Customer, accessToken:string) {
-    try {
-      const endpoint = `${API_DOMAIN}/customers/${customer.id}`;
+					if (data.success) {
+						throw [new ResponseError(data as SuccessResponse)];
+					}
+				}
+			}
+		}
+	}
 
-      const { data: { success, data } } = await axios.put(endpoint, 
-        customer, {
+	static async update(
+		customer: Customer,
+		access_token: string
+	): Promise<Customer | void> {
+		try {
+			let endpoint = `${REACT_APP_BACKEND_API}/customers/${customer.id}`;
+
+			const { data } = await axios.put(
+				endpoint,
+				customer,
+				{
+					headers: {
+						Authorization: `Bearer ${access_token}`,
+						"Content-Type": "application/json",
+						Accept: "application/json",
+					},
+				}
+			);
+
+			const {
+				data: { id, attributes },
+			} = data;
+
+			const updated_customer: Customer = { id, ...attributes };
+
+			return updated_customer;
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				const {
+					status,
+					data: { errors },
+				} = error.response as AxiosResponse;
+
+
+				// BAD REQUEST
+				if (status === HTTPResponse.BAD_REQUEST) {
+					throw errors.map((error: {}) => {
+						return new InvalidAttributeError(error as InvalidAttribute);
+					});
+				}
+			}
+		}
+	}
+
+	static async delete(
+		id: number,
+		access_token: string
+	): Promise<SuccessResponse | void> {
+		try {
+			const endpoint = `${REACT_APP_BACKEND_API}/customers/${id}`;
+
+			const { data } = await axios.delete(endpoint, {
 				headers: {
+					Authorization: `Bearer ${access_token}`,
 					"Content-Type": "application/json",
 					Accept: "application/json",
-          'Authorization': `Bearer ${accessToken}`
 				},
 			});
 
-      const { attribute, relationships: { city, state } } = data;
+			return data as SuccessResponse;
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				const {
+					status,
+					data: { errors },
+				} = error.response as AxiosResponse;
 
-      const updatedCustomer: Customer = { ...attribute, id_city: city.data.id, id_state: state.data.id }; 
-
-      return {
-        success,
-        updatedCustomer
-      }
-
-    } catch (error) {
-      if (error instanceof AxiosError) {
-				const { status, data: { data, success, message } } = error.response as AxiosResponse;
-
-        if(status == 404) {
-          if(message.includes('Validation Error')) {
-            throw {
-              message,
-              success,
-              paths: data,
-              code: status
-            };
-  
-          }
-        }
-        
-      }
-    }
-  }
-
-  // DELETE CUSTOMER
-  async remove(id: number, accessToken: string) {
-    try {
- 
-      const endpoint = `${API_DOMAIN}/customers/${id}`;
-
-      const { data: { success } } = await axios.delete(endpoint, {
-				headers: {
-					"Content-Type": "application/json",
-					Accept: "application/json",
-          'Authorization': `Bearer ${accessToken}`
-				},
-        data: {
-          idusers: getCookie('userid')
-        },
-        params: {
-          idusers: getCookie('userid')
-        }
-			});
-
-
-      return {
-        success
-      }
-
-    } catch (error) {
-
-      if (error instanceof AxiosError) {
-				const { status, data: { data, success, message } } = error.response as AxiosResponse;
-
-        
-
-        if(status == 404) {
-          
-        }
-        
-      }
-    }
-  }
-
-
+				// BAD REQUEST
+				if (status === HTTPResponse.BAD_REQUEST) {
+					throw errors.map((error: {}) => {
+						return new InvalidAttributeError(error as InvalidAttribute);
+					});
+				}
+			}
+		}
+	}
 }

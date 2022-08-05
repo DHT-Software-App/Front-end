@@ -39,7 +39,7 @@ export const Modal = ({ children, isOpen = false, closeModal }: ModalProps) => {
             >
 
               <div className="relative">
-                <div className="z-50 bg-zinc-700 text-zinc-50 flex justify-center items-center w-8 h-8 text-lg opacity-80 rounded-full absolute -right-3 -top-3 cursor-pointer"
+                <div className="z-50 bg-zinc-700 text-zinc-50 flex justify-center items-center w-8 h-8 text-2xl opacity-80 rounded-full absolute -right-4 -top-4 cursor-pointer"
                   onClick={closeModal}>
                   <Close fontSize="inherit" ></Close>
                 </div>
