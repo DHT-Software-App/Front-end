@@ -1,4 +1,4 @@
-import { CookieObserver } from "utils/cookies/cookieObserver";
+import { CookieObserver } from "utils/cookies/cookieObserver"
 import { Cookie } from "utils/cookies/cookieEnum";
 import "cookie-store/dist/index";
 

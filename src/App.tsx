@@ -1,31 +1,23 @@
-
-
-// store
-import { store } from "store/store";
-
-// React Router
+import { Provider, useDispatch } from "react-redux";
+import { store } from "./store/store";
+import { Sign } from "./views/Sign";
+import { Employees } from "./views/Employees";
+import { Dashboard } from "./views/Dashboard";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Sign } from 'views/Sign';
-import { ForgotPassword } from 'views/ForgotPassword';
-import { ResetPassword } from 'views/ResetPassword';
-import { Provider } from 'react-redux';
-import { PrivateRoute } from 'routes/PrivateRoute';
-import { Dashboard } from 'views/Dashboard';
-import { Employees } from 'views/Employees';
-import { Customers } from 'views/Customers';
-import { InsuranceCompanies } from 'views/InsuranceCompanies';
-import { Main } from 'views/Main';
-import { Error } from "views/Error";
+import { Main } from "./views/Main";
+import { NewPassword } from "views/NewPassword";
+import { PrivateRoute } from "routes/PrivateRoute";
+import { ForgotPassword } from "views/ForgotPassword";
+import { Customers } from "views/Customers";
 import { Clients } from "views/Clients";
+import { InsuranceCompanies } from "views/InsuranceCompanies";
+import { Error } from "views/Error";
 
 function App() {
-
   return (
-    <div className="h-screen">
+    <div className="App">
       <Provider store={store}>
-
         <Routes>
-
           {/* protected routes */}
           <Route
             path="/"
@@ -39,27 +31,19 @@ function App() {
             <Route path="/dashboard" element={<Navigate to="/" />} />
             <Route path="/employees" element={<Employees />} />
             <Route path="/customers" element={<Customers />} />
-            <Route path="/clients_reference" element={<Clients />} />
+            <Route path="/clients" element={<Clients />} />
             <Route path="/insurance_companies" element={<InsuranceCompanies />} />
           </Route>
 
           {/* public routes */}
-          <Route path="/reset/password" element={<ResetPassword />} />
+          <Route path="/new/password/:token" element={<NewPassword />} />
           <Route path="/sign" element={<Sign />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          {/* Not Found  */}
-          <Route
-            path="*"
-            element={
-              <Error title="not found" description="The page you was looking for was not found on this server" code={404} />
-            }
-          />
-
+          <Route path="*" element={<Error code={404} description="This page is not available." title="Not found" />} />
         </Routes>
       </Provider>
     </div>
-
   );
 }
 

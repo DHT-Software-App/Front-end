@@ -129,6 +129,7 @@ export class AuthService {
 				},
 			};
 		} catch (error) {
+			console.log(error);
 			if (error instanceof AxiosError) {
 				const { status, data } = error.response as AxiosResponse;
 
@@ -136,12 +137,15 @@ export class AuthService {
 				if (status === HTTPResponse.BAD_REQUEST) {
 					// InvalidAttribute
 					if (data.errors) {
+
 						const { errors } = data;
 
 						throw errors.map((error: {}) => {
 							return new InvalidAttributeError(error as InvalidAttribute);
 						});
 					}
+
+				
 
 					if (data.code) {
 						throw [new ResponseError(data as SuccessResponse)];

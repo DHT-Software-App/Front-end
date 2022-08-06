@@ -1,32 +1,32 @@
 import "cookie-store/dist/index";
 
 export class CookieObserver {
-	#cookies = new Map();
+	private cookies = new Map();
 
 	constructor() {
-		this.#onChange();
+		this.onChange();
 	}
 
-	#onChange() {
-		window.cookieStore.onchange = ({ changed, deleted }) => {
-			changed.forEach((cookie) => {
-				this.#cookies.get(cookie.name)?.onCreated(cookie);
+	onChange() {
+		window.cookieStore.onchange = ({ changed, deleted } :any) => {
+			changed.forEach((cookie: any) => {
+				this.cookies.get(cookie.name)?.onCreated(cookie);
 			});
 
-			deleted.forEach((cookie) => {
-				this.#cookies.get(cookie.name)?.onDelete(cookie);
+			deleted.forEach((cookie: any) => {
+				this.cookies.get(cookie.name)?.onDelete(cookie);
 			});
 		};
 	}
 
-	subscribe(name, onCreated, onDelete) {
-		this.#cookies.set(name, {
+	subscribe(name: string, onCreated: (cookie: any) => void, onDelete: (cookie: any) => void) {
+		this.cookies.set(name, {
 			onCreated,
 			onDelete,
 		});
 	}
 
-	unsuscribe(name) {
-		this.#cookies.delete(name);
+	unsuscribe(name: string) {
+		this.cookies.delete(name);
 	}
 }

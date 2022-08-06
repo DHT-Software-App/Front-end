@@ -49,6 +49,7 @@ function* sign(action: any) {
 
 		yield put(sign_auth_success(access_token, success));
 	} catch (errors) {
+		
 		yield put(sign_auth_failure(errors as Error[]));
 	}
 }

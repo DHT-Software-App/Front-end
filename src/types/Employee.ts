@@ -7,8 +7,7 @@ export interface Employee {
 	firstname?: string;
 	lastname?: string;
 	email_address?: string;
-	contact_1?: string;
-	contact_2?: string;
+	contacts?: string[];
 	state?: string;
 	street?: string;
 	city?: string;

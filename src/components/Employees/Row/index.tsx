@@ -2,17 +2,22 @@ import { Employee } from "types/Employee";
 
 // icons
 import { Delete, Edit, QuestionMark } from "@mui/icons-material";
+import { ResendConfirmation } from "components/ResendConfirmation";
+import { Avatar } from "components/Avatar";
+
+type EmployeeStatus = "active" | "desactive";
 
 const EmployeeStatusBadge = ({
-  status
+  status,
+  ...props
 }: {
-  status?: boolean;
+  status?: EmployeeStatus;
 }) => {
   return (
     <span
       className={`p-1.5 text-xs font-medium uppercase 
 		tracking-wider rounded-lg bg-opacity-50 
-		${status
+		${status == "active"
           ? "text-green-800 bg-green-200"
           : "text-yellow-800 bg-yellow-200"
         } 
@@ -34,54 +39,58 @@ export const EmployeeRow = ({
   onEdit,
   onDelete,
 }: EmployeeRowProps) => {
-  return <tr className="bg-white border-b-2 border-slate-100">
-    <td className="p-3 text-slate-700 whitespace-nowrap">
+
+  return <tr>
+    <td className="px-6 py-4">
       {employee.firstname}
     </td>
-    <td className="p-3 text-slate-700 whitespace-nowrap">
+    <td className="px-6 py-4">
       {employee.lastname}
     </td>
-    <td className="p-3 text-slate-700 whitespace-nowrap">
-      {/* {employee.contact_1} */}
+    <td className="px-6 py-4">
+      {/* {employee.contacts} */}
     </td>
-    <td className="p-3 text-slate-700 whitespace-nowrap">
-      {/* {employee.contact_2} */}
+    <td className="px-6 py-4">
+      {`${employee.street}, ${employee.city}`}
     </td>
-    <td className="p-3 text-slate-700 whitespace-nowrap">
-      {employee.street}
+    <td className="px-6 py-4">
+      {employee.role?.name}
     </td>
-    <td className="p-3 text-slate-700 whitespace-nowrap">
-      {/* {employee.role?.name} */}
+    <td className="px-6 py-4 text-center">
+      <EmployeeStatusBadge status={employee.status} />
     </td>
-    <td className="p-3 text-slate-700 whitespace-nowrap">
-      <EmployeeStatusBadge status={employee.employee_status} />
-    </td>
-    <td className="flex justify-center p-3  text-slate-700 whitespace-nowrap">
+    <td className="px-6 py-4 text-center">
+      {employee.user &&
+        (employee.user?.email_verified_at ? (
+          <Avatar className="h-8" />
+        ) : (
+          <ResendConfirmation to={employee.user?.email!} />
+        ))}
 
-      {/* <ResendConfirmation to={employee.user.email!} /> */}
-
     </td>
-    <td className="text-center p-3 text-slate-700 whitespace-nowrap">
-      <div className="flex space-x-6">
-        <button className="text-3xl">
-          <QuestionMark fontSize="inherit" className="text-slate-400 hover:text-slate-700" />
+
+    {/* ACTIONS */}
+    <td className="px-6 py-4 text-center flex justify-center">
+
+      <div className="flex py-2 rounded-full bg-zinc-100 divide-x-2 divide-zinc-200">
+        <button className="text-lg  text-zinc-600 px-4 hover:text-zinc-900">
+          <QuestionMark fontSize="inherit" />
         </button>
 
-        <button className="text-3xl" onClick={() => onDelete(employee)}>
+        <button className="text-lg  text-zinc-600 px-4 hover:text-zinc-900" onClick={() => onDelete(employee)}>
           <Delete
-            fontSize="inherit" className="text-slate-400 hover:text-slate-700"
+            fontSize="inherit"
           />
         </button>
 
-        <button className="text-3xl" onClick={() => onEdit(employee)}>
+        <button className="text-lg  text-zinc-600 px-4 hover:text-zinc-900" onClick={() => onEdit(employee)}>
           <Edit
-            fontSize="inherit" className="text-slate-400 hover:text-slate-700"
+            fontSize="inherit"
           />
         </button>
       </div>
     </td>
   </tr>
-
 
 
 }

@@ -16,40 +16,38 @@ export const EmployeeTable = ({
   onDelete,
 }: EmployeeTableProps) => {
 
-  return <div className="overflow-auto">
-    <table className="w-full text-sm  text-blue-dark">
-      <thead>
-        <tr className="bg-purple font-semibold px-6 py-2">
-          <th className="p-3 font-semibold tracking-wide text-left whitespace-nowrap">
+  return <div className='overflow-x-auto w-full'>
+    <table className='mx-auto w-full whitespace-nowrap rounded-lg bg-white divide-y divide-slate-200 overflow-hidden'>
+      <thead className="bg-blue-dark">
+        <tr className="text-white text-left">
+          <th className="font-semibold text-sm uppercase px-6 py-4">
             First Name
           </th>
-          <th className="p-3 font-semibold tracking-wide text-left whitespace-nowrap">
+          <th className="font-semibold text-sm uppercase px-6 py-4">
             Last Name
           </th>
-          <th className="p-3 font-semibold tracking-wide text-left whitespace-nowrap">
-            Contact #1
+          <th className="font-semibold text-sm uppercase px-6 py-4">
+            Contacts
           </th>
-          <th className="p-3 font-semibold tracking-wide text-left whitespace-nowrap">
-            Contact #2
-          </th>
-          <th className="p-3 font-semibold tracking-wide text-left whitespace-nowrap">
+          <th className="font-semibold text-sm uppercase px-6 py-4">
             Address
           </th>
-          <th className="p-3 font-semibold tracking-wide text-left whitespace-nowrap">
+          <th className="font-semibold text-sm uppercase px-6 py-4">
             Type
           </th>
-          <th className="p-3 font-semibold tracking-wide text-center whitespace-nowrap">
+          <th className="font-semibold text-sm uppercase px-6 py-4 text-center">
             Status
           </th>
-          <th className="p-3 font-semibold tracking-wide text-center whitespace-nowrap">
+          <th className="font-semibold text-sm uppercase px-6 py-4 text-center">
             Account
           </th>
-          <th className="p-3 font-semibold tracking-wide text-center whitespace-nowrap">
+          <th className="font-semibold text-sm uppercase px-6 py-4 text-center">
             Actions
           </th>
         </tr>
       </thead>
-      <tbody className="divide-y divide-gray-100">
+      <tbody className="divide-y divide-slate-200">
+
         {employees.map((employee, index) => (
           <EmployeeRow
             key={index}
