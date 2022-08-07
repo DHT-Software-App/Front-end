@@ -62,7 +62,6 @@ export const customerReducer = (
 				...state,
 				loading: false,
 				errors: null,
-				authenticated: customer,
 			};
 		}
 

@@ -38,7 +38,7 @@ function* create(action: any): any {
 		);
 
 		const message: SuccessResponse = {
-			message: "client created successfully",
+			message: "Client created successfully",
 			success: true,
 			code: ClientEnum.CREATED,
 		};
@@ -61,7 +61,7 @@ function* update(action: any): any {
 		);
 
 		const message: SuccessResponse = {
-			message: "client updated successfully.",
+			message: "Client updated successfully.",
 			success: true,
 			code: ClientEnum.UPDATED,
 		};

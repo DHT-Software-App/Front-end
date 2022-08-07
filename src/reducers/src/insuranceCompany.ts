@@ -1,18 +1,18 @@
-import { Client } from "types/Client";
+import { InsuranceCompany } from "types/InsuranceCompany";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 const initialState: {
-	clients: Client[];
-	authenticated?: Client;
+	insuranceCompanies: InsuranceCompany[];
+	authenticated?: InsuranceCompany;
 	loading: boolean;
 	errors?: Error[];
 	success?: SuccessResponse;
 } = {
-	clients: [],
+	insuranceCompanies: [],
 	loading: false,
 };
 
-export const clientReducer = (
+export const insuranceCompanyReducer = (
 	state = initialState,
 	action: { type: string; payload: any }
 ) => {
@@ -20,24 +20,24 @@ export const clientReducer = (
 
 	switch (type) {
 		// GET ALL
-		case "@get/clients/request": {
+		case "@get/insurance_companies/request": {
 			return {
 				...state,
 				loading: true,
 			};
 		}
 
-		case "@get/clients/success": {
-			const { clients } = payload;
+		case "@get/insurance_companies/success": {
+			const { insuranceCompanys } = payload;
 			return {
 				...state,
 				loading: false,
 				errors: null,
-				clients,
+				insuranceCompanys,
 			};
 		}
 
-		case "@get/clients/failure": {
+		case "@get/insurance_companies/failure": {
 			const { errors } = payload;
 
 			return {
@@ -48,15 +48,15 @@ export const clientReducer = (
 		}
 
 		// GET ONE
-		case "@get/client/request": {
+		case "@get/insurance_company/request": {
 			return {
 				...state,
 				loading: true,
 			};
 		}
 
-		case "@get/client/success": {
-			const { client } = payload;
+		case "@get/insurance_company/success": {
+			const { insuranceCompany } = payload;
 
 			return {
 				...state,
@@ -65,7 +65,7 @@ export const clientReducer = (
 			};
 		}
 
-		case "@get/client/failure": {
+		case "@get/insurance_company/failure": {
 			const { errors } = payload;
 
 			return {
@@ -76,23 +76,22 @@ export const clientReducer = (
 		}
 
 		// CREATE
-		case "@create/client/request": {
+		case "@create/insurance_company/request": {
 			return { ...state, loading: true };
 		}
 
-		case "@create/client/success": {
-			const { success, client } = payload;
-	
+		case "@create/insurance_company/success": {
+			const { success, insuranceCompany } = payload;
 			return {
 				...state,
 				loading: false,
 				errors: null,
-				clients: [...state.clients, client],
+				insuranceCompanies: [...state.insuranceCompanies, insuranceCompany],
 				success,
 			};
 		}
 
-		case "@create/client/failure": {
+		case "@create/insurance_company/failure": {
 			const { errors } = payload;
 			return {
 				...state,
@@ -102,27 +101,27 @@ export const clientReducer = (
 		}
 
 		// UPDATE
-		case "@update/client/request": {
+		case "@update/insurance_company/request": {
 			return {
 				...state,
 				loading: true,
 			};
 		}
 
-		case "@update/client/success": {
-			const { client: updated_client, success } = payload;
+		case "@update/insurance_company/success": {
+			const { insuranceCompany: updated_insurance_company, success } = payload;
 			return {
 				...state,
 				loading: false,
 				errors: null,
-				clients: state.clients.map((client) =>
-					client.id == updated_client.id ? updated_client : client
+				insuranceCompanies: state.insuranceCompanies.map((insuranceCompany) =>
+					insuranceCompany.id == updated_insurance_company.id ? updated_insurance_company : insuranceCompany
 				),
 				success,
 			};
 		}
 
-		case "@update/client/failure": {
+		case "@update/insurance_company/failure": {
 			const { errors } = payload;
 
 			return {
@@ -133,26 +132,26 @@ export const clientReducer = (
 		}
 
 		// DELETE
-		case "@delete/client/request": {
+		case "@delete/insurance_company/request": {
 			return {
 				...state,
 				loading: true,
 			};
 		}
 
-		case "@delete/client/success": {
+		case "@delete/insurance_company/success": {
 			const { id, success } = payload;
 
 			return {
 				...state,
 				loading: false,
 				errors: null,
-				clients: state.clients.filter((client) => client.id !== id),
+				insuranceCompanies: state.insuranceCompanies.filter((insuranceCompany) => insuranceCompany.id !== id),
 				success,
 			};
 		}
 
-		case "@delete/client/failure": {
+		case "@delete/insurance_company/failure": {
 			const { errors } = payload;
 			return {
 				...state,
@@ -163,14 +162,14 @@ export const clientReducer = (
 
 		// clean
 
-		case "@clear/client/errors": {
+		case "@clear/insurance_company/errors": {
 			return {
 				...state,
 				errors: null,
 			};
 		}
 
-		case "@clear/client/success": {
+		case "@clear/insurance_company/success": {
 			return {
 				...state,
 				success: null,
