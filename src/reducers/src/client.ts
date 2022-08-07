@@ -83,6 +83,7 @@ export const clientReducer = (
 
 		case "@create/client/success": {
 			const { success, client } = payload;
+	
 			return {
 				...state,
 				loading: false,

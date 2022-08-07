@@ -76,12 +76,6 @@ export const Customers = () => {
     }
   }, [successFromCustomer]);
 
-  useEffect(() => {
-    if (successFromAuth) {
-      setSuccesses([...successes, successFromAuth]);
-    }
-  }, [successFromAuth]);
-
   const removeSuccess = (index: number) => {
     setSuccesses(successes.filter((success, i) => i != index));
   };

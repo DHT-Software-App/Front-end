@@ -4,8 +4,7 @@ export interface Client {
   lastname?: string;
   email_address_1?: string;
   email_address_2?: string;
-  contact_1?: string;
-  contact_2?: string;
+  contacts?: string[];
   state?: string;
   street?: string;
   city?: string;

@@ -11,7 +11,7 @@ import {
 import { Client } from "types/Client";
 import { ClientService } from "services/ClientService";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
-import { ClientEnum } from "enum/Client";
+import { ClientEnum } from "enum/ClientEnum";
 
 function* getAll(action: any): any {
 	try {
