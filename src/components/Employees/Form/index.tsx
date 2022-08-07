@@ -1,7 +1,6 @@
 import { DynamicList } from "components/DynamicList";
 import { ListBox } from "components/ListBox";
-import { useFormik, Form, FormikProvider, yupToFormErrors } from "formik";
-import { useCountry } from "hooks/useCountry";
+import { useFormik, Form, FormikProvider } from "formik";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -9,7 +8,7 @@ import { Employee } from "types/Employee";
 import { TextField } from "components/TextField";
 import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
 import * as yup from "yup";
-import { Role } from "types/Role";
+
 
 const validate = yup.object({
   firstname: yup
@@ -152,7 +151,7 @@ export const EmployeeForm = ({
     <Form>
       <div className="flex flex-col py-14 px-10 max-w-screen-lg space-y-12">
         <header>
-          <h3 className="font-bold text-2xl">Customer Information</h3>
+          <h3 className="font-bold text-2xl">Employee Information</h3>
         </header>
 
         <section>
@@ -165,6 +164,7 @@ export const EmployeeForm = ({
                 required
               />
             </div>
+
             <div className="col-span-2">
               <TextField
                 label="Last Name"
@@ -183,7 +183,6 @@ export const EmployeeForm = ({
                 required
               />
             </div>
-
 
             <div className="col-span-2">
               <DynamicList title="manage contacts" values={contacts} onChange={setContacts} />
@@ -245,10 +244,6 @@ export const EmployeeForm = ({
             {loading ? 'Processing' : 'Save Employee'}
           </button>
 
-
-          {
-            JSON.stringify(errors)
-          }
         </footer>
       </div>
     </Form>

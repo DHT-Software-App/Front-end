@@ -73,6 +73,8 @@ export class CustomerService {
 
 			return created_customer;
 		} catch (error) {
+
+				
 			if (error instanceof AxiosError) {
 				const { status, data } = error.response as AxiosResponse;
 
@@ -82,6 +84,7 @@ export class CustomerService {
 					if (data.errors) {
 						const { errors } = data;
 
+						
 						throw errors.map((error: {}) => {
 							return new InvalidAttributeError(error as InvalidAttribute);
 						});

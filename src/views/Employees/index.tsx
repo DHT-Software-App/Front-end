@@ -17,10 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Employee } from "types/Employee";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
-// Open within a modal
-{
-  /* <EmployeeForm initialValue={employee} /> */
-}
+
 export const Employees = () => {
   // util hooks
   const dispatch = useDispatch();

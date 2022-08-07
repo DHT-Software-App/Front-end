@@ -11,7 +11,7 @@ import {
 import { Customer } from "types/Customer";
 import { CustomerService } from "services/CustomerService";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
-import { CustomerEnum } from "enum/Customer";
+import { CustomerEnum } from "enum/CustomerEnum";
 
 function* getAll(action: any): any {
 	try {
@@ -38,7 +38,7 @@ function* create(action: any): any {
 		);
 
 		const message: SuccessResponse = {
-			message: "customer created successfully",
+			message: "Customer created successfully",
 			success: true,
 			code: CustomerEnum.CREATED,
 		};
@@ -61,7 +61,7 @@ function* update(action: any): any {
 		);
 
 		const message: SuccessResponse = {
-			message: "customer updated successfully.",
+			message: "Customer updated successfully.",
 			success: true,
 			code: CustomerEnum.UPDATED,
 		};
