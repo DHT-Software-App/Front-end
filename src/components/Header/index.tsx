@@ -5,10 +5,19 @@ import {
   AppsOutlined,
   NotificationsOutlined
 } from '@mui/icons-material';
+import { useAuth } from "hooks/useAuth";
+import { Loading } from "components/Loading";
 
 const avatarImg = require('assets/images/avatar.png');
 
 export const Header = () => {
+  const { signout, employee: auth_employee } = useAuth();
+
+  const handleSignOut = (e: any) => {
+    e.preventDefault();
+    signout();
+  }
+
   return <header className="flex items-center justify-between px-6 py-1 shadow-md">
     <div className="flex gap-x-4">
       <div className="w-64">
@@ -37,13 +46,20 @@ export const Header = () => {
 
       <Popover className="relative">
         <Popover.Button>
-          <div className="flex items-center gap-x-3 rounded-md px-6 py-3 duration-100 hover:bg-zinc-100 hover:cursor-pointer">
-            <img src={avatarImg} alt="Avatar" className="w-12 h-full flex-shrink-0" />
-            <div className="flex flex-col items-end">
-              <p className="font-bold text-base text-zinc-600">William Smith</p>
-              <p className="font-semibold text-sm text-zinc-500">Admin</p>
+          {auth_employee ? (
+            <div className="flex items-center gap-x-3 rounded-md px-6 py-3 duration-100 hover:bg-zinc-100 hover:cursor-pointer">
+              <img src={auth_employee.user?.profile?.url || avatarImg} alt="Avatar" className="w-12 h-full flex-shrink-0" />
+              <div className="flex flex-col items-end">
+                <p className="font-bold text-base text-zinc-600">
+                  {auth_employee.user?.profile?.nickname ||
+                    `${auth_employee.firstname} ${auth_employee.lastname}`}
+                </p>
+                <p className="font-semibold text-sm text-zinc-500">
+                  {auth_employee.role?.title}
+                </p>
+              </div>
             </div>
-          </div>
+          ) : <Loading width="32px" />}
         </Popover.Button>
 
         <Transition
@@ -56,11 +72,19 @@ export const Header = () => {
         >
           <Popover.Panel className="absolute z-10 w-80 right-0">
             <div className="bg-white rounded-md shadow-md flex flex-col gap-y-8 items-center py-12">
-              <header className="flex flex-col items-center">
-                <img src={avatarImg} className="h-16" />
-                <p className="font-bold text-base text-zinc-600">William Smith</p>
-                <p className="font-semibold text-sm text-zinc-500">Admin</p>
-              </header>
+              {auth_employee ? (
+                <header className="flex flex-col items-center">
+                  <img src={auth_employee.user?.profile?.url || avatarImg} className="h-16" />
+                  <p className="font-bold text-base text-zinc-600">
+                    {auth_employee.user?.profile?.nickname ||
+                      `${auth_employee.firstname} ${auth_employee.lastname}`}
+                  </p>
+                  <p className="font-semibold text-sm text-zinc-500">
+                    {auth_employee.role?.title}
+                  </p>
+                </header>) :
+                <Loading width="32px" />
+              }
 
               <section style={{ borderTopWidth: "1px", borderBottomWidth: "1px" }} className="flex items-center gap-x-3 px-6 py-3 border-zinc-200">
                 <ManageAccounts fontSize="medium" className="text-zinc-500"></ManageAccounts>
@@ -68,9 +92,12 @@ export const Header = () => {
               </section>
 
               <footer>
-                <button style={{
-                  border: "1px solid #d5d5d5"
-                }} className="rounded-md py-2 px-8 border-2 border-zinc-300 text-zinc-600 font-bold text-xs">Sign Out</button>
+                <button
+                  onClick={handleSignOut}
+                  style={{
+                    border: "1px solid #d5d5d5"
+                  }}
+                  className="rounded-md py-2 px-8 border-2 border-zinc-300 text-zinc-600 font-bold text-xs">Sign Out</button>
               </footer>
             </div>
           </Popover.Panel>
