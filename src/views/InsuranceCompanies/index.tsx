@@ -51,6 +51,7 @@ export const InsuranceCompanies = () => {
   // feedback
   const [successes, setSuccesses] = useState<SuccessResponse[]>([]);
 
+
   useEffect(() => {
     dispatch(get_insurance_companies_request(token));
 

@@ -18,7 +18,7 @@ export const Header = () => {
     signout();
   }
 
-  return <header className="flex items-center justify-between px-6 py-1 shadow-md">
+  return <header className="flex items-center justify-between px-6 py-1 shadow-md z-20">
     <div className="flex gap-x-4">
       <div className="w-64">
         <Logo />

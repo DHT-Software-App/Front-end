@@ -28,12 +28,12 @@ export const insuranceCompanyReducer = (
 		}
 
 		case "@get/insurance_companies/success": {
-			const { insuranceCompanys } = payload;
+			const { insuranceCompanies } = payload;
 			return {
 				...state,
 				loading: false,
 				errors: null,
-				insuranceCompanys,
+				insuranceCompanies,
 			};
 		}
 

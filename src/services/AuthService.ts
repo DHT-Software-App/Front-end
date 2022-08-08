@@ -266,6 +266,7 @@ export class AuthService {
 
 	static async verifyPin(email_token: string): Promise<SuccessResponse | void> {
 		try {
+			
 			const endpoint = `${REACT_APP_BACKEND_API}/auth/verify/pin`;
 
 			const { data } = await axios.post(
@@ -278,6 +279,7 @@ export class AuthService {
 					},
 				}
 			);
+
 			return data as SuccessResponse;
 		} catch (error) {
 			if (error instanceof AxiosError) {

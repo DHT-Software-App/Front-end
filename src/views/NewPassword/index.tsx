@@ -57,10 +57,12 @@ export const NewPassword = () => {
     }
   }, [validPinSuccess]);
 
+
   useEffect(() => {
     if (successFromAuth) {
       switch (successFromAuth.code) {
         case RegisterEnum.VALID_PIN:
+
           setValidPinSuccess(successFromAuth);
           break;
 
@@ -93,7 +95,7 @@ export const NewPassword = () => {
       <div className="min-h-screen grid place-content-center bg-blue-dark relative">
         {!token || loading ? (
           <div>
-            <Loading width={50} />
+            <Loading width="50px" />
           </div>
         ) : (
           <PasswordForm submit={handleOnSubmit} />

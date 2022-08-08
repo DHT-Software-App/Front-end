@@ -111,7 +111,7 @@ export const Customers = () => {
   const handleFilteredCustomer = (ev: any) => { };
 
   return <div className="flex flex-col gap-y-12 p-12 bg-gray-100 relative">
-    <div className="absolute top-0 left-0 w-full z-50">
+    <div className="absolute top-0 left-0 w-full">
       {successes.map((success, index) => (
         <Feedback
           key={index}
@@ -120,6 +120,7 @@ export const Customers = () => {
         />
       ))}
     </div>
+
 
     <div className="capitalize font-bold text-2xl text-slate-600 pb-6 mb-6 flex flex-col md:flex-row justify-between items-baseline gap-8" style={{ borderBottom: "1px solid#e3e3e3" }}>
 
