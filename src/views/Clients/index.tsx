@@ -111,7 +111,7 @@ export const Clients = () => {
 
   const handleFilteredClient = (ev: any) => { };
 
-  return <div className="flex flex-col gap-y-12 p-12 bg-gray-100 relative">
+  return <div className="flex flex-col gap-y-8 p-12 bg-gray-100 relative">
     <div className="absolute top-0 left-0 w-full z-50">
       {successes.map((success, index) => (
         <Feedback
@@ -122,7 +122,7 @@ export const Clients = () => {
       ))}
     </div>
 
-    <div className="capitalize font-bold text-2xl text-slate-600 pb-6 mb-6 flex flex-col md:flex-row justify-between items-baseline gap-8" style={{ borderBottom: "1px solid#e3e3e3" }}>
+    <div className="capitalize font-bold text-2xl text-slate-600 pb-6 flex flex-col md:flex-row justify-between items-baseline gap-8" style={{ borderBottom: "1px solid#e3e3e3" }}>
 
       <div className="p-4 w-full md:w-auto">
         manage clients
