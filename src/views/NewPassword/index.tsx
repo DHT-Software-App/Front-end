@@ -11,10 +11,9 @@ import {
 } from "actions/auth";
 import { Loading } from "components/Loading";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
-import { Stepper } from "components/Stepper";
-import { StepperItem } from "components/StepperItem";
 import { RegisterEnum } from "enum/RegisterEnum";
 import { ResponseError } from "utils/errors/ResponseError";
+import { Error } from "views/Error";
 
 export const NewPassword = () => {
   const dispatch = useDispatch();
@@ -29,14 +28,13 @@ export const NewPassword = () => {
     loading: boolean;
     success: SuccessResponse;
     errors: Error[];
+    auth: string;
   } = useSelector(({ auth }: any) => auth);
 
+  const navigate = useNavigate();
   const [validPinSuccess, setValidPinSuccess] = useState<SuccessResponse>();
-  const [verifiedAccountSuccess, setVerifiedAccountSuccess] =
+  const [resetPasswordSuccess, setResetPasswordSuccess] =
     useState<SuccessResponse>();
-
-  const [verificationCompleted, setVerificationCompleted] =
-    useState<boolean>(false);
 
   useEffect(() => {
     return () => {
@@ -51,23 +49,22 @@ export const NewPassword = () => {
     }
   }, [token]);
 
-  useEffect(() => {
-    if (validPinSuccess?.success) {
-      dispatch(verify_email_request(token!));
-    }
-  }, [validPinSuccess]);
-
 
   useEffect(() => {
     if (successFromAuth) {
       switch (successFromAuth.code) {
-        case RegisterEnum.VALID_PIN:
-
+        case RegisterEnum.INVALID_PIN:
+        case RegisterEnum.TOKEN_EXPIRED:
+        case RegisterEnum.TOKEN_REQUIRED:
           setValidPinSuccess(successFromAuth);
           break;
 
+        case RegisterEnum.RESET_PASSWORD:
+          setResetPasswordSuccess(successFromAuth);
+          break;
+
         case RegisterEnum.VERIFIED_ACCOUNT:
-          setVerifiedAccountSuccess(successFromAuth);
+          navigate('/');
           break;
 
         default:
@@ -76,8 +73,10 @@ export const NewPassword = () => {
     }
   }, [successFromAuth]);
 
+
   useEffect(() => {
     if (auth_errors) {
+
       if (auth_errors.some((e) => e instanceof ResponseError)) {
         const errors = auth_errors as ResponseError[];
 
@@ -88,59 +87,30 @@ export const NewPassword = () => {
     }
   }, [auth_errors]);
 
-  const handleOnSubmit = (user: User) => { };
+  const handleOnSubmit = (user: User) => {
+    dispatch(verify_email_request(token!, user));
+  };
 
-  if (verificationCompleted) {
-    return (
-      <div className="min-h-screen grid place-content-center bg-blue-dark relative">
-        {!token || loading ? (
-          <div>
-            <Loading width="50px" />
-          </div>
-        ) : (
-          <PasswordForm submit={handleOnSubmit} />
-        )}
-      </div>
-    );
-  }
 
   return (
     <div className="h-screen relative">
-      <Stepper>
-        <StepperItem
-          title="Verify token"
-          description={`${validPinSuccess?.message || "Your token will be verified."
-            } `}
-          checked={!!validPinSuccess}
-          loading={!validPinSuccess && loading}
-          invalid={validPinSuccess ? !validPinSuccess.success : false}
-        />
 
-        <StepperItem
-          title="Verify email"
-          description={`${verifiedAccountSuccess?.message || "Your email will be verified."
-            } `}
-          checked={!!verifiedAccountSuccess}
-          loading={validPinSuccess && loading}
-          invalid={
-            verifiedAccountSuccess ? !verifiedAccountSuccess.success : false
-          }
-        />
-      </Stepper>
+      {
+        resetPasswordSuccess?.success || (validPinSuccess?.success == undefined && 'Verifying...')
+        || validPinSuccess?.success == false && <Error code={404} description={`Could not process your request`} title={validPinSuccess.message} showRedirectLink={false} />
+      }
 
-      {verifiedAccountSuccess?.success && (
-        <footer className="absolute z-10 bottom-0 w-screen px-6 py-3 flex justify-between bg-slate-50 items-center">
-          <p className="text-slate-700 font-semibold text-base">
-            You can now continue with reset your password
-          </p>
-          <button
-            className="px-4 py-2 font-semibold text-sm border-2 rounded-md text-blue border-blue"
-            onClick={() => setVerificationCompleted(true)}
-          >
-            RESET PASSWORD
-          </button>
-        </footer>
-      )}
+      {
+        resetPasswordSuccess?.success && <div className="min-h-screen grid place-content-center bg-blue-dark relative">
+          {!token || loading ? (
+            <div>
+              <Loading width="50px" />
+            </div>
+          ) : (
+            <PasswordForm submit={handleOnSubmit} />
+          )}
+        </div>
+      }
     </div>
   );
 };

@@ -280,6 +280,7 @@ export class AuthService {
 				}
 			);
 
+
 			return data as SuccessResponse;
 		} catch (error) {
 			if (error instanceof AxiosError) {
@@ -291,21 +292,32 @@ export class AuthService {
 						throw [new ResponseError(data as SuccessResponse)];
 					}
 				}
+
+				// NOT FOUND
+				if(status === HTTPResponse.NOT_FOUND) {
+					if (data.code) {
+						throw [new ResponseError(data as SuccessResponse)];
+					}
+				}
 			}
 		}
 	}
 
 	static async verifyEmail(
-		email_token: string
+		email_token: string,
+		user: User
 	): Promise<SuccessResponse | void> {
 		try {
+
 			const endpoint = `${REACT_APP_BACKEND_API}/auth/email/verify`;
 
-			// const { password, password_confirmation } = user;
+			const { password, password_confirmation } = user;
 			const { data } = await axios.post(
 				endpoint,
 				{
 					token: email_token,
+					password,
+					password_confirmation
 				},
 				{
 					headers: {
@@ -322,6 +334,12 @@ export class AuthService {
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {
+					if (data.code) {
+						throw [new ResponseError(data as SuccessResponse)];
+					}
+				}
+
+				if(status === HTTPResponse.NOT_FOUND) {
 					if (data.code) {
 						throw [new ResponseError(data as SuccessResponse)];
 					}

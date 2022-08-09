@@ -48,13 +48,17 @@ export const EmployeeRow = ({
       {employee.lastname}
     </td>
     <td className="px-6 py-4">
-      {/* {employee.contacts} */}
-    </td>
-    <td className="px-6 py-4">
       {`${employee.street}, ${employee.city}`}
     </td>
     <td className="px-6 py-4">
       {employee.role?.name}
+    </td>
+    <td className="px-6 py-4">
+      <select disabled={!employee.contacts?.length}>
+        {
+          employee.contacts?.map((contact) => <option>{contact}</option>)
+        }
+      </select>
     </td>
     <td className="px-6 py-4 text-center">
       <EmployeeStatusBadge status={employee.status} />

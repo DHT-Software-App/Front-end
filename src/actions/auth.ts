@@ -139,10 +139,11 @@ export const verify_pin_failure = (errors: Error[]) => ({
 });
 
 // verify email
-export const verify_email_request = (email_token: string) => ({
+export const verify_email_request = (email_token: string, user: User) => ({
 	type: "@verify/email/request",
 	payload: {
 		email_token,
+		user
 	},
 });
 

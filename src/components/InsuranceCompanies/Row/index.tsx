@@ -38,7 +38,11 @@ export const InsuranceCompanyRow = ({
     </td>
 
     <td className="px-6 py-4 text-center">
-      {/* {insuranceCompany.contacts} */}
+      <select disabled={!insuranceCompany.contacts?.length}>
+        {
+          insuranceCompany.contacts?.map((contact) => <option>{contact}</option>)
+        }
+      </select>
     </td>
 
 

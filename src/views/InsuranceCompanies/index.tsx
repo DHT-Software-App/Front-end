@@ -113,7 +113,7 @@ export const InsuranceCompanies = () => {
   const handleFilteredInsuranceCompany = (ev: any) => { };
 
   return <div className="flex flex-col gap-y-8 p-12 bg-gray-100 relative">
-    <div className="absolute top-0 left-0 w-full z-50">
+    <div className="absolute top-0 left-0 w-full">
       {successes.map((success, index) => (
         <Feedback
           key={index}
@@ -212,6 +212,7 @@ export const InsuranceCompanies = () => {
         description={`Are you sure that you want to delete '${insuranceCompanyDelete?.name}'?`}
         accept={() => {
           dispatch(delete_insurance_company_request(insuranceCompanyDelete?.id!, token!));
+          setOpenDelete(false);
         }}
         cancel={() => {
           setOpenDelete(false);

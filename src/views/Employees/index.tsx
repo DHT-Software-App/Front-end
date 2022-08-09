@@ -117,7 +117,7 @@ export const Employees = () => {
   const handleFilteredEmployee = (ev: any) => { };
 
   return <div className="flex flex-col gap-y-8 p-12 bg-gray-100 relative">
-    <div className="absolute top-0 left-0 w-full z-50">
+    <div className="absolute top-0 left-0 w-full">
       {successes.map((success, index) => (
         <Feedback
           key={index}
@@ -216,6 +216,7 @@ export const Employees = () => {
         description={`Are you sure that you want to delete '${employeeDelete?.firstname} ${employeeDelete?.lastname}'?`}
         accept={() => {
           dispatch(delete_employee_request(employeeDelete?.id!, token!));
+          setOpenDelete(false);
         }}
         cancel={() => {
           setOpenDelete(false);

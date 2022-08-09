@@ -117,6 +117,7 @@ function* verifyEmail(action: any) {
 	try {
 		const {
 			email_token,
+			user
 		}: {
 			email_token: string;
 			user: User;
@@ -124,7 +125,8 @@ function* verifyEmail(action: any) {
 
 		const success: SuccessResponse = yield call(
 			AuthService.verifyEmail,
-			email_token
+			email_token,
+			user
 		);
 
 		yield put(verify_email_success(success));

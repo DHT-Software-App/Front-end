@@ -1,5 +1,6 @@
 import { Client } from "types/Client";
 import { Delete, Edit, QuestionMark } from "@mui/icons-material";
+import { ListBox } from "components/ListBox";
 
 type ClientRowProps = {
   value: Client;
@@ -40,7 +41,11 @@ export const ClientRow = ({
     </td>
 
     <td className="px-6 py-4 text-center">
-      {/* {client.contacts} */}
+      <select disabled={!client.contacts?.length}>
+        {
+          client.contacts?.map((contact) => <option>{contact}</option>)
+        }
+      </select>
     </td>
 
 

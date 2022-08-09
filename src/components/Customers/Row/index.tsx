@@ -40,7 +40,11 @@ export const CustomerRow = ({
     </td>
 
     <td className="px-6 py-4 text-center">
-      {/* {customer.contacts} */}
+      <select disabled={!customer.contacts?.length}>
+        {
+          customer.contacts?.map((contact) => <option>{contact}</option>)
+        }
+      </select>
     </td>
 
 

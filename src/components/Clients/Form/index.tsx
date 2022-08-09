@@ -176,8 +176,6 @@ export const ClientForm = ({
               <TextField label="Zip" name="zip" type="text" required />
             </div>
 
-
-
           </div>
 
           <p className="text-sm text-center md:text-left text-slate-400 font-semibold mt-3">

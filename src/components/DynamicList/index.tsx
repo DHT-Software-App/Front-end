@@ -143,9 +143,9 @@ export const DynamicList = ({
                           }}></div>
 
 
-                          <button className="text-base text-zinc-500 hover:text-zinc-700" onClick={() => handleOnRemove(value)}>
+                          <a className="cursor-pointer text-base text-zinc-500 hover:text-zinc-700" onClick={() => handleOnRemove(value)}>
                             <Clear fontSize="inherit" />
-                          </button>
+                          </a>
 
 
                         </li>

@@ -27,13 +27,13 @@ export const EmployeeTable = ({
             Last Name
           </th>
           <th className="font-semibold text-sm uppercase px-6 py-4">
-            Contacts
-          </th>
-          <th className="font-semibold text-sm uppercase px-6 py-4">
             Address
           </th>
           <th className="font-semibold text-sm uppercase px-6 py-4">
             Type
+          </th>
+          <th className="font-semibold text-sm uppercase px-6 py-4">
+            Contacts
           </th>
           <th className="font-semibold text-sm uppercase px-6 py-4 text-center">
             Status

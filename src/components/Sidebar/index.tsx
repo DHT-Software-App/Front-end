@@ -60,7 +60,7 @@ export const Sidebar = () => {
   return <aside className={`max-w-xs bg-blue-semistrong relative duration-300 ${expanded ? "w-72" : "w-20"}`}>
 
     {/* expand icon */}
-    <div className="text-3xl absolute cursor-pointer -right-3 top-6" onClick={toggleExpanded}>
+    <div className="text-3xl absolute cursor-pointer -right-3 top-6 z-10" onClick={toggleExpanded}>
       <ChevronRight fontSize="inherit" className={`" text-white bg-blue-light rounded-full shadow-md ${expanded && "rotate-180"}"`}></ChevronRight>
     </div>
 
