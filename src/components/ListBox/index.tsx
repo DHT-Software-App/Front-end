@@ -45,7 +45,7 @@ export const ListBox = <T extends Record<string, any>>({
       {/* Button */}
       <HeadListBox.Button className="text-base font-semibold tracking-wide text-zinc-500 flex justify-between items-center gap-x-2 placeholder-slate-400 
       bg-neutral-100 rounded-md outline-none pl-6 pr-6 py-3 focus:outline-none focus:ring-2 
-      focus:ring-inset focus:ring-slate-600 duration-100">
+      focus:ring-inset focus:ring-slate-600 duration-100 w-full">
         {selectedItem[displayName]}
         <UnfoldMore fontSize="small" color="info" />
       </HeadListBox.Button>
@@ -62,7 +62,7 @@ export const ListBox = <T extends Record<string, any>>({
       leaveFrom="transform scale-100 opacity-100"
       leaveTo="transform scale-95 opacity-0">
 
-      <HeadListBox.Options className="absolute left-0 mt-2 rounded-md bg-white border-zinc-200 shadow-lg border w-64 pt-2 h-48 overflow-auto">
+      <HeadListBox.Options className="absolute left-0 mt-2 rounded-md bg-white border-zinc-200 shadow-lg border w-full pt-2 max-h-48 overflow-auto">
         {
           items.map((item: T, index: number) => (
             <HeadListBox.Option key={index} value={item}>

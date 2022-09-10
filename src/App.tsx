@@ -1,4 +1,4 @@
-import { Provider, useDispatch } from "react-redux";
+import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { Sign } from "./views/Sign";
 import { Employees } from "./views/Employees";
@@ -12,6 +12,8 @@ import { Customers } from "views/Customers";
 import { Clients } from "views/Clients";
 import { InsuranceCompanies } from "views/InsuranceCompanies";
 import { Error } from "views/Error";
+import { Appointments } from "views/Appointments";
+import { Jobs } from "views/Jobs";
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
             <Route path="/customers" element={<Customers />} />
             <Route path="/clients_reference" element={<Clients />} />
             <Route path="/insurance_companies" element={<InsuranceCompanies />} />
+            <Route path="/appointments" element={<Appointments />} />
+            <Route path="/jobs" element={<Jobs />} />
           </Route>
 
           {/* public routes */}

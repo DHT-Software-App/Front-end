@@ -47,6 +47,7 @@ export const NewPassword = () => {
     if (token) {
       dispatch(verify_pin_request(token));
     }
+
   }, [token]);
 
 

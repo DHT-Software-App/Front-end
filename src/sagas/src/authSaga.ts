@@ -73,7 +73,6 @@ function* register(action: any): any {
 	try {
 		const { owner, access_token } = action.payload;
 
-		console.log(owner);
 		const success: SuccessResponse = yield call(
 			AuthService.register,
 			owner,

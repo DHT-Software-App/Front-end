@@ -27,6 +27,7 @@ export class AuthService {
 				},
 			});
 
+
 			const {
 				data: { id, attributes },
 				included,
@@ -45,13 +46,21 @@ export class AuthService {
 						const user: User = { id, ...attributes };
 
 						included.map((data: any) => {
-							const { id, attributes, type } = data;
+							const {
+								data: { id, attributes, type },
+							
+							} = data[0];
+
 
 							switch (type) {
 								case "profiles":
 									user.profile = { id, ...attributes };
+									
 									break;
 							}
+
+							
+
 						});
 
 						employee.user = user;
@@ -82,6 +91,7 @@ export class AuthService {
 				}
 			});
 
+		
 			return employee;
 		} catch (error) {
 			if (error instanceof AxiosError) {

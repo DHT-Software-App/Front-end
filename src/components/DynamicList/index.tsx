@@ -107,7 +107,7 @@ export const DynamicList = ({
           leaveFrom="transform scale-100 opacity-100"
           leaveTo="transform scale-95 opacity-0">
 
-          <Popover.Panel className="absolute z-10 mt-1">
+          <Popover.Panel className="absolute mt-1">
             <div className="bg-white rounded-md shadow-md flex flex-col w-full md:w-72">
               <div className={`flex text-base  bg-slate-50 shadow-inner
             rounded-t-md  w-full text-zinc-900 outline-none focus:ring-blue-500 

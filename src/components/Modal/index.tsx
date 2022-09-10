@@ -43,7 +43,7 @@ export const Modal = ({ children, isOpen = false, closeModal }: ModalProps) => {
                   onClick={closeModal}>
                   <Close fontSize="inherit" ></Close>
                 </div>
-                <Dialog.Panel className="transform overflow-hidden  bg-white text-left rounded-2xl align-middle shadow-xl transition-all">
+                <Dialog.Panel className="transform  bg-white text-left rounded-2xl align-middle shadow-xl transition-all">
 
                   {children}
                 </Dialog.Panel>

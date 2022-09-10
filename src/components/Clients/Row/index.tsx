@@ -1,6 +1,5 @@
 import { Client } from "types/Client";
 import { Delete, Edit, QuestionMark } from "@mui/icons-material";
-import { ListBox } from "components/ListBox";
 
 type ClientRowProps = {
   value: Client;

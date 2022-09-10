@@ -38,9 +38,7 @@ function* create(action: any): any {
 			roleName,
 			access_token
 		);
-
-		console.log(employee);
-
+		
 		const message: SuccessResponse = {
 			message: "Employee created successfully",
 			success: true,

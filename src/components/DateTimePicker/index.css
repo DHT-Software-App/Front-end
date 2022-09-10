@@ -1,0 +1,59 @@
+.react-datetime-picker {
+  border: none;
+}
+
+.react-datetime-picker__wrapper {
+  padding: 0.66rem 1.33rem;
+  border-radius: 0.375rem;
+  background-color: white;
+  font-size: 0.88rem;
+  line-height: 1.33rem;
+  font-weight: 400;
+  background-color: rgb(245, 245, 245);
+  border: none !important;
+}
+
+.react-datetime-picker__button svg {
+  width: 1rem;
+  stroke: rgb(113 113 122);
+}
+
+.dateTimePicker {
+  margin-top: 0.5rem;
+  border-radius: 0.375rem;
+  border: none !important;
+  box-shadow: 0px 0px 4px hsla(0, 0%, 0%, 25%);
+  padding: 0.75rem 1rem 1.125rem 1px;
+}
+
+.dateTimePicker button {
+  transition: all 200ms ease-in-out;
+}
+
+.react-calendar__tile {
+  font-size: 14px;
+}
+
+.react-calendar__month-view__weekdays {
+  font-size: 12px;
+  margin-bottom: 0.25rem;
+  color: #0E121F;
+}
+
+.react-calendar__tile:hover {
+  background-color: #E6E5FF !important;
+}
+
+.react-calendar__tile--active {
+  background-color: #006DB7 !important;
+}
+
+.react-calendar__tile--active:hover {
+  background-color: #0c83d2 !important;
+}
+
+.react-calendar__tile--now {
+  color: black !important;
+  background-color: white !important;
+  border: 2px solid #006DB7 !important;
+}
