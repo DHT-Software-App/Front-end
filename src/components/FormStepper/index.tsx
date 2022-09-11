@@ -35,11 +35,18 @@ export function FormikStepper({ children, value }: FormikStepperProps) {
 
   const { isSubmitting, isValid, setErrors, setSubmitting } = formikBag;
 
+  const findIndexPageOfErrorField = (fieldName: string) => {
+    return childrenArray.findIndex(({ props: { validationSchema } }) => {
+      return validationSchema._nodes.includes(fieldName);
+    });
+  }
   // Capture errors from outside
   useEffect(() => {
-    console.log(value.errors)
     if (value.errors) {
       setErrors({ ...value.errors })
+      const firstFieldName = Object.keys(value.errors)[0]
+      firstFieldName && setStep(findIndexPageOfErrorField(firstFieldName))
+
       setSubmitting(false)
     }
   }, [value.errors]);

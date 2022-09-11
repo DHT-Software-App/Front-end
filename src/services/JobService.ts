@@ -11,7 +11,7 @@ import { Customer } from "types/Customer";
 import { Client } from "types/Client";
 import { WorkType } from "types/WorkType";
 import { InsuranceCompany } from "types/InsuranceCompany";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 const { REACT_APP_BACKEND_API } = process.env;
 
@@ -35,6 +35,8 @@ export class JobService {
 				} = data;
 
 				const job: Job = { id, ...attributes };
+
+				job.date_of_loss = parseISO(job.date_of_loss?.toString()!);
 
 				included.map((data: any) => {
 					const {
@@ -74,6 +76,7 @@ export class JobService {
 							break;
 					}
 				});
+
 
 				return job;
 			});
@@ -133,6 +136,8 @@ export class JobService {
         ...attributes,
 			};
 
+			created_job.date_of_loss = parseISO(format(restJobPropierties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'));
+
       included.map((data: any) => {
         const {
           data: { id, attributes, type },
@@ -174,8 +179,6 @@ export class JobService {
 
 			return created_job;
 		} catch (error) {
-			console.log(error)
-
 			if (error instanceof AxiosError) {
 				const { status, data } = error.response as AxiosResponse;
 
@@ -238,6 +241,9 @@ export class JobService {
 
 			const updated_job: Job = { id, ...attributes };
 
+			updated_job.date_of_loss = parseISO(format(restJobPropierties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'));
+
+
       included.map((data: any) => {
         const {
           data: { id, attributes, type },
@@ -285,8 +291,6 @@ export class JobService {
 					status,
 					data: { errors },
 				} = error.response as AxiosResponse;
-
-				console.log(error);
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {

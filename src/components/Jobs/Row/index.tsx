@@ -1,5 +1,6 @@
 import { Job } from "types/Job";
 import { Delete, Edit, QuestionMark } from "@mui/icons-material";
+import { format } from "date-fns";
 
 type JobStatus = "new" | "on going" | 'completed';
 
@@ -64,7 +65,7 @@ export const JobRow = ({
 
   return <tr>
     <td className="px-6 py-4">
-      {job.date_of_loss?.toString()}
+      {format(job.date_of_loss!, 'yyyy-MM-dd HH:mm:ss')}
     </td>
     <td className="px-6 py-4">
       {job.type_of_loss}

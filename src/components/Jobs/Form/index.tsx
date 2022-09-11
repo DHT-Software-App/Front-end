@@ -37,11 +37,13 @@ const propertyInfoValidate = yup.object({
   state: yup
     .string()
     .max(45, "State must be max 45 characters")
-    .required("State required."),
+  // .required("State required."),
+  ,
   street: yup
     .string()
     .max(45, "State must be max 45 characters")
-    .required("Street required."),
+  // .required("Street required."),
+  ,
   city: yup
     .string()
     .max(45, "State must be max 45 characters")
@@ -57,11 +59,11 @@ const propertyInfoValidate = yup.object({
 })
 
 const lossInfoValidate = yup.object({
-  // notes: yup
-  //   .string()
-  //   .trim()
-  //   .max(255, 'Notes must be max 255 characters')
-  //   .required("Notes required."),
+  notes: yup
+    .string()
+    .trim()
+    .max(255, 'Notes must be max 255 characters')
+    .required("Notes required."),
   date_of_loss: yup
     .date()
     .transform(parseDateString('yyyy-MM-dd HH:mm:ss'))
@@ -277,9 +279,6 @@ export const JobForm = ({
           const { attribute, detail } = error.content;
           setFieldError(attribute, detail);
         });
-
-        console.log(errors);
-
       }
 
     }
