@@ -24,7 +24,7 @@ export function FormikStepper({ children, value }: FormikStepperProps) {
     validationSchema: currentChild.props.validationSchema,
     onSubmit: (values, { setSubmitting }) => {
       if (isLastStep()) {
-        value.setValues({ ...value.values, ...values })
+        value.setValues({ ...values, ...value.values })
         value.submitForm()
       } else {
         setStep(s => s + 1);
