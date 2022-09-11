@@ -33,13 +33,17 @@ export function FormikStepper({ children, value }: FormikStepperProps) {
     }
   });
 
-  const { isSubmitting, isValid } = formikBag;
+  const { isSubmitting, isValid, setErrors, setSubmitting } = formikBag;
 
-  // useEffect(() => {
-  //   if (errors) {
-  //     value.setErrors(errors)
-  //   }
-  // }, [errors]);
+  // Capture errors from outside
+  useEffect(() => {
+    console.log(value.errors)
+    if (value.errors) {
+      setErrors({ ...value.errors })
+      setSubmitting(false)
+    }
+  }, [value.errors]);
+
 
   const isLastStep = () => {
     return step === childrenArray.length - 1;

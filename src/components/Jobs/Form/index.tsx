@@ -57,11 +57,11 @@ const propertyInfoValidate = yup.object({
 })
 
 const lossInfoValidate = yup.object({
-  notes: yup
-    .string()
-    .trim()
-    .max(255, 'Notes must be max 255 characters')
-    .required("Notes required."),
+  // notes: yup
+  //   .string()
+  //   .trim()
+  //   .max(255, 'Notes must be max 255 characters')
+  //   .required("Notes required."),
   date_of_loss: yup
     .date()
     .transform(parseDateString('yyyy-MM-dd HH:mm:ss'))
@@ -124,7 +124,6 @@ export const JobForm = ({
   const formikBag = useFormik({
     initialValues: initialValue,
     onSubmit: (values, { setSubmitting }) => {
-      console.log(values)
       submit(values as Job);
 
       setSubmitting(false);
