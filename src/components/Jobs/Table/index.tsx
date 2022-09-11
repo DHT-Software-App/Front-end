@@ -3,11 +3,11 @@ import { JobRow } from "../Row"
 
 type JobsTableProps = {
   values: Job[],
-  onDelete: (client: Job) => void;
-  onEdit: (client: Job) => void;
+  onDelete: (job: Job) => void;
+  onEdit: (job: Job) => void;
 }
 
-export const JobsTable = ({ values: clients, onDelete, onEdit }: JobsTableProps) => {
+export const JobsTable = ({ values: jobs, onDelete, onEdit }: JobsTableProps) => {
 
 
   return <div className='overflow-x-auto w-full'>
@@ -30,8 +30,8 @@ export const JobsTable = ({ values: clients, onDelete, onEdit }: JobsTableProps)
       <tbody className="divide-y divide-slate-200">
 
         {
-          clients.map((client: Job, index: number) =>
-            <JobRow onDelete={onDelete} onEdit={onEdit} value={client} key={index} />
+          jobs.map((job: Job, index: number) =>
+            <JobRow key={job.id} onDelete={onDelete} onEdit={onEdit} value={job} />
           )
         }
       </tbody>

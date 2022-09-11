@@ -14,6 +14,7 @@ export const Modal = ({ children, isOpen = false, closeModal }: ModalProps) => {
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50 w-screen" onClose={closeModal}>
+        {/* Overlay */}
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -44,7 +45,6 @@ export const Modal = ({ children, isOpen = false, closeModal }: ModalProps) => {
                   <Close fontSize="inherit" ></Close>
                 </div>
                 <Dialog.Panel className="transform  bg-white text-left rounded-2xl align-middle shadow-xl transition-all">
-
                   {children}
                 </Dialog.Panel>
               </div>

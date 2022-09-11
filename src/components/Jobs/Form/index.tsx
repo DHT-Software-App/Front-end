@@ -1,4 +1,4 @@
-import { useFormik, Form, FormikProvider, ErrorMessage } from "formik";
+import { useFormik, ErrorMessage } from "formik";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -74,54 +74,6 @@ const lossInfoValidate = yup.object({
 })
 
 
-const validate = yup.object({
-  policy_number: yup
-    .string()
-    .trim()
-    .max(75, 'Policy number must be max 75 characters')
-    .required("Policy number required."),
-  claim_number: yup
-    .string()
-    .trim()
-    .max(75, 'Claim number must be max 75 characters')
-    .required("Claim number required."),
-  notes: yup
-    .string()
-    .trim()
-    .max(255, 'Notes must be max 255 characters')
-    .required("Notes required."),
-  date_of_loss: yup
-    .date()
-    .transform(parseDateString('yyyy-MM-dd HH:mm:ss'))
-    .required("Date of loss required."),
-  type_of_loss: yup
-    .string()
-    .trim()
-    .max(75, 'Type of loss must be max 75 characters')
-    .required("Type of loss required."),
-  state: yup
-    .string()
-    .max(45, "State must be max 45 characters")
-    .required("State required."),
-  street: yup
-    .string()
-    .max(45, "State must be max 45 characters")
-    .required("Street required."),
-  city: yup
-    .string()
-    .max(45, "State must be max 45 characters")
-    .required("City required"),
-  zip: yup
-    .string()
-    .trim()
-    .max(75, 'Zip must be max 75 characters')
-    .required("Zip required."),
-  company: yup.string()
-    .max(75, "Company must be max 75 characters")
-    .required("Company required."),
-
-});
-
 const statusOptions: { display: string, value: "new" | "on going" | "completed" }[] = [
   {
     display: "New",
@@ -168,6 +120,20 @@ export const JobForm = ({
   );
 
 
+  // Formik 
+  const formikBag = useFormik({
+    initialValues: initialValue,
+    onSubmit: (values, { setSubmitting }) => {
+      console.log(values)
+      submit(values as Job);
+
+      setSubmitting(false);
+    },
+  });
+
+  const { setFieldValue, setFieldError } = formikBag;
+
+
   const { auth: token } = useSelector(
     ({ auth }: any) => auth
   );
@@ -196,23 +162,9 @@ export const JobForm = ({
     loading: boolean;
   } = useSelector(({ job }: any) => job);
 
-  // FORMIK
-  const formikBag = useFormik({
-    initialValues: initialValue,
-    // validationSchema: validate,
-    onSubmit: (values, { setSubmitting }) => {
-
-      submit(values as Job);
-
-      setSubmitting(false);
-    },
-  });
-
-
-
-
   // when component mounted
   useEffect(() => {
+    setFieldError('policy_number', 'nooo')
     if (token) {
       dispatch(get_customers_request(token));
       dispatch(get_clients_request(token));
@@ -249,7 +201,6 @@ export const JobForm = ({
   // when work types loaded
   useEffect(() => {
     if (work_types) {
-      console.log(work_types)
       setAllowedWorkTypes(work_types);
 
       if (initialValue.work_type!) return;
@@ -315,10 +266,6 @@ export const JobForm = ({
     }
   }, [selectedStatus]);
 
-
-  const { isSubmitting, isValid, setFieldValue, setFieldError, errors } = formikBag;
-
-
   // when server errors
   useEffect(() => {
     if (job_errors) {
@@ -332,160 +279,153 @@ export const JobForm = ({
           setFieldError(attribute, detail);
         });
 
+        console.log(errors);
+
       }
 
     }
   }, [job_errors]);
 
 
-  return <div className="flex flex-col py-14 px-10 max-w-screen-lg space-y-12">
-    <header>
-      <h3 className="font-bold text-2xl">Job Information</h3>
-    </header>
+  return <div className="max-w-screen-lg">
 
-    <section>
-      <FormikStepper value={formikBag}>
-        <FormikStep>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    <FormikStepper value={formikBag} >
+      <FormikStep validationSchema={newJobStepValidate}>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
 
-            {/* Policy number */}
-            <div className="col-span-3">
-              <TextField
-                label="Policy number"
-                name="policy_number"
-                type="text"
-                required
-              />
-            </div>
-
-            {/* Claim number */}
-            <div className="col-span-3">
-              <TextField
-                label="Claim number"
-                name="claim_number"
-                type="text"
-                required
-              />
-            </div>
-
-            {/* Customers List */}
-            <div className="col-span-3 z-50">
-              {allowedCustomers?.length && !loadingCustomers ? <ListBox defaultItem={selectedCustomer}
-                items={allowedCustomers}
-                displayName="firstname"
-                label="Customer"
-                required
-                onSelect={setSelectedCustomer} /> : <Loading width={24} />}
-            </div>
-
-            {/* Insurance Companies List */}
-            <div className="col-span-3 z-40">
-              {allowedInsurances?.length && !loadingInsurances ?
-                <ListBox defaultItem={selectedInsurance}
-                  items={allowedInsurances}
-                  displayName="name"
-                  label="Insurance Company"
-                  required
-                  onSelect={setSelectedInsurance} /> : <Loading width={24} />
-              }
-            </div>
-
-          </div>
-        </FormikStep>
-        <FormikStep>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-
-            {/* Street */}
-            <div className="col-span-6">
-              <TextField label="Street" name="street" type="text" required />
-            </div>
-
-            {/* State */}
-            <div className="col-span-6">
-              <TextField label="State" name="state" type="text" required />
-            </div>
-
-            {/* City */}
-            <div className="col-span-6">
-              <TextField label="City" name="city" type="text" required />
-            </div>
-
-            {/* Zip */}
-            <div className="col-span-3">
-              <TextField label="Zip" name="zip" type="text" required />
-            </div>
-
-            {/* Company */}
-            <div className="col-span-3">
-              <TextField label="Company" name="company" type="text" required />
-            </div>
+          {/* Policy number */}
+          <div className="col-span-3">
+            <TextField
+              label="Policy number"
+              name="policy_number"
+              type="text"
+              required
+            />
           </div>
 
-        </FormikStep>
-        <FormikStep>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-
-            {/* Type of loss */}
-            <div className="col-span-3">
-              <TextField label="Type of loss" name="type_of_loss" type="text" required />
-            </div>
-
-            {/* Date of loss */}
-            <div className="col-span-3 z-50">
-              <DateTimePicker label="Date of loss" maxDate={new Date()} value={selectedDateOfLoss!} onChange={setSelectedDateOfLoss} required />
-              <ErrorMessage name="date_of_loss" component="div" className="error" />
-            </div>
-
-
-            {/* Work Types List */}
-            <div className="col-span-3 z-40">
-              {allowedWorkTypes?.length && !loadingWorkTypes ?
-                <ListBox defaultItem={selectedWorkType}
-                  items={allowedWorkTypes}
-                  displayName="name"
-                  label="Work Type"
-                  required
-                  onSelect={setSelectedWorkType} /> : <Loading width={24} />}
-            </div>
-
-
-            {/* Clients List */}
-            <div className="col-span-3 z-30">
-              {allowedClients?.length && !loadingClients ? <ListBox defaultItem={selectedClient}
-                items={allowedClients}
-                displayName="firstname"
-                label="Client"
-                required
-                onSelect={setSelectedClient} /> : <Loading width={24} />
-              }
-            </div>
-
-            {/* Notes */}
-            <div className="col-span-6">
-              <TextField label="Notes" name="notes" type="text" required />
-            </div>
-
-            {/* Status */}
-            <div className="col-span-3">
-              <ListBox defaultItem={selectedStatus}
-                items={statusOptions}
-                displayName="display"
-                label="Status"
-                required
-                onSelect={setSelectedStatus} />
-            </div>
-
+          {/* Claim number */}
+          <div className="col-span-3">
+            <TextField
+              label="Claim number"
+              name="claim_number"
+              type="text"
+              required
+            />
           </div>
-        </FormikStep>
 
-      </FormikStepper>
+          {/* Customers List */}
+          <div className="col-span-3 z-50">
+            {allowedCustomers?.length && !loadingCustomers ? <ListBox defaultItem={selectedCustomer}
+              items={allowedCustomers}
+              displayName="firstname"
+              label="Customer"
+              required
+              onSelect={setSelectedCustomer} /> : <Loading width={24} />}
+          </div>
 
-      <p className="text-sm text-center md:text-left text-slate-400 font-semibold mt-3">
-        In order to process registration provide the following
-        information. All fields marked with an asterisk (*) are required.
-      </p>
-    </section>
+          {/* Insurance Companies List */}
+          <div className="col-span-3 z-40">
+            {allowedInsurances?.length && !loadingInsurances ?
+              <ListBox defaultItem={selectedInsurance}
+                items={allowedInsurances}
+                displayName="name"
+                label="Insurance Company"
+                required
+                onSelect={setSelectedInsurance} /> : <Loading width={24} />
+            }
+          </div>
+
+        </div>
+      </FormikStep>
+      <FormikStep validationSchema={propertyInfoValidate}>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+
+          {/* Street */}
+          <div className="col-span-6">
+            <TextField label="Street" name="street" type="text" required />
+          </div>
+
+          {/* State */}
+          <div className="col-span-6">
+            <TextField label="State" name="state" type="text" required />
+          </div>
+
+          {/* City */}
+          <div className="col-span-6">
+            <TextField label="City" name="city" type="text" required />
+          </div>
+
+          {/* Zip */}
+          <div className="col-span-3">
+            <TextField label="Zip" name="zip" type="text" required />
+          </div>
+
+          {/* Company */}
+          <div className="col-span-3">
+            <TextField label="Company" name="company" type="text" required />
+          </div>
+        </div>
+
+      </FormikStep>
+      <FormikStep validationSchema={lossInfoValidate}>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+
+          {/* Type of loss */}
+          <div className="col-span-3">
+            <TextField label="Type of loss" name="type_of_loss" type="text" required />
+          </div>
+
+          {/* Date of loss */}
+          <div className="col-span-3 z-50">
+            <DateTimePicker label="Date of loss" maxDate={new Date()} value={selectedDateOfLoss!} onChange={setSelectedDateOfLoss} required />
+            <ErrorMessage name="date_of_loss" component="div" className="error" />
+          </div>
+
+
+          {/* Work Types List */}
+          <div className="col-span-3 z-40">
+            {allowedWorkTypes?.length && !loadingWorkTypes ?
+              <ListBox defaultItem={selectedWorkType}
+                items={allowedWorkTypes}
+                displayName="name"
+                label="Work Type"
+                required
+                onSelect={setSelectedWorkType} /> : <Loading width={24} />}
+          </div>
+
+
+          {/* Clients List */}
+          <div className="col-span-3 z-30">
+            {allowedClients?.length && !loadingClients ? <ListBox defaultItem={selectedClient}
+              items={allowedClients}
+              displayName="firstname"
+              label="Client"
+              required
+              onSelect={setSelectedClient} /> : <Loading width={24} />
+            }
+          </div>
+
+          {/* Notes */}
+          <div className="col-span-6">
+            <TextField label="Notes" name="notes" type="text" required />
+          </div>
+
+          {/* Status */}
+          <div className="col-span-3">
+            <ListBox defaultItem={selectedStatus}
+              items={statusOptions}
+              displayName="display"
+              label="Status"
+              required
+              onSelect={setSelectedStatus} />
+          </div>
+
+        </div>
+      </FormikStep>
+
+    </FormikStepper>
+
 
 
   </div>

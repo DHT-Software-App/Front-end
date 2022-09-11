@@ -173,7 +173,7 @@ export const Jobs = () => {
     >
       <div className="px-6">
         <JobForm initialValue={{
-          policy_number: '232',
+          policy_number: '0',
           claim_number: '0',
           notes: '',
           date_of_loss: new Date(),

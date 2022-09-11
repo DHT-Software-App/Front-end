@@ -11,6 +11,7 @@ import { Customer } from "types/Customer";
 import { Client } from "types/Client";
 import { WorkType } from "types/WorkType";
 import { InsuranceCompany } from "types/InsuranceCompany";
+import { format } from "date-fns";
 
 const { REACT_APP_BACKEND_API } = process.env;
 
@@ -106,8 +107,10 @@ export class JobService {
 				...restJobPropierties
 			} = job;
 
+
 			const { data } = await axios.post(endpoint, {
 				...restJobPropierties,
+				date_of_loss: format(restJobPropierties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'),
 				customer_id: customer?.id, 
 				client_id: client?.id, 
 				work_type_id: work_type?.id, 
@@ -171,9 +174,12 @@ export class JobService {
 
 			return created_job;
 		} catch (error) {
+			console.log(error)
+
 			if (error instanceof AxiosError) {
 				const { status, data } = error.response as AxiosResponse;
 
+				
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {
 					// InvalidAttribute
@@ -210,6 +216,7 @@ export class JobService {
 
 			const { data } = await axios.put(endpoint, {
 				...restJobPropierties,
+				date_of_loss: format(restJobPropierties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'),
 				customer_id: customer?.id, 
 				client_id: client?.id, 
 				work_type_id: work_type?.id, 
