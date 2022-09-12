@@ -37,13 +37,11 @@ const propertyInfoValidate = yup.object({
   state: yup
     .string()
     .max(45, "State must be max 45 characters")
-  // .required("State required."),
-  ,
+    .required("State required."),
   street: yup
     .string()
     .max(45, "State must be max 45 characters")
-  // .required("Street required."),
-  ,
+    .required("Street required."),
   city: yup
     .string()
     .max(45, "State must be max 45 characters")
@@ -284,10 +282,11 @@ export const JobForm = ({
     }
   }, [job_errors]);
 
+  const { work_type, status, customer, client, insurance, ...initialValues } = formikBag.values;
 
   return <div className="max-w-screen-lg">
 
-    <FormikStepper value={formikBag} >
+    <FormikStepper value={{ ...formikBag, initialValues }} >
       <FormikStep title="New Job" validationSchema={newJobStepValidate}>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
 

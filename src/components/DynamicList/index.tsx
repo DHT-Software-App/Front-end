@@ -72,7 +72,7 @@ export const DynamicList = ({
   }
 
 
-  return <div className="flex flex-col py-2 rounded-sm space-y-2">
+  return <div className="flex flex-col py-2 rounded-sm space-y-2 w-full">
     <label
       className="capitalize text-base font-semibold text-slate-700"
     >

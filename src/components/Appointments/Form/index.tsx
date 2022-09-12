@@ -1,11 +1,8 @@
 import { DynamicList } from "components/DynamicList";
 import { useFormik, Form, FormikProvider } from "formik";
 import { useState } from "react";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import { Appointment } from "types/Appointment";
 import { TextField } from "components/TextField";
-import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
 import * as yup from "yup";
 import { ListBox } from "components/ListBox";
 import { Job } from "types/Job";
@@ -112,7 +109,7 @@ export const AppointmentForm = ({
 
         <section>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="col-span-2">
+            <div className="col-span-2 z-50">
               <ListBox defaultItem={selectedJob}
                 items={jobs}
                 displayName="claim_number"
@@ -121,7 +118,7 @@ export const AppointmentForm = ({
                 onSelect={setSelectedJob} />
             </div>
 
-            <div className="col-span-2">
+            <div className="col-span-2 z-40">
               <ListBox defaultItem={selectedTechnician}
                 items={technicians}
                 displayName="firstname"
@@ -134,11 +131,11 @@ export const AppointmentForm = ({
               <TextField label="Address" name="address" type="text" required />
             </div>
 
-            <div className="col-span-2">
+            <div className="col-span-2 z-30">
               <DynamicList title="manage contacts" values={contacts} onChange={setContacts} />
             </div>
 
-            <div className="col-span-2">
+            <div className="col-span-2 z-20">
               <DateTimePicker label="Start Date" onChange={() => { }} value={new Date()} required />
             </div>
 
