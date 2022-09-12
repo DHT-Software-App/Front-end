@@ -1,11 +1,41 @@
 import { FormikConfig, FormikValues, Form, useFormik, FormikProvider, FormikContextType } from "formik";
 import React, { useState, useEffect } from "react"
 
-export interface FormikStepProps extends Pick<FormikConfig<FormikValues>, 'children' | 'validationSchema'> { }
+export interface FormikStepProps extends Pick<FormikConfig<FormikValues>, 'children' | 'validationSchema'> {
+  title: string
+}
 
 type FormikStepperProps = {
   children: React.ReactElement<FormikStepProps>[],
   value: FormikContextType<any>
+}
+
+type FormikStepTabProps = {
+  active?: boolean,
+  disable?: boolean,
+  children?: string
+}
+
+type FormikStepTabsProps = {
+  children?: React.ReactElement<FormikStepTabProps>[]
+}
+
+function FormikStepTab({ active = false, disable = false, children }: FormikStepTabProps) {
+
+  return <a className={`select-none inline-block p-4 rounded-t-lg opacity-100
+     ${active && "text-blue border-b-blue border-b-2"}
+    ${disable && "opacity-30"}
+    `}>
+    {children}
+  </a>
+}
+
+function FormikStepTabs({ children }: FormikStepTabsProps) {
+  return <header className="text-lg font-medium text-center text-zinc-500 border-b border-zinc-200">
+    <ul className="flex flex-wrap -mb-px">
+      {children}
+    </ul>
+  </header>
 }
 
 export function FormikStep({ children }: FormikStepProps) {
@@ -18,6 +48,7 @@ export function FormikStepper({ children, value }: FormikStepperProps) {
   const childrenArray = React.Children.toArray(children as any) as React.ReactElement<FormikStepProps>[]
   const [step, setStep] = useState(0);
   const currentChild = childrenArray[step];
+  const stepTabTitles = childrenArray.map((c) => c.props.title);
 
   const formikBag = useFormik({
     ...value,
@@ -60,25 +91,19 @@ export function FormikStepper({ children, value }: FormikStepperProps) {
   return <FormikProvider value={formikBag} >
     <Form autoComplete="off">
       <div className="flex flex-col space-y-12 pt-7 pb-14 px-10 ">
-        <header className="text-lg font-medium text-center text-zinc-500 border-b border-zinc-200">
-          <ul className="flex flex-wrap -mb-px">
-            <li className="mr-2">
-              <a href="#" className="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-zinc-600 hover:border-zinc-300">Profile</a>
-            </li>
-            <li className="mr-2">
-              <a href="#" className="inline-block p-4 text-blue rounded-t-lg border-b-2 border-b-blue active" aria-current="page">Dashboard</a>
-            </li>
-            <li className="mr-2">
-              <a href="#" className="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-zinc-600 hover:border-zinc-300">Settings</a>
-            </li>
-            <li className="mr-2">
-              <a href="#" className="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-zinc-600 hover:border-zinc-300">Contacts</a>
-            </li>
-            <li>
-              <a className="inline-block p-4 text-zinc-400 rounded-t-lg cursor-not-allowed dark:text-zinc-500">Disabled</a>
-            </li>
-          </ul>
-        </header>
+        <FormikStepTabs>
+          {
+            stepTabTitles.map((title: string, index: number) => (
+              <FormikStepTab
+                key="index"
+                active={currentChild.props.title == title}
+                disable={!isValid}
+              >
+                {title}
+              </FormikStepTab>
+            ))
+          }
+        </FormikStepTabs>
 
         <section className="px-3">
           {currentChild}

@@ -288,7 +288,7 @@ export const JobForm = ({
   return <div className="max-w-screen-lg">
 
     <FormikStepper value={formikBag} >
-      <FormikStep validationSchema={newJobStepValidate}>
+      <FormikStep title="New Job" validationSchema={newJobStepValidate}>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
 
           {/* Policy number */}
@@ -335,7 +335,7 @@ export const JobForm = ({
 
         </div>
       </FormikStep>
-      <FormikStep validationSchema={propertyInfoValidate}>
+      <FormikStep title="Property Info" validationSchema={propertyInfoValidate}>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
 
           {/* Street */}
@@ -365,7 +365,7 @@ export const JobForm = ({
         </div>
 
       </FormikStep>
-      <FormikStep validationSchema={lossInfoValidate}>
+      <FormikStep title="Loss Info" validationSchema={lossInfoValidate}>
 
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
 
