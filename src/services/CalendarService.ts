@@ -9,6 +9,7 @@ import { SuccessResponse } from "utils/Responses/SuccessResponse";
 import { ResponseError } from "utils/errors/ResponseError";
 import { Employee } from "types/Employee";
 import { Job } from "types/Job";
+import { format, parseISO } from "date-fns";
 
 const { REACT_APP_BACKEND_API } = process.env;
 
@@ -33,6 +34,9 @@ export class CalendarService {
 
 				const calendar: Calendar = { id, ...attributes };
 
+				calendar.start_date = parseISO(calendar.start_date?.toString()!);
+				calendar.end_date = parseISO(calendar.end_date?.toString()!);
+
 				included.map((data: any) => {
 					const {
 						data: { id, attributes, type },
@@ -48,6 +52,7 @@ export class CalendarService {
 
             case "jobs": {
 							const job: Job = { id, ...attributes };
+							job.date_of_loss = parseISO(job.date_of_loss?.toString()!);
 
 							calendar.job = job;
 							break;
@@ -82,7 +87,19 @@ export class CalendarService {
 		try {
 			let endpoint = `${REACT_APP_BACKEND_API}/calendars?include=employee,job`;
 
-			const { data } = await axios.post(endpoint, calendar, {
+			const {
+				job,
+				employee,
+				...restCalendarPropierties
+			} = calendar;
+
+			const { data } = await axios.post(endpoint, {
+				...restCalendarPropierties,
+				start_date: format(restCalendarPropierties.start_date!, 'yyyy-MM-dd HH:mm:ss'),
+				end_date: format(restCalendarPropierties.end_date!, 'yyyy-MM-dd HH:mm:ss'),
+				job_id: job?.id,
+				employee_id: employee?.id
+			}, {
 				headers: {
 					Authorization: `Bearer ${access_token}`,
 					"Content-Type": "application/json",
@@ -100,6 +117,9 @@ export class CalendarService {
         ...attributes,
 			};
 
+			created_calendar.start_date = parseISO(restCalendarPropierties.start_date?.toString()!);
+			created_calendar.end_date = parseISO(restCalendarPropierties.end_date?.toString()!);
+
       included.map((data: any) => {
         const {
           data: { id, attributes, type },
@@ -115,6 +135,7 @@ export class CalendarService {
 
           case "jobs": {
             const job: Job = { id, ...attributes };
+						job.date_of_loss = parseISO(job.date_of_loss?.toString()!);
 
             calendar.job = job;
             break;
@@ -156,9 +177,19 @@ export class CalendarService {
 		try {
 			let endpoint = `${REACT_APP_BACKEND_API}/calendars/${calendar.id}?include=employee,job`;
 
-			const { data } = await axios.put(
-				endpoint,
-				calendar,
+			const {
+				job,
+				employee,
+				...restCalendarPropierties
+			} = calendar;
+
+			const { data } = await axios.put(endpoint,{
+					...restCalendarPropierties,
+					start_date: format(restCalendarPropierties.start_date!, 'yyyy-MM-dd HH:mm:ss'),
+					end_date: format(restCalendarPropierties.end_date!, 'yyyy-MM-dd HH:mm:ss'),
+					job_id: job?.id,
+					employee_id: employee?.id
+				},
 				{
 					headers: {
 						Authorization: `Bearer ${access_token}`,
@@ -175,6 +206,9 @@ export class CalendarService {
 
 			const updated_calendar: Calendar = { id, ...attributes };
 
+			updated_calendar.start_date = parseISO(restCalendarPropierties.start_date?.toString()!);
+			updated_calendar.end_date = parseISO(restCalendarPropierties.end_date?.toString()!);
+			
       included.map((data: any) => {
         const {
           data: { id, attributes, type },
@@ -190,6 +224,7 @@ export class CalendarService {
 
           case "jobs": {
             const job: Job = { id, ...attributes };
+						job.date_of_loss = parseISO(job.date_of_loss?.toString()!);
 
             calendar.job = job;
             break;
@@ -208,8 +243,6 @@ export class CalendarService {
 					status,
 					data: { errors },
 				} = error.response as AxiosResponse;
-
-				console.log(error);
 
 				// BAD REQUEST
 				if (status === HTTPResponse.BAD_REQUEST) {

@@ -3,15 +3,24 @@ import { Modal } from 'components/Modal';
 import { Feedback } from "components/Feedback";
 import { Popup } from "components/Popup";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
-import { Appointment } from "types/Appointment";
+import { Calendar } from "types/Calendar";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppointmentForm } from 'components/Appointments/Form';
-import { Calendar } from 'components/Calendar';
+import { CalendarForm } from 'components/Appointments/Form';
+import { CalendarTable } from 'components/Appointments/Table';
+import { clear_calendar_errors, clear_calendar_success, create_calendar_request, delete_calendar_request, get_calendars_request, update_calendar_request } from 'actions/calendar';
+import { CalendarEnum } from 'enum/CalendarEnum';
 
 export function Appointments() {
   // util hooks
   const dispatch = useDispatch();
+
+  const [search, setSearch] = useState();
+  const [filteredClient, setFilteredClient] = useState();
+
+  // to preserve calendar to edit
+  const [calendarEdit, setCalendarEdit] = useState<Calendar>();
+  const [calendarDelete, setCalendarDelete] = useState<Calendar>();
 
   // for modal open status
   const [openEdit, setOpenEdit] = useState<boolean>(false);
@@ -22,44 +31,44 @@ export function Appointments() {
     ({ auth }: any) => auth
   );
 
-  // const {
-  //   appointments,
-  //   loading,
-  //   success: successFromClient,
-  // }: {
-  //   appointments: Appointment[];
-  //   loading: boolean;
-  //   success: SuccessResponse;
-  // } = useSelector(({ appointment }: any) => appointment);
+  const {
+    calendars,
+    loading,
+    success: successFromCalendar,
+  }: {
+    calendars: Calendar[];
+    loading: boolean;
+    success: SuccessResponse;
+  } = useSelector(({ calendar }: any) => calendar);
 
   // feedback
   const [successes, setSuccesses] = useState<SuccessResponse[]>([]);
 
-  // useEffect(() => {
-  //   dispatch(get_appointments_request(token));
+  useEffect(() => {
+    dispatch(get_calendars_request(token));
 
-  //   return () => {
-  //     dispatch(clear_appointment_errors());
-  //     dispatch(clear_appointment_success());
-  //   };
-  // }, []);
+    return () => {
+      dispatch(clear_calendar_errors());
+      dispatch(clear_calendar_success());
+    };
+  }, []);
 
-  // useEffect(() => {
-  //   if (successFromAppointment) {
-  //     switch (successFromAppointment.code) {
-  //       case AppointmentEnum.CREATED:
-  //         setOpenNew(false);
-  //         break;
+  useEffect(() => {
+    if (successFromCalendar) {
+      switch (successFromCalendar.code) {
+        case CalendarEnum.CREATED:
+          setOpenNew(false);
+          break;
 
-  //       case AppointmentEnum.UPDATED:
-  //         setOpenEdit(false);
-  //         break;
+        case CalendarEnum.UPDATED:
+          setOpenEdit(false);
+          break;
 
-  //     }
+      }
 
-  //     setSuccesses([...successes, successFromAppointment]);
-  //   }
-  // }, [successFromAppointment]);
+      setSuccesses([...successes, successFromCalendar]);
+    }
+  }, [successFromCalendar]);
 
   const removeSuccess = (index: number) => {
     setSuccesses(successes.filter((success, i) => i != index));
@@ -70,39 +79,39 @@ export function Appointments() {
   };
 
   // when editing appointment
-  // const handleOnEdit = (appointment: Appointment) => {
-  //   dispatch(update_appointment_request(appointment, token));
-  // };
+  const handleOnEdit = (calendar: Calendar) => {
+    dispatch(update_calendar_request(calendar, token));
+  };
 
   // when creating appointment
-  // const handleOnCreate = (appointment: Appointment) => {
-  //   dispatch(create_appointment_request(appointment, token));
-  // };
+  const handleOnCreate = (calendar: Calendar) => {
+    dispatch(create_calendar_request(calendar, token));
+  };
 
-  // const handleOnDelete = (id: number) => {
-  //   dispatch(delete_appointment_request(id, token));
-  // };
+  const handleOnDelete = (id: number) => {
+    dispatch(delete_calendar_request(id, token));
+  };
 
-  // const prepareToEdit = (appointment: Appointment) => {
-  //   setAppointmentEdit(appointment);
-  //   setOpenEdit(true);
-  // };
+  const prepareToEdit = (calendar: Calendar) => {
+    setCalendarEdit(calendar);
+    setOpenEdit(true);
+  };
 
-  // const prepareToDelete = (appointment: Appointment) => {
-  //   setAppointmentDelete(appointment);
-  //   setOpenDelete(true);
-  // };
+  const prepareToDelete = (calendar: Calendar) => {
+    setCalendarDelete(calendar);
+    setOpenDelete(true);
+  };
 
 
   return <div className="flex flex-col gap-y-8 p-12 bg-gray-100 relative">
     <div className="absolute top-0 left-0 w-full">
-      {/* {successes.map((success, index) => (
+      {successes.map((success, index) => (
         <Feedback
           key={index}
           response={success}
           quit={() => removeSuccess(index)}
         />
-      ))} */}
+      ))}
     </div>
 
     <div className="capitalize font-bold text-2xl text-slate-600 pb-6 flex flex-col md:flex-row justify-between items-baseline gap-8" style={{ borderBottom: "1px solid#e3e3e3" }}>
@@ -121,7 +130,10 @@ export function Appointments() {
       </div>
     </div>
 
-    <Calendar />
+    {/* Calendar Table */}
+    {
+      loading ? 'loading' : calendars?.length ? <CalendarTable values={calendars!} onDelete={prepareToDelete} onEdit={prepareToEdit} /> : <>Empty</>
+    }
 
     {/* Modals */}
 
@@ -134,42 +146,42 @@ export function Appointments() {
       }}
     >
       <div className="px-6">
-        <AppointmentForm initialValue={{
+        <CalendarForm initialValue={{
           address: '',
           contacts: [],
           end_date: new Date(),
           start_date: new Date(),
           notes: ''
-        }} submit={() => { }} />
+        }} submit={handleOnCreate} />
       </div>
     </Modal>
 
 
 
-    {/* For editing client */}
-    {/* <Modal
+    {/* For editing calendar */}
+    <Modal
       isOpen={openEdit}
       closeModal={() => {
         setOpenEdit(false);
       }}
     >
       <div className="px-6">
-        <ClientForm initialValue={clientEdit!} submit={handleOnEdit} />
+        <CalendarForm initialValue={calendarEdit!} submit={handleOnEdit} />
       </div>
-    </Modal> */}
+    </Modal>
 
 
     {/* Confirm delete */}
-    {/* <Modal
+    <Modal
       isOpen={openDelete}
       closeModal={() => {
         setOpenDelete(false);
       }}>
       <Popup
         title={`Delete Client.`}
-        description={`Are you sure that you want to delete '${clientDelete?.firstname} ${clientDelete?.lastname}'?`}
+        description={`Are you sure that you want to delete this appointment?`}
         accept={() => {
-          dispatch(delete_appointment_request(clientDelete?.id!, token!));
+          dispatch(delete_calendar_request(calendarDelete?.id!, token!));
           setOpenDelete(false);
         }}
         cancel={() => {
@@ -179,7 +191,7 @@ export function Appointments() {
         iconBg="bg-red-100"
         acceptTitle="Remove"
         icon={<div></div>} />
-    </Modal> */}
+    </Modal>
 
 
   </div>

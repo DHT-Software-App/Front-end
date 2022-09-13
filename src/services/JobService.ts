@@ -107,13 +107,13 @@ export class JobService {
 				client,
 				work_type,
 				insurance,
-				...restJobPropierties
+				...restJobProperties
 			} = job;
 
 
 			const { data } = await axios.post(endpoint, {
-				...restJobPropierties,
-				date_of_loss: format(restJobPropierties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'),
+				...restJobProperties,
+				date_of_loss: format(restJobProperties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'),
 				customer_id: customer?.id, 
 				client_id: client?.id, 
 				work_type_id: work_type?.id, 
@@ -136,7 +136,7 @@ export class JobService {
         ...attributes,
 			};
 
-			created_job.date_of_loss = parseISO(format(restJobPropierties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'));
+			created_job.date_of_loss = parseISO(format(restJobProperties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'));
 
       included.map((data: any) => {
         const {
@@ -214,12 +214,12 @@ export class JobService {
 				client,
 				work_type,
 				insurance,
-				...restJobPropierties
+				...restJobProperties
 			} = job;
 
 			const { data } = await axios.put(endpoint, {
-				...restJobPropierties,
-				date_of_loss: format(restJobPropierties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'),
+				...restJobProperties,
+				date_of_loss: format(restJobProperties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'),
 				customer_id: customer?.id, 
 				client_id: client?.id, 
 				work_type_id: work_type?.id, 
@@ -241,7 +241,7 @@ export class JobService {
 
 			const updated_job: Job = { id, ...attributes };
 
-			updated_job.date_of_loss = parseISO(format(restJobPropierties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'));
+			updated_job.date_of_loss = parseISO(format(restJobProperties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'));
 
 
       included.map((data: any) => {

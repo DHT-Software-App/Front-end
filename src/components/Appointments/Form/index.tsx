@@ -1,68 +1,61 @@
 import { DynamicList } from "components/DynamicList";
 import { useFormik, Form, FormikProvider } from "formik";
-import { useState } from "react";
-import { Appointment } from "types/Appointment";
+import { useState, useEffect } from "react";
+import { Calendar } from "types/Calendar";
 import { TextField } from "components/TextField";
 import * as yup from "yup";
 import { ListBox } from "components/ListBox";
 import { Job } from "types/Job";
 import { Employee } from "types/Employee";
 import DateTimePicker from "components/DateTimePicker";
+import { useSelector } from "react-redux";
+import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
+import { Loading } from "components/Loading";
 
 const validate = yup.object({
 
 });
 
-const jobs: Job[] = [
-  {
-    id: 2,
-    claim_number: '123232'
-  },
-  {
-    id: 3,
-    claim_number: '123232'
-  }
-];
 
-const technicians: Employee[] = [
-  {
-    id: 2,
-    firstname: 'Robert',
-    lastname: 'Smith'
-  },
-  {
-    id: 1,
-    firstname: 'Frank',
-    lastname: 'Peralta'
-  }
-]
-
-export const AppointmentForm = ({
+export const CalendarForm = ({
   initialValue,
   submit,
 }: {
-  initialValue: Appointment;
-  submit: (appointment: Appointment) => void;
+  initialValue: Calendar;
+  submit: (calendar: Calendar) => void;
 }) => {
   const [contacts, setContacts] = useState<string[]>(initialValue.contacts!);
-  const [selectedJob, setSelectedJob] = useState<Job>(jobs[0]);
-  const [selectedTechnician, setSelectedTechnician] = useState<Employee>(technicians[0]);
+  const [allowedJobs, setAllowedJobs] = useState<Job[]>();
+  const [allowedEmployees, setAllowedEmployees] = useState<Employee[]>();
+
+  const [selectedJob, setSelectedJob] = useState<Job>(initialValue.job!);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee>(initialValue.employee!);
+
+  const [selectedStartDate, setSelectedStartDate] = useState(new Date(initialValue.start_date!));
+  const [selectedEndDate, setSelectedEndDate] = useState(new Date(initialValue.end_date!));
 
 
-  // const {
-  //   errors: appointment_errors,
-  //   loading,
-  // }: {
-  //   errors: Error[];
-  //   loading: boolean;
-  // } = useSelector(({ appointment }: any) => appointment);
+  const {
+    errors: calendar_errors,
+    loading,
+  }: {
+    errors: Error[];
+    loading: boolean;
+  } = useSelector(({ calendar }: any) => calendar);
 
+  const { loading: loadingJobs, jobs } = useSelector(
+    ({ job }: any) => job
+  );
 
-  // useEffect(() => {
-  //   if (contacts) {
-  //     setFieldValue('contacts', contacts);
-  //   }
-  // }, [contacts])
+  const { loading: loadingEmployees, employees } = useSelector(
+    ({ employee }: any) => employee
+  );
+
+  useEffect(() => {
+    if (contacts) {
+      setFieldValue('contacts', contacts);
+    }
+  }, [contacts])
 
 
   const formikBag = useFormik({
@@ -70,7 +63,7 @@ export const AppointmentForm = ({
     validationSchema: validate,
     onSubmit: (values, { setSubmitting }) => {
 
-      // submit(values as Appointment);
+      // submit(values as Calendar);
 
       // setSubmitting(false);
     },
@@ -79,24 +72,23 @@ export const AppointmentForm = ({
   const { isSubmitting, isValid, setFieldValue, setFieldError } = formikBag;
 
   // when server errors
-  // useEffect(() => {
-  //   if (appointment_errors) {
+  useEffect(() => {
+    if (calendar_errors) {
+
+      // InvalidAttributeError
+      if (calendar_errors.some((e) => e instanceof InvalidAttributeError)) {
+        const errors = calendar_errors as InvalidAttributeError[];
+
+        errors.forEach((error: InvalidAttributeError) => {
+          const { attribute, detail } = error.content;
+          setFieldError(attribute, detail);
+        });
+
+      }
 
 
-  //     // InvalidAttributeError
-  //     if (appointment_errors.some((e) => e instanceof InvalidAttributeError)) {
-  //       const errors = appointment_errors as InvalidAttributeError[];
-
-  //       errors.forEach((error: InvalidAttributeError) => {
-  //         const { attribute, detail } = error.content;
-  //         setFieldError(attribute, detail);
-  //       });
-
-  //     }
-
-
-  //   }
-  // }, [appointment_errors]);
+    }
+  }, [calendar_errors]);
 
 
 
@@ -104,27 +96,33 @@ export const AppointmentForm = ({
     <Form>
       <div className="flex flex-col py-14 px-10 max-w-screen-lg space-y-12">
         <header>
-          <h3 className="font-bold text-2xl">New Appointent</h3>
+          <h3 className="font-bold text-2xl">New Appointment</h3>
         </header>
 
         <section>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="col-span-2 z-50">
-              <ListBox defaultItem={selectedJob}
-                items={jobs}
-                displayName="claim_number"
-                label="Select Job"
-                required
-                onSelect={setSelectedJob} />
+              {allowedJobs?.length && !loadingJobs ?
+                <ListBox defaultItem={selectedJob}
+                  items={allowedJobs}
+                  displayName="policy_number"
+                  label="Select Job"
+                  required
+                  onSelect={setSelectedJob} /> : <Loading width={24} />
+              }
+
             </div>
 
             <div className="col-span-2 z-40">
-              <ListBox defaultItem={selectedTechnician}
-                items={technicians}
-                displayName="firstname"
-                label="Select Job"
-                required
-                onSelect={setSelectedTechnician} />
+              {allowedEmployees?.length && !loadingEmployees ?
+                <ListBox defaultItem={selectedEmployee}
+                  items={allowedEmployees}
+                  displayName="firstname"
+                  label="Select Technician"
+                  required
+                  onSelect={setSelectedEmployee} /> : <Loading width={24} />
+              }
+
             </div>
 
             <div className="col-span-2">
@@ -140,7 +138,7 @@ export const AppointmentForm = ({
             </div>
 
             <div className="col-span-2">
-              <DateTimePicker label="Start Date" onChange={() => { }} value={new Date()} required />
+              <DateTimePicker label="End Date" onChange={() => { }} value={new Date()} required />
             </div>
 
             <div className="col-span-4">
@@ -159,11 +157,10 @@ export const AppointmentForm = ({
         <footer className="flex gap-x-4">
           <button
             type="submit"
-            disabled={isSubmitting || !isValid /* || loading */}
+            disabled={isSubmitting || !isValid || loading}
             className="bg-blue text-white text-base w-full md:w-auto font-semibold px-5 py-3 disabled:bg-slate-100 disabled:text-slate-300"
           >
-            {/* {loading ? 'Processing' : 'Save Appointment'} */}
-            Save Appointment
+            {loading ? 'Processing' : 'Save Appointment'}
           </button>
 
         </footer>
