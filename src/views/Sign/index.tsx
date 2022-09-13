@@ -13,7 +13,7 @@ export const Sign = () => {
     }
   }, [isAuthenticated])
 
-  return isAuthenticated !== undefined ? <div className="min-h-screen grid place-content-center bg-blue-dark">
+  return <div className="min-h-screen grid place-content-center bg-blue-dark">
     <SignForm />
-  </div> : <>Loading</>
+  </div>
 }
