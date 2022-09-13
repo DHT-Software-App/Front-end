@@ -82,11 +82,14 @@ export function FormikStepper({ children, value }: FormikStepperProps) {
   }
 
   useEffect(() => {
+
     if (!isValid) {
       setCurrentInvalidStepIndex(step);
     } else {
       setCurrentInvalidStepIndex(-1)
     }
+
+
   }, [isValid]);
 
   // Capture errors from outside

@@ -132,7 +132,7 @@ export function Appointments() {
 
     {/* Calendar Table */}
     {
-      loading ? 'loading' : calendars?.length ? <CalendarTable values={calendars!} onDelete={prepareToDelete} onEdit={prepareToEdit} /> : <>Empty</>
+      loading ? 'loading' : <CalendarTable values={calendars!} onDelete={prepareToDelete} onEdit={prepareToEdit} />
     }
 
     {/* Modals */}

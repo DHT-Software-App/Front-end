@@ -7,7 +7,7 @@ import { Listbox as HeadListBox, Transition } from "@headlessui/react";
 import { UnfoldMore } from '@mui/icons-material';
 
 type ListBoxProps<T extends Record<string, any>> = {
-  displayName: keyof T;
+  displayName: (keyof T)[];
   defaultItem: T;
   items: T[];
   label?: string;
@@ -46,7 +46,7 @@ export const ListBox = <T extends Record<string, any>>({
       <HeadListBox.Button className="text-base font-semibold tracking-wide text-zinc-500 flex justify-between items-center gap-x-2 placeholder-slate-400 
       bg-neutral-100 rounded-md outline-none pl-6 pr-6 py-3 focus:outline-none focus:ring-2 
       focus:ring-inset focus:ring-slate-600 duration-100 w-full">
-        {selectedItem[displayName]}
+        {displayName.map((value: keyof T) => selectedItem[value]).join(' ')}
         <UnfoldMore fontSize="small" color="info" />
       </HeadListBox.Button>
     </div>
@@ -71,7 +71,7 @@ export const ListBox = <T extends Record<string, any>>({
                   className={`block select-none px-4 py-2 mb-2 text-sm ${selected && "text-white font-semibold bg-zinc-700"
                     } text-gray-700 ${selected || 'hover:bg-zinc-100'} ${active && !selected ? 'bg-zinc-100' : ''}`}
                 >
-                  {item[displayName]}
+                  {displayName.map((value: keyof T) => item[value]).join(' ')}
                 </div>
               )}
             </HeadListBox.Option>

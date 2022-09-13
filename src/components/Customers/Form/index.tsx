@@ -41,18 +41,18 @@ const validate = yup.object({
   insured_firstname: yup
     .string()
     .max(50, "Insured first name must be max 50 characters")
-  // .when('has_insured', {
-  //   is: true,
-  //   then: yup.string().required("Insured first name required.")
-  // })
+    .when('has_insured', {
+      is: true,
+      then: yup.string().required("Insured first name required.")
+    })
   ,
   insured_lastname: yup
     .string()
     .max(50, "Insured last name must be max 50 characters")
-  // .when('has_insured', {
-  //   is: true,
-  //   then: yup.string().required("Insured last name required.")
-  // }),
+    .when('has_insured', {
+      is: true,
+      then: yup.string().required("Insured last name required.")
+    }),
 });
 
 const hasInsuredOptions: { display: string, value: boolean }[] = [
@@ -105,7 +105,6 @@ export const CustomerForm = ({
     initialValues: initialValue,
     validationSchema: validate,
     onSubmit: (values, { setSubmitting }) => {
-
       submit(values as Customer);
 
       setSubmitting(false);
@@ -193,7 +192,7 @@ export const CustomerForm = ({
             <div className="col-span-1">
               <ListBox defaultItem={hasInsured}
                 items={hasInsuredOptions}
-                displayName="display"
+                displayName={["display"]}
                 label="Has Insured?"
                 required
                 onSelect={setHasInsured} />

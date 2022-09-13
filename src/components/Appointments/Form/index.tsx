@@ -8,9 +8,11 @@ import { ListBox } from "components/ListBox";
 import { Job } from "types/Job";
 import { Employee } from "types/Employee";
 import DateTimePicker from "components/DateTimePicker";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
 import { Loading } from "components/Loading";
+import { get_jobs_request } from "actions/job";
+import { get_employees_request } from "actions/employee";
 
 const validate = yup.object({
 
@@ -24,6 +26,7 @@ export const CalendarForm = ({
   initialValue: Calendar;
   submit: (calendar: Calendar) => void;
 }) => {
+  const dispatch = useDispatch();
   const [contacts, setContacts] = useState<string[]>(initialValue.contacts!);
   const [allowedJobs, setAllowedJobs] = useState<Job[]>();
   const [allowedEmployees, setAllowedEmployees] = useState<Employee[]>();
@@ -34,6 +37,9 @@ export const CalendarForm = ({
   const [selectedStartDate, setSelectedStartDate] = useState(new Date(initialValue.start_date!));
   const [selectedEndDate, setSelectedEndDate] = useState(new Date(initialValue.end_date!));
 
+  const { auth: token } = useSelector(
+    ({ auth }: any) => auth
+  );
 
   const {
     errors: calendar_errors,
@@ -51,11 +57,59 @@ export const CalendarForm = ({
     ({ employee }: any) => employee
   );
 
+  // when component mounted
+  useEffect(() => {
+    setFieldError('policy_number', 'nooo')
+    if (token) {
+      dispatch(get_jobs_request(token));
+      // TODO: ONLY GET TECHNICIAN EMPLOYEE
+      dispatch(get_employees_request(token));
+    }
+  }, [token]);
+
+  // when jobs loaded
+  useEffect(() => {
+    if (jobs) {
+      setAllowedJobs(jobs);
+
+      if (initialValue.job!) return;
+
+      setSelectedJob(jobs[0])
+
+    }
+  }, [jobs]);
+
+  // when employees loaded
+  useEffect(() => {
+    if (employees) {
+      setAllowedEmployees(employees);
+
+      if (initialValue.employee!) return;
+
+      setSelectedEmployee(employees[0])
+
+    }
+  }, [employees]);
+
+  // when selected job changed
+  useEffect(() => {
+    if (selectedJob) {
+      setFieldValue('job', selectedJob);
+    }
+  }, [selectedJob]);
+
+  // when selected employee changed
+  useEffect(() => {
+    if (selectedEmployee) {
+      setFieldValue('employee', selectedEmployee);
+    }
+  }, [selectedEmployee]);
+
   useEffect(() => {
     if (contacts) {
       setFieldValue('contacts', contacts);
     }
-  }, [contacts])
+  }, [contacts]);
 
 
   const formikBag = useFormik({
@@ -105,7 +159,7 @@ export const CalendarForm = ({
               {allowedJobs?.length && !loadingJobs ?
                 <ListBox defaultItem={selectedJob}
                   items={allowedJobs}
-                  displayName="policy_number"
+                  displayName={["policy_number"]}
                   label="Select Job"
                   required
                   onSelect={setSelectedJob} /> : <Loading width={24} />
@@ -117,7 +171,7 @@ export const CalendarForm = ({
               {allowedEmployees?.length && !loadingEmployees ?
                 <ListBox defaultItem={selectedEmployee}
                   items={allowedEmployees}
-                  displayName="firstname"
+                  displayName={["firstname", 'lastname']}
                   label="Select Technician"
                   required
                   onSelect={setSelectedEmployee} /> : <Loading width={24} />

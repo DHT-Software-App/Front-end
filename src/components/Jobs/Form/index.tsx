@@ -314,7 +314,7 @@ export const JobForm = ({
           <div className="col-span-3 z-50">
             {allowedCustomers?.length && !loadingCustomers ? <ListBox defaultItem={selectedCustomer}
               items={allowedCustomers}
-              displayName="firstname"
+              displayName={["firstname", "lastname"]}
               label="Customer"
               required
               onSelect={setSelectedCustomer} /> : <Loading width={24} />}
@@ -325,7 +325,7 @@ export const JobForm = ({
             {allowedInsurances?.length && !loadingInsurances ?
               <ListBox defaultItem={selectedInsurance}
                 items={allowedInsurances}
-                displayName="name"
+                displayName={["name"]}
                 label="Insurance Company"
                 required
                 onSelect={setSelectedInsurance} /> : <Loading width={24} />
@@ -385,7 +385,7 @@ export const JobForm = ({
             {allowedWorkTypes?.length && !loadingWorkTypes ?
               <ListBox defaultItem={selectedWorkType}
                 items={allowedWorkTypes}
-                displayName="name"
+                displayName={["name"]}
                 label="Work Type"
                 required
                 onSelect={setSelectedWorkType} /> : <Loading width={24} />}
@@ -396,7 +396,7 @@ export const JobForm = ({
           <div className="col-span-3 z-30">
             {allowedClients?.length && !loadingClients ? <ListBox defaultItem={selectedClient}
               items={allowedClients}
-              displayName="firstname"
+              displayName={["firstname", "lastname"]}
               label="Client"
               required
               onSelect={setSelectedClient} /> : <Loading width={24} />
@@ -412,7 +412,7 @@ export const JobForm = ({
           <div className="col-span-3">
             <ListBox defaultItem={selectedStatus}
               items={statusOptions}
-              displayName="display"
+              displayName={["display"]}
               label="Status"
               required
               onSelect={setSelectedStatus} />

@@ -191,7 +191,7 @@ export const EmployeeForm = ({
             <div className="col-span-1">
               <ListBox defaultItem={selectedStatus}
                 items={statusOptions}
-                displayName="display"
+                displayName={["display"]}
                 label="Status"
                 required
                 onSelect={setSelectedStatus} />
@@ -201,7 +201,7 @@ export const EmployeeForm = ({
             <div className="col-span-1">
               <ListBox defaultItem={selectedRole! || allowedRoles[0]!}
                 items={allowedRoles}
-                displayName="display"
+                displayName={["display"]}
                 label="Role"
                 required
                 onSelect={setSelectedRole} />
