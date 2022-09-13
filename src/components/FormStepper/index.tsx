@@ -13,19 +13,26 @@ type FormikStepperProps = {
 type FormikStepTabProps = {
   active?: boolean,
   disable?: boolean,
-  children?: string
+  children?: string,
+  onClick?: () => void
 }
 
 type FormikStepTabsProps = {
   children?: React.ReactElement<FormikStepTabProps>[]
 }
 
-function FormikStepTab({ active = false, disable = false, children }: FormikStepTabProps) {
+function FormikStepTab({ active = false, disable = false, children, onClick }: FormikStepTabProps) {
+  const handleClick = () => {
+    // If onClick is a function and the step is not disabled
+    if (onClick && !disable) {
+      onClick();
+    }
+  }
 
   return <a className={`select-none inline-block p-4 rounded-t-lg opacity-100
      ${active && "text-blue border-b-blue border-b-2"}
     ${disable && "opacity-30"}
-    `}>
+    `} onClick={handleClick}>
     {children}
   </a>
 }
@@ -48,6 +55,8 @@ export function FormikStepper({ children, value }: FormikStepperProps) {
   const childrenArray = React.Children.toArray(children as any) as React.ReactElement<FormikStepProps>[]
   const [step, setStep] = useState(0);
   const currentChild = childrenArray[step];
+  const [currentInvalidStepIndex, setCurrentInvalidStepIndex] = useState<Number>(-1);
+
   const stepTabTitles = childrenArray.map((c) => c.props.title);
 
   const formikBag = useFormik({
@@ -71,6 +80,15 @@ export function FormikStepper({ children, value }: FormikStepperProps) {
       return validationSchema._nodes.includes(fieldName);
     });
   }
+
+  useEffect(() => {
+    if (!isValid) {
+      setCurrentInvalidStepIndex(step);
+    } else {
+      setCurrentInvalidStepIndex(-1)
+    }
+  }, [isValid]);
+
   // Capture errors from outside
   useEffect(() => {
     if (value.errors) {
@@ -95,9 +113,10 @@ export function FormikStepper({ children, value }: FormikStepperProps) {
           {
             stepTabTitles.map((title: string, index: number) => (
               <FormikStepTab
-                key="index"
+                key={index}
                 active={currentChild.props.title == title}
-                disable={!isValid}
+                disable={currentInvalidStepIndex > -1 && currentInvalidStepIndex < index}
+                onClick={() => setStep(index)}
               >
                 {title}
               </FormikStepTab>
@@ -121,7 +140,7 @@ export function FormikStepper({ children, value }: FormikStepperProps) {
               <button
                 type="button"
                 onClick={() => setStep(s => s - 1)}
-                disabled={isSubmitting || !isValid}
+                disabled={isSubmitting}
                 className="bg-blue text-white text-base w-full md:w-auto font-semibold px-5 py-3 disabled:bg-zinc-100 disabled:text-zinc-300">
                 Back Step
               </button> : null
@@ -129,7 +148,7 @@ export function FormikStepper({ children, value }: FormikStepperProps) {
 
           <button
             type="submit"
-            disabled={isSubmitting || !isValid}
+            disabled={isSubmitting || currentInvalidStepIndex == step}
             className="bg-blue text-white text-base w-full md:w-auto font-semibold px-5 py-3 disabled:bg-zinc-100 disabled:text-zinc-300">
             {isLastStep() ? isSubmitting ? 'Processing' : 'Save' : 'Next Step'}
           </button>
