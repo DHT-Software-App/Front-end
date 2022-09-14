@@ -163,7 +163,6 @@ export const JobForm = ({
 
   // when component mounted
   useEffect(() => {
-    setFieldError('policy_number', 'nooo')
     if (token) {
       dispatch(get_customers_request(token));
       dispatch(get_clients_request(token));

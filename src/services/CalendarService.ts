@@ -117,8 +117,8 @@ export class CalendarService {
         ...attributes,
 			};
 
-			created_calendar.start_date = parseISO(restCalendarPropierties.start_date?.toString()!);
-			created_calendar.end_date = parseISO(restCalendarPropierties.end_date?.toString()!);
+			created_calendar.start_date = parseISO(format(restCalendarPropierties.start_date!,'yyyy-MM-dd HH:mm:ss'));
+			created_calendar.end_date = parseISO(format(restCalendarPropierties.end_date!, 'yyyy-MM-dd HH:mm:ss'));
 
       included.map((data: any) => {
         const {
@@ -129,15 +129,14 @@ export class CalendarService {
           case "employees": {
             const employee: Employee = { id, ...attributes };
 
-            calendar.employee = employee;
+            created_calendar.employee = employee;
             break;
           }
 
           case "jobs": {
             const job: Job = { id, ...attributes };
-						job.date_of_loss = parseISO(job.date_of_loss?.toString()!);
 
-            calendar.job = job;
+            created_calendar.job = job;
             break;
           }
 
@@ -175,6 +174,7 @@ export class CalendarService {
 		access_token: string
 	): Promise<Calendar | void> {
 		try {
+			
 			let endpoint = `${REACT_APP_BACKEND_API}/calendars/${calendar.id}?include=employee,job`;
 
 			const {
@@ -206,8 +206,9 @@ export class CalendarService {
 
 			const updated_calendar: Calendar = { id, ...attributes };
 
-			updated_calendar.start_date = parseISO(restCalendarPropierties.start_date?.toString()!);
-			updated_calendar.end_date = parseISO(restCalendarPropierties.end_date?.toString()!);
+
+			updated_calendar.start_date = parseISO(format(restCalendarPropierties.start_date!,'yyyy-MM-dd HH:mm:ss'));
+			updated_calendar.end_date = parseISO(format(restCalendarPropierties.end_date!, 'yyyy-MM-dd HH:mm:ss'));
 			
       included.map((data: any) => {
         const {
@@ -218,15 +219,14 @@ export class CalendarService {
           case "employees": {
             const employee: Employee = { id, ...attributes };
 
-            calendar.employee = employee;
+            updated_calendar.employee = employee;
             break;
           }
 
           case "jobs": {
             const job: Job = { id, ...attributes };
-						job.date_of_loss = parseISO(job.date_of_loss?.toString()!);
 
-            calendar.job = job;
+            updated_calendar.job = job;
             break;
           }
 
@@ -235,7 +235,7 @@ export class CalendarService {
         }
       });
 
-
+			
 			return updated_calendar;
 		} catch (error) {
 			if (error instanceof AxiosError) {

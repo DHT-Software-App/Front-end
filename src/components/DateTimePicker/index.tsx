@@ -9,6 +9,7 @@ type DateTimePicker = {
   disableClock?: boolean;
   value: Date,
   maxDate?: Date,
+  minDate?: Date,
   onChange: (date: Date) => void
 }
 
@@ -18,7 +19,8 @@ function DateTimePicker({
   disableClock = false,
   onChange,
   value,
-  maxDate
+  maxDate,
+  minDate
 }: DateTimePicker) {
 
   return (
@@ -34,7 +36,7 @@ function DateTimePicker({
         value={value}
         calendarClassName="dateTimePicker"
         maxDate={maxDate}
-
+        minDate={minDate}
       />
 
 

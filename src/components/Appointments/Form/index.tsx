@@ -1,5 +1,5 @@
 import { DynamicList } from "components/DynamicList";
-import { useFormik, Form, FormikProvider } from "formik";
+import { useFormik, Form, FormikProvider, ErrorMessage } from "formik";
 import { useState, useEffect } from "react";
 import { Calendar } from "types/Calendar";
 import { TextField } from "components/TextField";
@@ -13,19 +13,44 @@ import { InvalidAttributeError } from "utils/errors/InvalidAttributeError";
 import { Loading } from "components/Loading";
 import { get_jobs_request } from "actions/job";
 import { get_employees_request } from "actions/employee";
+import addDays from "date-fns/addDays"
+import subDays from "date-fns/subDays"
+import { parseDateString } from "utils/yup/transforms";
 
 const validate = yup.object({
-
+  address: yup
+    .string()
+    .trim()
+    .max(255, 'Address must be max 255 characters')
+    .required("Address required."),
+  notes: yup
+    .string()
+    .trim()
+    .max(255, 'Address must be max 255 characters')
+    .required("Address required."),
+  start_date: yup
+    .date()
+    .transform(parseDateString('yyyy-MM-dd HH:mm:ss'))
+    .max(yup.ref('end_date'), 'Start date must be earlier than the end date')
+    .required("Date of loss required."),
+  end_date: yup
+    .date()
+    .transform(parseDateString('yyyy-MM-dd HH:mm:ss'))
+    .min(yup.ref('start_date'), 'End date must be later than the start date')
+    .required("Date of loss required."),
+  contacts: yup.array(yup.string())
 });
 
+type CalendarFormProps = {
+  initialValue: Calendar;
+  onDelete?: (calendar: Calendar) => void;
+  submit: (calendar: Calendar) => void;
+}
 
 export const CalendarForm = ({
   initialValue,
-  submit,
-}: {
-  initialValue: Calendar;
-  submit: (calendar: Calendar) => void;
-}) => {
+  submit, onDelete
+}: CalendarFormProps) => {
   const dispatch = useDispatch();
   const [contacts, setContacts] = useState<string[]>(initialValue.contacts!);
   const [allowedJobs, setAllowedJobs] = useState<Job[]>();
@@ -59,13 +84,24 @@ export const CalendarForm = ({
 
   // when component mounted
   useEffect(() => {
-    setFieldError('policy_number', 'nooo')
     if (token) {
       dispatch(get_jobs_request(token));
       // TODO: ONLY GET TECHNICIAN EMPLOYEE
       dispatch(get_employees_request(token));
     }
   }, [token]);
+
+  const formikBag = useFormik({
+    initialValues: initialValue,
+    validationSchema: validate,
+    onSubmit: (values, { setSubmitting }) => {
+      submit(values as Calendar);
+
+      setSubmitting(false);
+    },
+  });
+
+  const { isSubmitting, isValid, setFieldValue, setFieldError } = formikBag;
 
   // when jobs loaded
   useEffect(() => {
@@ -91,19 +127,35 @@ export const CalendarForm = ({
     }
   }, [employees]);
 
-  // when selected job changed
+  // when selected job change
   useEffect(() => {
     if (selectedJob) {
       setFieldValue('job', selectedJob);
     }
   }, [selectedJob]);
 
-  // when selected employee changed
+  // when selected employee change
   useEffect(() => {
     if (selectedEmployee) {
       setFieldValue('employee', selectedEmployee);
     }
   }, [selectedEmployee]);
+
+  // when start date change
+  useEffect(() => {
+    if (selectedStartDate) {
+      setFieldValue('start_date', selectedStartDate);
+    }
+
+  }, [selectedStartDate]);
+
+  // when start date change
+  useEffect(() => {
+    if (selectedEndDate) {
+      setFieldValue('end_date', selectedEndDate);
+    }
+
+  }, [selectedEndDate]);
 
   useEffect(() => {
     if (contacts) {
@@ -111,19 +163,6 @@ export const CalendarForm = ({
     }
   }, [contacts]);
 
-
-  const formikBag = useFormik({
-    initialValues: initialValue,
-    validationSchema: validate,
-    onSubmit: (values, { setSubmitting }) => {
-
-      // submit(values as Calendar);
-
-      // setSubmitting(false);
-    },
-  });
-
-  const { isSubmitting, isValid, setFieldValue, setFieldError } = formikBag;
 
   // when server errors
   useEffect(() => {
@@ -143,7 +182,6 @@ export const CalendarForm = ({
 
     }
   }, [calendar_errors]);
-
 
 
   return <FormikProvider value={formikBag}>
@@ -187,12 +225,14 @@ export const CalendarForm = ({
               <DynamicList title="manage contacts" values={contacts} onChange={setContacts} />
             </div>
 
-            <div className="col-span-2 z-20">
-              <DateTimePicker label="Start Date" onChange={() => { }} value={new Date()} required />
+            <div className="col-span-2 z-50">
+              <DateTimePicker label="Start Date" maxDate={subDays(selectedEndDate, 1)} value={selectedStartDate} onChange={setSelectedStartDate} required />
+              <ErrorMessage name="start_date" component="div" className="error" />
             </div>
 
-            <div className="col-span-2">
-              <DateTimePicker label="End Date" onChange={() => { }} value={new Date()} required />
+            <div className="col-span-2 z-50">
+              <DateTimePicker label="End date" minDate={addDays(selectedStartDate, 1)} value={selectedEndDate} onChange={setSelectedEndDate} required />
+              <ErrorMessage name="end_date" component="div" className="error" />
             </div>
 
             <div className="col-span-4">
@@ -208,7 +248,7 @@ export const CalendarForm = ({
         </section>
 
         {/* Footer - Buttons */}
-        <footer className="flex gap-x-4">
+        <footer className="flex flex-row-reverse gap-x-4 space-x-2">
           <button
             type="submit"
             disabled={isSubmitting || !isValid || loading}
@@ -216,6 +256,17 @@ export const CalendarForm = ({
           >
             {loading ? 'Processing' : 'Save Appointment'}
           </button>
+
+          {
+            initialValue.id !== undefined && onDelete && <button
+              type="button"
+              disabled={isSubmitting || loading}
+              onClick={() => onDelete(initialValue)}
+              className="bg-red-500 text-white text-base w-full md:w-auto font-semibold px-5 py-3 disabled:bg-red-400 disabled:text-red-600"
+            >
+              Delete
+            </button>
+          }
 
         </footer>
       </div>

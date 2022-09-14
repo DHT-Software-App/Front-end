@@ -10,6 +10,15 @@ import { CalendarForm } from 'components/Appointments/Form';
 import { CalendarTable } from 'components/Appointments/Table';
 import { clear_calendar_errors, clear_calendar_success, create_calendar_request, delete_calendar_request, get_calendars_request, update_calendar_request } from 'actions/calendar';
 import { CalendarEnum } from 'enum/CalendarEnum';
+import addDays from "date-fns/addDays"
+
+const initialValue = {
+  address: '',
+  contacts: [],
+  end_date: addDays(new Date(), 1),
+  start_date: new Date(),
+  notes: ''
+};
 
 export function Appointments() {
   // util hooks
@@ -18,6 +27,8 @@ export function Appointments() {
   const [search, setSearch] = useState();
   const [filteredClient, setFilteredClient] = useState();
 
+  // new calendar item
+  const [newCalendar, setNewCalendar] = useState<Calendar>(initialValue);
   // to preserve calendar to edit
   const [calendarEdit, setCalendarEdit] = useState<Calendar>();
   const [calendarDelete, setCalendarDelete] = useState<Calendar>();
@@ -78,6 +89,11 @@ export function Appointments() {
     console.log(ev);
   };
 
+  const handleSelection = (calendar: Calendar) => {
+    setNewCalendar(calendar);
+    setOpenNew(true);
+  }
+
   // when editing appointment
   const handleOnEdit = (calendar: Calendar) => {
     dispatch(update_calendar_request(calendar, token));
@@ -88,9 +104,6 @@ export function Appointments() {
     dispatch(create_calendar_request(calendar, token));
   };
 
-  const handleOnDelete = (id: number) => {
-    dispatch(delete_calendar_request(id, token));
-  };
 
   const prepareToEdit = (calendar: Calendar) => {
     setCalendarEdit(calendar);
@@ -99,6 +112,7 @@ export function Appointments() {
 
   const prepareToDelete = (calendar: Calendar) => {
     setCalendarDelete(calendar);
+    setOpenEdit(false);
     setOpenDelete(true);
   };
 
@@ -132,7 +146,7 @@ export function Appointments() {
 
     {/* Calendar Table */}
     {
-      loading ? 'loading' : <CalendarTable values={calendars!} onDelete={prepareToDelete} onEdit={prepareToEdit} />
+      loading ? 'loading' : <CalendarTable values={calendars!} onEdit={prepareToEdit} onSelection={handleSelection} />
     }
 
     {/* Modals */}
@@ -146,13 +160,7 @@ export function Appointments() {
       }}
     >
       <div className="px-6">
-        <CalendarForm initialValue={{
-          address: '',
-          contacts: [],
-          end_date: new Date(),
-          start_date: new Date(),
-          notes: ''
-        }} submit={handleOnCreate} />
+        <CalendarForm initialValue={newCalendar} submit={handleOnCreate} />
       </div>
     </Modal>
 
@@ -166,7 +174,7 @@ export function Appointments() {
       }}
     >
       <div className="px-6">
-        <CalendarForm initialValue={calendarEdit!} submit={handleOnEdit} />
+        <CalendarForm initialValue={calendarEdit!} submit={handleOnEdit} onDelete={prepareToDelete} />
       </div>
     </Modal>
 

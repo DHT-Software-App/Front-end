@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { Calendar } from "types/Calendar"
-import FullCalendar, { EventSourceInput, EventInput, EventApi, EventClickArg } from '@fullcalendar/react' // must go before plugins
+import FullCalendar, { EventSourceInput, EventInput, EventApi, EventClickArg, DateSelectArg } from '@fullcalendar/react' // must go before plugins
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin
 import interactionPlugin from '@fullcalendar/interaction'
 import { format } from 'date-fns'
@@ -9,17 +9,16 @@ import { format } from 'date-fns'
 type CalendarProps = {
   values: Calendar[];
   onEdit: (calendar: Calendar) => void;
-  onDelete: (calendar: Calendar) => void;
+  onSelection?: (calendar: Calendar) => void;
 }
 
-export function CalendarTable({ values, onDelete, onEdit }: CalendarProps) {
+export function CalendarTable({ values, onEdit, onSelection }: CalendarProps) {
   const displayInputs = useMemo((): EventSourceInput => {
     if (values) {
       return values.map((value): EventInput => {
         return {
           id: `${value.id}`,
           title: `${value.employee?.firstname} ${value.employee?.lastname}`,
-          // date: new Date().toISOString(),
           start: value.start_date?.toISOString(),
           end: value.end_date?.toISOString(),
         }
@@ -29,7 +28,6 @@ export function CalendarTable({ values, onDelete, onEdit }: CalendarProps) {
     return []
   }, [values]);
 
-  console.log(displayInputs);
 
   const handleDateClick = (arg: EventClickArg) => {
     const event: EventApi = arg.event;
@@ -37,8 +35,16 @@ export function CalendarTable({ values, onDelete, onEdit }: CalendarProps) {
     onEdit(calendar)
   }
 
-  const handleSelect = (arg: any) => {
-    console.log(arg)
+  const handleSelection = ({ start, end }: DateSelectArg) => {
+    const calendar: Calendar = {
+      address: '',
+      contacts: [],
+      end_date: end,
+      start_date: start,
+      notes: ''
+    }
+
+    onSelection?.(calendar)
   }
 
   return <FullCalendar
@@ -46,7 +52,7 @@ export function CalendarTable({ values, onDelete, onEdit }: CalendarProps) {
     initialView="dayGridMonth"
     selectable={true}
     eventClick={handleDateClick}
-    select={handleSelect}
+    select={handleSelection}
     events={displayInputs}
     viewClassNames="bg-white flex-1"
     dayHeaderClassNames="bg-zinc-100 text-zinc-600 text-base uppercase py-2"
