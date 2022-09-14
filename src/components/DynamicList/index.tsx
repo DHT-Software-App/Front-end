@@ -129,7 +129,6 @@ export const DynamicList = ({
               </div>
 
               {
-
                 filteredValues.length ?
                   <ul className="text-base">
                     {

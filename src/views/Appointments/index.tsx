@@ -186,7 +186,7 @@ export function Appointments() {
         setOpenDelete(false);
       }}>
       <Popup
-        title={`Delete Client.`}
+        title={`Delete Appointment.`}
         description={`Are you sure that you want to delete this appointment?`}
         accept={() => {
           dispatch(delete_calendar_request(calendarDelete?.id!, token!));

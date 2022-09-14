@@ -55,7 +55,6 @@ export function CalendarTable({ values, onEdit, onSelection }: CalendarProps) {
     select={handleSelection}
     events={displayInputs}
     viewClassNames="bg-white flex-1"
-    dayHeaderClassNames="bg-zinc-100 text-zinc-600 text-base uppercase py-2"
     eventClassNames='mx-2 my-1 rounded-md py-1 px-2'
     eventContent={EventContent}
 

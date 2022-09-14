@@ -146,7 +146,7 @@ export const InsuranceCompanyForm = ({
 
 
             <div className="col-span-2">
-              <DynamicList title="manage contacts" values={contacts} onChange={setContacts} />
+              <DynamicList title="manage contacts" values={contacts ?? []} onChange={setContacts} />
             </div>
 
             <div className="col-span-2">
