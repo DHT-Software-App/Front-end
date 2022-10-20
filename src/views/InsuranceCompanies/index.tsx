@@ -16,14 +16,22 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { InsuranceCompany } from "types/InsuranceCompany";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
+import { Filter, MetaResponse, Order, OrderBy, RequestQueryParams } from "utils/params/query";
 
 
 export const InsuranceCompanies = () => {
   // util hooks
   const dispatch = useDispatch();
 
-  const [search, setSearch] = useState();
-  const [filteredInsuranceCompany, setFilteredInsuranceCompany] = useState();
+  // Params
+  const [queryParams, setQueryParams] = useState<RequestQueryParams<InsuranceCompany>>({});
+  
+  // Sort
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<OrderBy<InsuranceCompany>>('company');
+
+  // Filter
+  const [filterBy, setFilterBy] = useState<OrderBy<InsuranceCompany>>('company');
 
   // to preserve insurance company to edit
   const [insuranceCompanyEdit, setInsuranceCompanyEdit] = useState<InsuranceCompany>();
@@ -42,24 +50,28 @@ export const InsuranceCompanies = () => {
     insuranceCompanies,
     loading,
     success: successFromInsuranceCompany,
+    meta
   }: {
     insuranceCompanies: InsuranceCompany[];
     loading: boolean;
     success: SuccessResponse;
+    meta: MetaResponse;
   } = useSelector(({ insuranceCompany }: any) => insuranceCompany);
+
+
 
   // feedback
   const [successes, setSuccesses] = useState<SuccessResponse[]>([]);
 
 
   useEffect(() => {
-    dispatch(get_insurance_companies_request(token));
+    dispatch(get_insurance_companies_request(token, queryParams));
 
     return () => {
       dispatch(clear_insurance_company_errors());
       dispatch(clear_insurance_company_success());
     };
-  }, []);
+  }, [queryParams]);
 
   useEffect(() => {
     if (successFromInsuranceCompany) {
@@ -82,8 +94,24 @@ export const InsuranceCompanies = () => {
     setSuccesses(successes.filter((success, i) => i != index));
   };
 
-  const handleSearch = (ev: any) => {
-    console.log(ev);
+  // Sorting
+  const handleSort = (order: Order, orderBy: OrderBy<InsuranceCompany>) => {
+    setQueryParams({
+      ...queryParams,
+      order,
+      orderBy
+    });
+
+    setOrder(order);
+    setOrderBy(orderBy);
+  }
+
+  // Filtering
+  const handleFilter = (filter: Filter<InsuranceCompany>) => {
+    setQueryParams({
+      ...queryParams,
+      filter
+    })
   };
 
   // when editing insurance company
@@ -96,9 +124,6 @@ export const InsuranceCompanies = () => {
     dispatch(create_insurance_company_request(insuranceCompany, token));
   };
 
-  const handleOnDelete = (id: number) => {
-    dispatch(delete_insurance_company_request(id, token));
-  };
 
   const prepareToEdit = (insuranceCompany: InsuranceCompany) => {
     setInsuranceCompanyEdit(insuranceCompany);
@@ -109,8 +134,6 @@ export const InsuranceCompanies = () => {
     setInsuranceCompanyDelete(insuranceCompany);
     setOpenDelete(true);
   };
-
-  const handleFilteredInsuranceCompany = (ev: any) => { };
 
   return <div className="flex flex-col gap-y-8 p-12 bg-gray-100 relative">
     <div className="absolute top-0 left-0 w-full">
@@ -140,14 +163,7 @@ export const InsuranceCompanies = () => {
     </div>
 
     <div className="flex flex-col md:flex-row justify-between items-baseline gap-8">
-      <div className="p-4 w-full md:w-auto">
-        <div className="relative mt-1">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <Search className="w-5 h-5 text-zinc-500 dark:text-zinc-400" />
-          </div>
-          <input type="text" className="w-full md:w-80 text-base bg-zinc-50 border border-zinc-300 text-zinc-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 p-2.5 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for insurance companies" />
-        </div>
-      </div>
+     
       {/* 
 <div className="w-full md:w-auto">
   <ListBox defaultItem={filteredInsuranceCompaniesOption} displayName="display" items={filterInsuranceCompaniesOptions} label="Filtered insurance companies" onSelect={setFilteredInsuranceCompaniesOption}></ListBox>
@@ -157,7 +173,8 @@ export const InsuranceCompanies = () => {
 
     {/* Insurance Companies Table */}
     {
-      loading ? 'loading' : insuranceCompanies?.length ? <InsuranceCompaniesTable values={insuranceCompanies!} onDelete={prepareToDelete} onEdit={prepareToEdit} /> : <>Empty</>
+      loading ? 'loading' : insuranceCompanies?.length ? <InsuranceCompaniesTable values={insuranceCompanies!} meta={meta} order={order} orderBy={orderBy} filterBy={filterBy} onDelete={prepareToDelete}
+      onEdit={prepareToEdit} onSort={handleSort} onFilter={handleFilter} onPageChange={(page) => setQueryParams({ ...queryParams, page })} onRowsPerPageChange={(per_page) => setQueryParams({ ...queryParams, per_page })} /> : <>Empty</>
     }
 
 

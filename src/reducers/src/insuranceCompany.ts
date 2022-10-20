@@ -1,4 +1,5 @@
 import { InsuranceCompany } from "types/InsuranceCompany";
+import { MetaResponse } from "utils/params/query";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 const initialState: {
@@ -7,9 +8,11 @@ const initialState: {
 	loading: boolean;
 	errors?: Error[];
 	success?: SuccessResponse;
+	meta: MetaResponse;
 } = {
 	insuranceCompanies: [],
 	loading: false,
+	meta: {}
 };
 
 export const insuranceCompanyReducer = (
@@ -28,12 +31,13 @@ export const insuranceCompanyReducer = (
 		}
 
 		case "@get/insurance_companies/success": {
-			const { insuranceCompanies } = payload;
+			const { insuranceCompanies, meta } = payload;
 			return {
 				...state,
 				loading: false,
 				errors: null,
 				insuranceCompanies,
+				meta
 			};
 		}
 

@@ -7,6 +7,7 @@ import {insuranceCompanySaga} from "./src/insuranceCompanySaga"
 import {workTypeSaga} from "./src/workSaga"
 import {jobSaga} from "./src/jobSaga"
 import {calendarSaga} from "./src/calendarSaga"
+import {estimateItemSaga} from "./src/estimateItem"
 
 export default function* rootSaga() {
 	yield all([
@@ -17,6 +18,7 @@ export default function* rootSaga() {
 		insuranceCompanySaga(), 
 		workTypeSaga(), 
 		jobSaga(),
-		calendarSaga()
+		calendarSaga(),
+		estimateItemSaga()
 	]);
 }

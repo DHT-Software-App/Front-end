@@ -1,12 +1,23 @@
 import { Customer } from "types/Customer";
 import { Delete, Edit, QuestionMark } from "@mui/icons-material";
+import { TableCell, TableRow, styled } from "@mui/material";
+
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
 type CustomerRowProps = {
   value: Customer;
   onEdit: (customer: Customer) => void;
   onDelete: (customer: Customer) => void;
 };
-
 
 export const CustomerRow = ({
   value: customer,
@@ -15,43 +26,43 @@ export const CustomerRow = ({
 }: CustomerRowProps
 ) => {
   return <tr>
-    <td className="px-6 py-4">
+    <TableCell>
       {customer.firstname}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell>
       {customer.lastname}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell>
       {customer.insured_firstname}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell>
       {customer.insured_lastname}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell>
       {customer.email_address}
-    </td>
+    </TableCell>
 
-    <td className="px-6 py-4">
+    <TableCell>
       {`${customer.street}, ${customer.city}`}
-    </td>
+    </TableCell>
 
-    <td className="px-6 py-4 text-center">
+    <TableCell>
       {customer.zip}
-    </td>
+    </TableCell>
 
-    <td className="px-6 py-4 text-center">
+    <TableCell>
       <select disabled={!customer.contacts?.length}>
         {
           customer.contacts?.map((contact) => <option>{contact}</option>)
         }
       </select>
-    </td>
+    </TableCell>
 
 
     {/* ACTIONS */}
-    <td className="px-6 py-4 text-center flex justify-center">
+    <TableCell className="flex">
 
-      <div className="flex py-2 rounded-full bg-zinc-100 divide-x-2 divide-zinc-200">
+      <div className="flex py-2 ">
         <button className="text-lg  text-zinc-600 px-4 hover:text-zinc-900">
           <QuestionMark fontSize="inherit" />
         </button>
@@ -68,7 +79,7 @@ export const CustomerRow = ({
           />
         </button>
       </div>
-    </td>
+    </TableCell>
 
   </tr>
 }

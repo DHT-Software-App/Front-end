@@ -1,5 +1,16 @@
 import { InsuranceCompany } from "types/InsuranceCompany";
 import { Delete, Edit, QuestionMark } from "@mui/icons-material";
+import { TableCell, TableRow, styled } from "@mui/material";
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
 type InsuranceCompanyRowProps = {
   value: InsuranceCompany;
@@ -15,41 +26,41 @@ export const InsuranceCompanyRow = ({
 }: InsuranceCompanyRowProps
 ) => {
 
-  return <tr>
-    <td className="px-6 py-4">
+  return <StyledTableRow>
+    <TableCell>
       {insuranceCompany.name}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell>
       {insuranceCompany.email_address_1}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell>
       {insuranceCompany.email_address_2}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell>
       {insuranceCompany.company}
-    </td>
+    </TableCell>
 
-    <td className="px-6 py-4">
+    <TableCell>
       {`${insuranceCompany.street}, ${insuranceCompany.city}`}
-    </td>
+    </TableCell>
 
-    <td className="px-6 py-4 text-center">
+    <TableCell>
       {insuranceCompany.zip}
-    </td>
+    </TableCell>
 
-    <td className="px-6 py-4 text-center">
+    <TableCell>
       <select disabled={!insuranceCompany.contacts?.length}>
         {
           insuranceCompany.contacts?.map((contact) => <option>{contact}</option>)
         }
       </select>
-    </td>
+    </TableCell>
 
 
     {/* ACTIONS */}
-    <td className="px-6 py-4 text-center flex justify-center">
+    <TableCell className="flex">
 
-      <div className="flex py-2 rounded-full bg-zinc-100 divide-x-2 divide-zinc-200">
+      <div className="flex py-2">
         <button className="text-lg  text-zinc-600 px-4 hover:text-zinc-900">
           <QuestionMark fontSize="inherit" />
         </button>
@@ -66,6 +77,6 @@ export const InsuranceCompanyRow = ({
           />
         </button>
       </div>
-    </td>
-  </tr>
+    </TableCell>
+  </StyledTableRow>
 }

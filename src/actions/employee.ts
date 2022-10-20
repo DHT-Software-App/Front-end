@@ -1,18 +1,21 @@
 import { Employee } from "types/Employee";
+import { MetaResponse, RequestQueryParams } from "utils/params/query";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 // GET ALL
-export const get_employees_request = (access_token: string) => ({
+export const get_employees_request = (access_token: string, queryParams: RequestQueryParams<Employee> = {}) => ({
 	type: "@get/employees/request",
 	payload: {
 		access_token,
+		queryParams
 	},
 });
 
-export const get_employees_success = (employees: Employee[]) => ({
+export const get_employees_success = (employees: Employee[], meta: MetaResponse = {}) => ({
 	type: "@get/employees/success",
 	payload: {
 		employees,
+		meta
 	},
 });
 

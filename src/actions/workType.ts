@@ -4,7 +4,7 @@ import { WorkType } from "types/WorkType";
 export const get_work_types_request = (access_token: string) => ({
 	type: "@get/work_types/request",
 	payload: {
-		access_token,
+		access_token
 	},
 });
 

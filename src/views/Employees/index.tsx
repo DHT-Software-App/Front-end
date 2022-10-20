@@ -1,4 +1,3 @@
-import { Search } from "@mui/icons-material";
 import { clear_auth_errors, clear_auth_success } from "actions/auth";
 import {
   create_employee_request,
@@ -16,14 +15,22 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Employee } from "types/Employee";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
+import { Filter, MetaResponse, Order, OrderBy, RequestQueryParams } from "utils/params/query";
 
 
 export const Employees = () => {
   // util hooks
   const dispatch = useDispatch();
 
-  const [search, setSearch] = useState();
-  const [filteredEmployee, setFilteredEmployee] = useState();
+  // Params
+  const [queryParams, setQueryParams] = useState<RequestQueryParams<Employee>>({});
+
+  // Sort
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<OrderBy<Employee>>('firstname');
+
+  // Filter
+  const [filterBy, setFilterBy] = useState<OrderBy<Employee>>('firstname');
 
   // to preserve employee to edit
   const [employeeEdit, setEmployeeEdit] = useState<Employee>();
@@ -42,23 +49,25 @@ export const Employees = () => {
     employees,
     loading,
     success: successFromEmployee,
+    meta
   }: {
     employees: Employee[];
     loading: boolean;
     success: SuccessResponse;
+    meta: MetaResponse;
   } = useSelector(({ employee }: any) => employee);
 
   // feedback
   const [successes, setSuccesses] = useState<SuccessResponse[]>([]);
 
   useEffect(() => {
-    dispatch(get_employees_request(token));
+    dispatch(get_employees_request(token, queryParams));
 
     return () => {
       dispatch(clear_auth_errors());
       dispatch(clear_auth_success());
     };
-  }, []);
+  }, [queryParams]);
 
   useEffect(() => {
     if (successFromEmployee) {
@@ -86,9 +95,26 @@ export const Employees = () => {
     setSuccesses(successes.filter((success, i) => i != index));
   };
 
-  const handleSearch = (ev: any) => {
-    console.log(ev);
+  // Sorting
+  const handleSort = (order: Order, orderBy: OrderBy<Employee>) => {
+    setQueryParams({
+      ...queryParams,
+      order,
+      orderBy
+    });
+
+    setOrder(order);
+    setOrderBy(orderBy);
+  }
+
+  // Filtering
+  const handleFilter = (filter: Filter<Employee>) => {
+    setQueryParams({
+      ...queryParams,
+      filter
+    })
   };
+
 
   // when editing employee
   const handleOnEdit = (employee: Employee, roleName: string) => {
@@ -98,10 +124,6 @@ export const Employees = () => {
   // when creating employee
   const handleOnCreate = (employee: Employee, roleName: string) => {
     dispatch(create_employee_request(employee, roleName, token));
-  };
-
-  const handleOnDelete = (id: number) => {
-    dispatch(delete_employee_request(id, token));
   };
 
   const prepareToEdit = (employee: Employee) => {
@@ -114,7 +136,6 @@ export const Employees = () => {
     setOpenDelete(true);
   };
 
-  const handleFilteredEmployee = (ev: any) => { };
 
   return <div className="flex flex-col gap-y-8 p-12 bg-gray-100 relative">
     <div className="absolute top-0 left-0 w-full">
@@ -144,14 +165,7 @@ export const Employees = () => {
     </div>
 
     <div className="flex flex-col md:flex-row justify-between items-baseline gap-8">
-      <div className="p-4 w-full md:w-auto">
-        <div className="relative mt-1">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <Search className="w-5 h-5 text-zinc-500 dark:text-zinc-400" />
-          </div>
-          <input type="text" className="w-full md:w-80 text-base bg-zinc-50 border border-zinc-300 text-zinc-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 p-2.5 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for customers" />
-        </div>
-      </div>
+     
       {/* 
 <div className="w-full md:w-auto">
   <ListBox defaultItem={filteredClientsOption} displayName="display" items={filterClientsOptions} label="Filtered clients" onSelect={setFilteredClientsOption}></ListBox>
@@ -161,7 +175,8 @@ export const Employees = () => {
 
     {/* Customer Table */}
     {
-      loading ? 'loading' : employees?.length ? <EmployeeTable values={employees!} onDelete={prepareToDelete} onEdit={prepareToEdit} /> : <>Empty</>
+      loading ? 'loading' : employees?.length ? <EmployeeTable values={employees!} meta={meta} order={order} orderBy={orderBy} filterBy={filterBy} onDelete={prepareToDelete}
+      onEdit={prepareToEdit} onSort={handleSort} onFilter={handleFilter} onPageChange={(page) => setQueryParams({ ...queryParams, page })} onRowsPerPageChange={(per_page) => setQueryParams({ ...queryParams, per_page })} /> : <>Empty</>
     }
 
 

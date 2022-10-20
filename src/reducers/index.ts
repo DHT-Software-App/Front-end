@@ -8,6 +8,7 @@ import { insuranceCompanyReducer } from "./src/insuranceCompany"
 import { workTypeReducer } from "./src/workType"
 import { jobReducer } from "./src/job"
 import { calendarReducer } from "./src/calendar"
+import { estimateItemReducer } from "./src/estimateItem"
 
 const reducer = combineReducers({
 	employee: employeeReducer,
@@ -18,7 +19,8 @@ const reducer = combineReducers({
 	insuranceCompany: insuranceCompanyReducer,
 	workType: workTypeReducer,
 	job: jobReducer,
-	calendar: calendarReducer
+	calendar: calendarReducer,
+	estimateItem: estimateItemReducer
 });
 
 export default reducer;

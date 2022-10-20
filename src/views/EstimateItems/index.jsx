@@ -1,98 +1,99 @@
-import { Search } from "@mui/icons-material";
-import { clear_customer_errors, clear_customer_success } from "actions/customer";
+import { clear_estimate_item_errors, clear_estimate_item_success } from "actions/client";
 import {
-  create_customer_request,
-  delete_customer_request,
-  get_customers_request,
-  update_customer_request,
-} from "actions/customer";
-import { CustomerForm } from "components/Customers/Form";
-import { CustomersTable } from "components/Customers/Table";
+  create_estimate_item_request,
+  delete_estimate_item_request,
+  get_estimate_items_request,
+  update_estimate_item_request,
+} from "actions/client";
+import { ClientForm } from "components/Clients/Form";
+import { ClientsTable } from "components/Clients/Table";
 import { Feedback } from "components/Feedback";
 import { Modal } from "components/Modal";
 import { Popup } from "components/Popup";
-import { CustomerEnum } from "enum/CustomerEnum";
+import { ClientEnum } from "enum/ClientEnum";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Customer } from "types/Customer";
+import { Client } from "types/Client";
 import { Filter, MetaResponse, Order, OrderBy, RequestQueryParams } from "utils/params/query";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 
-export const Customers = () => {
+export const EstimateItems = () => {
   // util hooks
   const dispatch = useDispatch();
 
-
   // Params
-  const [queryParams, setQueryParams] = useState<RequestQueryParams<Customer>>({});
+  const [queryParams, setQueryParams] = useState<RequestQueryParams<Client>>({});
 
   // Sort
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<OrderBy<Customer>>('firstname');
+  const [orderBy, setOrderBy] = useState<OrderBy<Client>>('firstname');
 
   // Filter
-  const [filterBy, setFilterBy] = useState<OrderBy<Customer>>('firstname');
+  const [filterBy, setFilterBy] = useState<OrderBy<Client>>('firstname');
 
-  // to preserve customer to edit
-  const [customerEdit, setCustomerEdit] = useState<Customer>();
-  const [customerDelete, setCustomerDelete] = useState<Customer>();
+  // to preserve client to edit
+  const [clientEdit, setClientEdit] = useState<Client>();
+  const [clientDelete, setClientDelete] = useState<Client>();
 
   // for modal open status
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [openNew, setOpenNew] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
 
-  const { auth: token, success: successFromAuth } = useSelector(
+  const { auth: token } = useSelector(
     ({ auth }: any) => auth
   );
 
   const {
-    customers,
+    clients,
     loading,
-    success: successFromCustomer,
+    success: successFromClient,
     meta
   }: {
-    customers: Customer[];
+    clients: Client[];
     loading: boolean;
     success: SuccessResponse;
-    meta: MetaResponse;
-  } = useSelector(({ customer }: any) => customer);
+    meta: MetaResponse
+  } = useSelector(({ client }: any) => client);
 
   // feedback
   const [successes, setSuccesses] = useState<SuccessResponse[]>([]);
 
   useEffect(() => {
-    dispatch(get_customers_request(token, queryParams));
+    dispatch(get_estimate_items_request(token, queryParams));
 
     return () => {
-      dispatch(clear_customer_errors());
-      dispatch(clear_customer_success());
+      dispatch(clear_estimate_item_errors());
+      dispatch(clear_estimate_item_success());
     };
   }, [queryParams]);
 
   useEffect(() => {
-    if (successFromCustomer) {
-      switch (successFromCustomer.code) {
-        case CustomerEnum.CREATED:
+    if (successFromClient) {
+      switch (successFromClient.code) {
+        case ClientEnum.CREATED:
           setOpenNew(false);
           break;
 
-        case CustomerEnum.UPDATED:
+        case ClientEnum.UPDATED:
           setOpenEdit(false);
           break;
+
       }
 
-      setSuccesses([...successes, successFromCustomer]);
+      setSuccesses([...successes, successFromClient]);
     }
-  }, [successFromCustomer]);
+  }, [successFromClient]);
+
 
   const removeSuccess = (index: number) => {
     setSuccesses(successes.filter((success, i) => i != index));
   };
 
+
   // Sorting
-  const handleSort = (order: Order, orderBy: OrderBy<Customer>) => {
+  const handleSort = (order: Order, orderBy: OrderBy<Client>) => {
     setQueryParams({
       ...queryParams,
       order,
@@ -104,35 +105,34 @@ export const Customers = () => {
   }
 
   // Filtering
-  const handleFilter = (filter: Filter<Customer>) => {
+  const handleFilter = (filter: Filter<Client>) => {
     setQueryParams({
       ...queryParams,
       filter
     })
   };
 
-  // when editing customer
-  const handleOnEdit = (customer: Customer) => {
-    dispatch(update_customer_request(customer, token));
+  // when editing client
+  const handleOnEdit = (client: Client) => {
+    dispatch(update_estimate_item_request(client, token));
   };
 
-  // when creating customer
-  const handleOnCreate = (customer: Customer) => {
-    dispatch(create_customer_request(customer, token));
+  // when creating client
+  const handleOnCreate = (client: Client) => {
+    dispatch(create_estimate_item_request(client, token));
   };
 
-  const prepareToEdit = (customer: Customer) => {
-    setCustomerEdit(customer);
+  const prepareToEdit = (client: Client) => {
+    setClientEdit(client);
     setOpenEdit(true);
   };
 
-  const prepareToDelete = (customer: Customer) => {
-    setCustomerDelete(customer);
+  const prepareToDelete = (client: Client) => {
+    setClientDelete(client);
     setOpenDelete(true);
   };
 
-
-  return <div className="flex flex-col gap-y-8 p-12 bg-gray-100 relative">
+  return <div className="flex flex-col gap-y-4 p-12 bg-gray-100 relative">
     <div className="absolute top-0 left-0 w-full">
       {successes.map((success, index) => (
         <Feedback
@@ -143,10 +143,10 @@ export const Customers = () => {
       ))}
     </div>
 
-    <div className="capitalize font-bold text-2xl text-slate-600 pb-6 flex flex-col md:flex-row justify-between items-baseline gap-8" style={{ borderBottom: "1px solid#e3e3e3" }}>
+    <div className="capitalize font-bold text-2xl text-slate-600  flex flex-col md:flex-row justify-between items-baseline gap-8" >
 
       <div className="p-4 w-full md:w-auto">
-        manage customers
+        manage clients
       </div>
 
       <div className="w-full md:w-auto">
@@ -154,7 +154,7 @@ export const Customers = () => {
           className="bg-blue-light w-full text-white uppercase text-sm font-bold px-8 py-4 rounded-md"
           onClick={() => setOpenNew(true)}
         >
-          create a new customer
+          create a new clients
         </button>
       </div>
     </div>
@@ -168,16 +168,16 @@ export const Customers = () => {
 
     </div>
 
-    {/* Customer Table */}
+    {/* Client Table */}
     {
-      loading ? 'loading' : customers?.length ? <CustomersTable values={customers!} meta={meta} order={order} orderBy={orderBy} filterBy={filterBy} onDelete={prepareToDelete}
-      onEdit={prepareToEdit} onSort={handleSort} onFilter={handleFilter} onPageChange={(page) => setQueryParams({ ...queryParams, page })} onRowsPerPageChange={(per_page) => setQueryParams({ ...queryParams, per_page })} /> : <>Empty</>
+      loading ? 'loading' : clients?.length ? <ClientsTable values={clients!} meta={meta} order={order} orderBy={orderBy} filterBy={filterBy} onDelete={prepareToDelete}
+        onEdit={prepareToEdit} onSort={handleSort} onFilter={handleFilter} onPageChange={(page) => setQueryParams({ ...queryParams, page })} onRowsPerPageChange={(per_page) => setQueryParams({ ...queryParams, per_page })} /> : <>Empty</>
     }
 
 
     {/* Modals */}
 
-    {/* For new customer */}
+    {/* For new client */}
 
     <Modal
       isOpen={openNew}
@@ -186,25 +186,24 @@ export const Customers = () => {
       }}
     >
       <div className="px-6">
-        <CustomerForm initialValue={{
+        <ClientForm initialValue={{
           firstname: '',
           lastname: '',
-          email_address: '',
+          email_address_1: '',
+          email_address_2: '',
           street: '',
           zip: 0,
           contacts: [],
           state: '',
           city: '',
-          has_insured: false,
-          insured_firstname: '',
-          insured_lastname: ''
+          company: ''
         }} submit={handleOnCreate} />
       </div>
     </Modal>
 
 
 
-    {/* For editing customer */}
+    {/* For editing client */}
     <Modal
       isOpen={openEdit}
       closeModal={() => {
@@ -212,7 +211,7 @@ export const Customers = () => {
       }}
     >
       <div className="px-6">
-        <CustomerForm initialValue={customerEdit!} submit={handleOnEdit} />
+        <ClientForm initialValue={clientEdit!} submit={handleOnEdit} />
       </div>
     </Modal>
 
@@ -224,10 +223,10 @@ export const Customers = () => {
         setOpenDelete(false);
       }}>
       <Popup
-        title={`Delete Customer.`}
-        description={`Are you sure that you want to delete '${customerDelete?.firstname} ${customerDelete?.lastname}'?`}
+        title={`Delete Client.`}
+        description={`Are you sure that you want to delete '${clientDelete?.firstname} ${clientDelete?.lastname}'?`}
         accept={() => {
-          dispatch(delete_customer_request(customerDelete?.id!, token!));
+          dispatch(delete_estimate_item_request(clientDelete?.id!, token!));
           setOpenDelete(false);
         }}
         cancel={() => {

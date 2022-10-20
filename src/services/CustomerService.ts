@@ -7,11 +7,31 @@ import {
 } from "utils/errors/InvalidAttributeError";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 import { ResponseError } from "utils/errors/ResponseError";
+import { MetaResponse, RequestQueryParams } from "utils/params/query";
 
 const { REACT_APP_BACKEND_API } = process.env;
 
 export class CustomerService {
-  static async getAll(access_token: string): Promise<Customer[]> {
+  static async getAll(access_token: string, requestQueryParams: RequestQueryParams<Customer>): Promise<{customers: Customer[], meta: MetaResponse} | undefined> {
+		let queryParams: any = {};
+
+		if(requestQueryParams.filter) {
+			queryParams[`filter[${requestQueryParams.filter?.[0]}]`]  = requestQueryParams.filter?.[1]
+		}
+
+		if(requestQueryParams.order && requestQueryParams.orderBy) {
+			queryParams['sort'] = (requestQueryParams.order == 'asc' ? '' : '-') + requestQueryParams.orderBy;
+		}
+
+		if(requestQueryParams.page) {
+			queryParams['page'] = requestQueryParams.page;
+		}
+
+		if(requestQueryParams.per_page) {
+			queryParams['per_page'] = requestQueryParams.per_page;
+		}
+
+
 		try {
 			const endpoint = `${REACT_APP_BACKEND_API}/customers`;
 
@@ -21,6 +41,7 @@ export class CustomerService {
 					"Content-Type": "application/json",
 					Accept: "application/json",
 				},
+				params: queryParams
 			});
 
 			const customers: Customer[] = data.data.map((data: any) => {
@@ -33,9 +54,18 @@ export class CustomerService {
 				return customer;
 			});
 
-			return customers;
+			const meta: MetaResponse = {
+				...data.meta
+			}
+
+			return {
+				customers,
+				meta
+			};
+
+
 		} catch (error) {
-			return [];
+
 		}
 	}
 

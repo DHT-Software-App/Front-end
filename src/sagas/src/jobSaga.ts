@@ -15,13 +15,14 @@ import { JobEnum } from "enum/JobEnum";
 
 function* getAll(action: any): any {
 	try {
-		const { access_token } = action.payload;
-		const jobs: Job[] = yield call(
+		const { access_token, queryParams } = action.payload;
+		const {jobs, meta}= yield call(
 			JobService.getAll,
-			access_token
+			access_token,
+			queryParams
 		);
 
-		yield put(get_jobs_success(jobs));
+		yield put(get_jobs_success(jobs, meta));
 	} catch (errors) {
 		yield put(get_jobs_failure(errors as Error[]));
 	}

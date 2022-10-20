@@ -8,7 +8,8 @@ const initialState: {
 	employee?: Employee;
 	errors?: Error[];
 	success?: SuccessResponse;
-} = {};
+} = {
+};
 
 export const authReducer = (
 	state = initialState,

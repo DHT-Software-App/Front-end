@@ -15,13 +15,14 @@ import { CustomerEnum } from "enum/CustomerEnum";
 
 function* getAll(action: any): any {
 	try {
-		const { access_token } = action.payload;
-		const customers: Customer[] = yield call(
+		const { access_token, queryParams } = action.payload;
+		const { customers, meta} = yield call(
 			CustomerService.getAll,
-			access_token
+			access_token,
+			queryParams
 		);
 
-		yield put(get_customers_success(customers));
+		yield put(get_customers_success(customers, meta));
 	} catch (errors) {
 		yield put(get_customers_failure(errors as Error[]));
 	}

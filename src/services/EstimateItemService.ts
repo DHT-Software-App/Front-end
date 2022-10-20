@@ -1,4 +1,4 @@
-import { Job } from "types/Job";
+import { EstimateItem } from "types/EstimateItem";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { HTTPResponse } from "utils/Responses/HTTPResponse";
 import {
@@ -7,18 +7,14 @@ import {
 } from "utils/errors/InvalidAttributeError";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 import { ResponseError } from "utils/errors/ResponseError";
-import { Customer } from "types/Customer";
-import { Client } from "types/Client";
 import { WorkType } from "types/WorkType";
-import { InsuranceCompany } from "types/InsuranceCompany";
-import { format, parseISO } from "date-fns";
 import { MetaResponse, RequestQueryParams } from "utils/params/query";
 
 const { REACT_APP_BACKEND_API } = process.env;
 
-export class JobService {
-  static async getAll(access_token: string, requestQueryParams: RequestQueryParams<Job>): Promise<{
-		jobs: Job[],
+export class EstimateItemService {
+  static async getAll(access_token: string, requestQueryParams: RequestQueryParams<EstimateItem>): Promise<{
+		estimate_items: EstimateItem[],
 		meta: MetaResponse
 	} | undefined> {
 		let queryParams: any = {};
@@ -40,7 +36,7 @@ export class JobService {
 		}
 
 		try {
-			const endpoint = `${REACT_APP_BACKEND_API}/jobs?include=client,customer,work_type,insurance`;
+			const endpoint = `${REACT_APP_BACKEND_API}/estimate_items?include=work_type`;
 
 			const { data } = await axios.get(endpoint, {
 				headers: {
@@ -51,15 +47,14 @@ export class JobService {
 				params: queryParams
 			});
 
-			const jobs: Job[] = data.data.map((data: any) => {
+			const estimate_items: EstimateItem[] = data.data.map((data: any) => {
 				const {
 					data: { id, attributes },
 					included,
 				} = data;
 
-				const job: Job = { id, ...attributes };
+				const estimate_item: EstimateItem = { id, ...attributes };
 
-				job.date_of_loss = parseISO(job.date_of_loss?.toString()!);
 
 				included.map((data: any) => {
 					const {
@@ -67,33 +62,14 @@ export class JobService {
 					} = data;
 
 					switch (type) {
-						case "customers": {
-							const customer: Customer = { id, ...attributes };
-
-							job.customer = customer;
-							break;
-						}
-
-            case "clients": {
-							const client: Client = { id, ...attributes };
-
-							job.client = client;
-							break;
-						}
-
+     
             case "work_types": {
 							const work_type: WorkType = { id, ...attributes };
 
-							job.work_type = work_type;
+							estimate_item.work_type = work_type;
 							break;
 						}
 
-            case "insurances": {
-							const insurance: InsuranceCompany = { id, ...attributes };
-
-							job.insurance = insurance;
-							break;
-						}
 
 						default:
 							break;
@@ -101,7 +77,7 @@ export class JobService {
 				});
 
 
-				return job;
+				return estimate_item;
 			});
 
 			const meta: MetaResponse = {
@@ -109,7 +85,7 @@ export class JobService {
 			}
 
 			return {
-				jobs,
+				estimate_items,
 				meta
 			};
 		} catch (error) {
@@ -117,7 +93,7 @@ export class JobService {
 		}
 	}
 
-	static async getById(id: number, access_token: string): Promise<Job> {
+	static async getById(id: number, access_token: string): Promise<EstimateItem> {
 		try {
 			return {};
 		} catch (error) {
@@ -126,28 +102,21 @@ export class JobService {
 	}
 
 	static async create(
-		job: Job,
+		estimate_item: EstimateItem,
 		access_token: string
-	): Promise<Job | void> {
+	): Promise<EstimateItem | void> {
 		try {
-			let endpoint = `${REACT_APP_BACKEND_API}/jobs?include=customer,client,work_type,insurance`;
+			let endpoint = `${REACT_APP_BACKEND_API}/estimate_items?include=work_type`;
 
 			const {
-				customer,
-				client,
 				work_type,
-				insurance,
-				...restJobProperties
-			} = job;
+				...restEstimateItemProperties
+			} = estimate_item;
 
 
 			const { data } = await axios.post(endpoint, {
-				...restJobProperties,
-				date_of_loss: format(restJobProperties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'),
-				customer_id: customer?.id, 
-				client_id: client?.id, 
+				...restEstimateItemProperties,
 				work_type_id: work_type?.id, 
-				insurance_id: insurance?.id,
 			}, {
 				headers: {
 					Authorization: `Bearer ${access_token}`,
@@ -161,12 +130,11 @@ export class JobService {
         included
 			} = data;
 
-			const created_job: Job = {
+			const created_estimate_item: EstimateItem = {
 				id,
         ...attributes,
 			};
 
-			created_job.date_of_loss = parseISO(format(restJobProperties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'));
 
       included.map((data: any) => {
         const {
@@ -174,31 +142,11 @@ export class JobService {
         } = data;
 
         switch (type) {
-          case "customers": {
-            const customer: Customer = { id, ...attributes };
-
-            created_job.customer = customer;
-            break;
-          }
-
-          case "clients": {
-            const client: Client = { id, ...attributes };
-
-            created_job.client = client;
-            break;
-          }
 
           case "work_types": {
             const work_type: WorkType = { id, ...attributes };
 
-            created_job.work_type = work_type;
-            break;
-          }
-
-          case "insurances": {
-            const insurance: InsuranceCompany = { id, ...attributes };
-
-            created_job.insurance = insurance;
+            created_estimate_item.work_type = work_type;
             break;
           }
 
@@ -207,7 +155,7 @@ export class JobService {
         }
       });
 
-			return created_job;
+			return created_estimate_item;
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				const { status, data } = error.response as AxiosResponse;
@@ -233,27 +181,20 @@ export class JobService {
 	}
 
 	static async update(
-		job: Job,
+		estimate_item: EstimateItem,
 		access_token: string
-	): Promise<Job | void> {
+	): Promise<EstimateItem | void> {
 		try {
-			let endpoint = `${REACT_APP_BACKEND_API}/jobs/${job.id}?include=client,customer,work_type,insurance`;
+			let endpoint = `${REACT_APP_BACKEND_API}/estimate_items/${estimate_item.id}?include=work_type`;
 
 			const {
-				customer,
-				client,
 				work_type,
-				insurance,
-				...restJobProperties
-			} = job;
+				...restEstimateItemProperties
+			} = estimate_item;
 
 			const { data } = await axios.put(endpoint, {
-				...restJobProperties,
-				date_of_loss: format(restJobProperties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'),
-				customer_id: customer?.id, 
-				client_id: client?.id, 
+				...restEstimateItemProperties,
 				work_type_id: work_type?.id, 
-				insurance_id: insurance?.id,
 			},
 				{
 					headers: {
@@ -269,9 +210,7 @@ export class JobService {
         included
 			} = data;
 
-			const updated_job: Job = { id, ...attributes };
-
-			updated_job.date_of_loss = parseISO(format(restJobProperties.date_of_loss!, 'yyyy-MM-dd HH:mm:ss'));
+			const updated_estimate_item: EstimateItem = { id, ...attributes };
 
 
       included.map((data: any) => {
@@ -280,31 +219,11 @@ export class JobService {
         } = data;
 
         switch (type) {
-          case "customers": {
-            const customer: Customer = { id, ...attributes };
-
-            updated_job.customer = customer;
-            break;
-          }
-
-          case "clients": {
-            const client: Client = { id, ...attributes };
-
-            updated_job.client = client;
-            break;
-          }
-
+    
           case "work_types": {
             const work_type: WorkType = { id, ...attributes };
 
-            updated_job.work_type = work_type;
-            break;
-          }
-
-          case "insurances": {
-            const insurance: InsuranceCompany = { id, ...attributes };
-
-            updated_job.insurance = insurance;
+            updated_estimate_item.work_type = work_type;
             break;
           }
 
@@ -314,7 +233,7 @@ export class JobService {
       });
 
 
-			return updated_job;
+			return updated_estimate_item;
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				const {
@@ -337,7 +256,7 @@ export class JobService {
 		access_token: string
 	): Promise<SuccessResponse | void> {
 		try {
-			const endpoint = `${REACT_APP_BACKEND_API}/jobs/${id}`;
+			const endpoint = `${REACT_APP_BACKEND_API}/estimate_items/${id}`;
 
 			const { data } = await axios.delete(endpoint, {
 				headers: {

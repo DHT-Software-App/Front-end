@@ -1,4 +1,5 @@
 import { Customer } from "types/Customer";
+import { MetaResponse } from "utils/params/query";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 const initialState: {
@@ -7,9 +8,11 @@ const initialState: {
 	loading: boolean;
 	errors?: Error[];
 	success?: SuccessResponse;
+	meta: MetaResponse;
 } = {
 	customers: [],
 	loading: false,
+	meta: {}
 };
 
 export const customerReducer = (
@@ -28,12 +31,13 @@ export const customerReducer = (
 		}
 
 		case "@get/customers/success": {
-			const { customers } = payload;
+			const { customers, meta } = payload;
 			return {
 				...state,
 				loading: false,
 				errors: null,
 				customers,
+				meta
 			};
 		}
 

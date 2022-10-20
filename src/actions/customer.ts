@@ -1,18 +1,21 @@
 import { Customer } from "types/Customer";
+import { MetaResponse, RequestQueryParams } from "utils/params/query";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 // GET ALL
-export const get_customers_request = (access_token: string) => ({
+export const get_customers_request = (access_token: string, queryParams: RequestQueryParams<Customer> = {}) => ({
 	type: "@get/customers/request",
 	payload: {
 		access_token,
+		queryParams
 	},
 });
 
-export const get_customers_success = (customers: Customer[]) => ({
+export const get_customers_success = (customers: Customer[], meta: MetaResponse = {}) => ({
 	type: "@get/customers/success",
 	payload: {
 		customers,
+		meta
 	},
 });
 

@@ -1,5 +1,17 @@
 import { Client } from "types/Client";
 import { Delete, Edit, QuestionMark } from "@mui/icons-material";
+import { TableCell, TableRow, styled } from "@mui/material";
+
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
 type ClientRowProps = {
   value: Client;
@@ -14,44 +26,44 @@ export const ClientRow = ({
 }: ClientRowProps
 ) => {
 
-  return <tr>
-    <td className="px-6 py-4">
+  return <StyledTableRow>
+    <TableCell >
       {client.firstname}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell >
       {client.lastname}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell>
       {client.email_address_1}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell >
       {client.email_address_2}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell>
       {client.company}
-    </td>
+    </TableCell>
 
-    <td className="px-6 py-4">
+    <TableCell >
       {`${client.street}, ${client.city}`}
-    </td>
+    </TableCell>
 
-    <td className="px-6 py-4 text-center">
+    <TableCell >
       {client.zip}
-    </td>
+    </TableCell>
 
-    <td className="px-6 py-4 text-center">
+    <TableCell >
       <select disabled={!client.contacts?.length}>
         {
           client.contacts?.map((contact) => <option>{contact}</option>)
         }
       </select>
-    </td>
+    </TableCell>
 
 
     {/* ACTIONS */}
-    <td className="px-6 py-4 text-center flex justify-center">
+    <TableCell className="flex">
 
-      <div className="flex py-2 rounded-full bg-zinc-100 divide-x-2 divide-zinc-200">
+      <div className="flex py-2 ">
         <button className="text-lg  text-zinc-600 px-4 hover:text-zinc-900">
           <QuestionMark fontSize="inherit" />
         </button>
@@ -68,6 +80,6 @@ export const ClientRow = ({
           />
         </button>
       </div>
-    </td>
-  </tr>
+    </TableCell>
+  </StyledTableRow>
 }

@@ -14,6 +14,7 @@ import { InsuranceCompanies } from "views/InsuranceCompanies";
 import { Error } from "views/Error";
 import { Appointments } from "views/Appointments";
 import { Jobs } from "views/Jobs";
+import { Documents } from "views/Documents";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route path="/insurance_companies" element={<InsuranceCompanies />} />
             <Route path="/appointments" element={<Appointments />} />
             <Route path="/jobs" element={<Jobs />} />
+            <Route path="/documents" element={<Documents />} />
           </Route>
 
           {/* public routes */}

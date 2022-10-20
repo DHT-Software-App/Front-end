@@ -16,13 +16,14 @@ import { EmployeeEnum } from "enum/EmployeeEnum";
 
 function* getAll(action: any): any {
 	try {
-		const { access_token } = action.payload;
-		const employees: Employee[] = yield call(
+		const { access_token, queryParams } = action.payload;
+		const {employees, meta}= yield call(
 			EmployeeService.getAll,
-			access_token
+			access_token,
+			queryParams
 		);
 
-		yield put(get_employees_success(employees));
+		yield put(get_employees_success(employees, meta));
 	} catch (errors) {
 		yield put(get_employees_failure(errors as Error[]));
 	}

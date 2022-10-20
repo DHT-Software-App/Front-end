@@ -4,7 +4,7 @@ export const Dashboard = () => {
 
   return <div>
 
-    <DocumentTable />
+    {/* <DocumentTable /> */}
 
   </div>
 }

@@ -15,13 +15,15 @@ import { InsuranceCompanyEnum } from "enum/InsuranceCompanyEnum";
 
 function* getAll(action: any): any {
 	try {
-		const { access_token } = action.payload;
-		const insurance_companies: InsuranceCompany[] = yield call(
+		const { access_token, queryParams } = action.payload;
+		const {insurance_companies, meta} = yield call(
 			InsuranceCompanyService.getAll,
-			access_token
+			access_token,
+			queryParams
 		);
 
-		yield put(get_insurance_companies_success(insurance_companies));
+
+		yield put(get_insurance_companies_success(insurance_companies, meta));
 	} catch (errors) {
 		yield put(get_insurance_companies_failure(errors as Error[]));
 	}

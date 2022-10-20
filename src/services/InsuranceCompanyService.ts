@@ -7,11 +7,30 @@ import {
 } from "utils/errors/InvalidAttributeError";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 import { ResponseError } from "utils/errors/ResponseError";
+import { MetaResponse, RequestQueryParams } from "utils/params/query";
 
 const { REACT_APP_BACKEND_API } = process.env;
 
 export class InsuranceCompanyService {
-  static async getAll(access_token: string): Promise<InsuranceCompany[]> {
+  static async getAll(access_token: string, requestQueryParams: RequestQueryParams<InsuranceCompany>): Promise<{insurance_companies: InsuranceCompany[], meta: MetaResponse} | undefined> {
+		let queryParams: any = {};
+
+		if(requestQueryParams.filter) {
+			queryParams[`filter[${requestQueryParams.filter?.[0]}]`]  = requestQueryParams.filter?.[1]
+		}
+
+		if(requestQueryParams.order && requestQueryParams.orderBy) {
+			queryParams['sort'] = (requestQueryParams.order == 'asc' ? '' : '-') + requestQueryParams.orderBy;
+		}
+
+		if(requestQueryParams.page) {
+			queryParams['page'] = requestQueryParams.page;
+		}
+
+		if(requestQueryParams.per_page) {
+			queryParams['per_page'] = requestQueryParams.per_page;
+		}
+
 		try {
 			const endpoint = `${REACT_APP_BACKEND_API}/insurance_companies`;
 
@@ -21,9 +40,10 @@ export class InsuranceCompanyService {
 					"Content-Type": "application/json",
 					Accept: "application/json",
 				},
+				params: queryParams
 			});
 
-			const insuranceCompanies: InsuranceCompany[] = data.data.map((data: any) => {
+			const insurance_companies: InsuranceCompany[] = data.data.map((data: any) => {
 				const {
 					data: { id, attributes },
 				} = data;
@@ -33,9 +53,19 @@ export class InsuranceCompanyService {
 				return insuranceCompany;
 			});
 
-			return insuranceCompanies;
+			
+			const meta: MetaResponse = {
+					...data.meta
+			}
+
+			return {
+				insurance_companies,
+				meta
+			};
+
+			
 		} catch (error) {
-			return [];
+			
 		}
 	}
 

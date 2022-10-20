@@ -2,8 +2,19 @@ import { Employee } from "types/Employee";
 
 // icons
 import { Delete, Edit, QuestionMark } from "@mui/icons-material";
+import { TableCell, TableRow, styled } from "@mui/material";
 import { ResendConfirmation } from "components/ResendConfirmation";
 import { Avatar } from "components/Avatar";
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
 type EmployeeStatus = "active" | "desactive";
 
@@ -41,29 +52,29 @@ export const EmployeeRow = ({
 }: EmployeeRowProps) => {
 
   return <tr>
-    <td className="px-6 py-4">
+    <TableCell >
       {employee.firstname}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell >
       {employee.lastname}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell >
       {`${employee.street}, ${employee.city}`}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell >
       {employee.role?.name}
-    </td>
-    <td className="px-6 py-4">
+    </TableCell>
+    <TableCell >
       <select disabled={!employee.contacts?.length}>
         {
           employee.contacts?.map((contact) => <option>{contact}</option>)
         }
       </select>
-    </td>
-    <td className="px-6 py-4 text-center">
+    </TableCell>
+    <TableCell >
       <EmployeeStatusBadge status={employee.status} />
-    </td>
-    <td className="px-6 py-4 text-center">
+    </TableCell>
+    <TableCell >
       {employee.user &&
         (employee.user?.email_verified_at ? (
           <Avatar className="h-8" />
@@ -71,12 +82,12 @@ export const EmployeeRow = ({
           <ResendConfirmation to={employee.user?.email!} />
         ))}
 
-    </td>
+    </TableCell>
 
     {/* ACTIONS */}
-    <td className="px-6 py-4 text-center flex justify-center">
+    <TableCell className="flex">
 
-      <div className="flex py-2 rounded-full bg-zinc-100 divide-x-2 divide-zinc-200">
+      <div className="flex py-2">
         <button className="text-lg  text-zinc-600 px-4 hover:text-zinc-900">
           <QuestionMark fontSize="inherit" />
         </button>
@@ -93,7 +104,7 @@ export const EmployeeRow = ({
           />
         </button>
       </div>
-    </td>
+    </TableCell>
   </tr>
 
 

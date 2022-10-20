@@ -1,4 +1,3 @@
-import { Search } from "@mui/icons-material";
 import { clear_client_errors, clear_client_success } from "actions/client";
 import {
   create_client_request,
@@ -15,6 +14,7 @@ import { ClientEnum } from "enum/ClientEnum";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Client } from "types/Client";
+import { Filter, MetaResponse, Order, OrderBy, RequestQueryParams } from "utils/params/query";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 
@@ -22,8 +22,15 @@ export const Clients = () => {
   // util hooks
   const dispatch = useDispatch();
 
-  const [search, setSearch] = useState();
-  const [filteredClient, setFilteredClient] = useState();
+  // Params
+  const [queryParams, setQueryParams] = useState<RequestQueryParams<Client>>({});
+
+  // Sort
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<OrderBy<Client>>('firstname');
+
+  // Filter
+  const [filterBy, setFilterBy] = useState<OrderBy<Client>>('firstname');
 
   // to preserve client to edit
   const [clientEdit, setClientEdit] = useState<Client>();
@@ -42,23 +49,25 @@ export const Clients = () => {
     clients,
     loading,
     success: successFromClient,
+    meta
   }: {
     clients: Client[];
     loading: boolean;
     success: SuccessResponse;
+    meta: MetaResponse
   } = useSelector(({ client }: any) => client);
 
   // feedback
   const [successes, setSuccesses] = useState<SuccessResponse[]>([]);
 
   useEffect(() => {
-    dispatch(get_clients_request(token));
+    dispatch(get_clients_request(token, queryParams));
 
     return () => {
       dispatch(clear_client_errors());
       dispatch(clear_client_success());
     };
-  }, []);
+  }, [queryParams]);
 
   useEffect(() => {
     if (successFromClient) {
@@ -82,8 +91,25 @@ export const Clients = () => {
     setSuccesses(successes.filter((success, i) => i != index));
   };
 
-  const handleSearch = (ev: any) => {
-    console.log(ev);
+
+  // Sorting
+  const handleSort = (order: Order, orderBy: OrderBy<Client>) => {
+    setQueryParams({
+      ...queryParams,
+      order,
+      orderBy
+    });
+
+    setOrder(order);
+    setOrderBy(orderBy);
+  }
+
+  // Filtering
+  const handleFilter = (filter: Filter<Client>) => {
+    setQueryParams({
+      ...queryParams,
+      filter
+    })
   };
 
   // when editing client
@@ -96,10 +122,6 @@ export const Clients = () => {
     dispatch(create_client_request(client, token));
   };
 
-  const handleOnDelete = (id: number) => {
-    dispatch(delete_client_request(id, token));
-  };
-
   const prepareToEdit = (client: Client) => {
     setClientEdit(client);
     setOpenEdit(true);
@@ -110,9 +132,7 @@ export const Clients = () => {
     setOpenDelete(true);
   };
 
-  const handleFilteredClient = (ev: any) => { };
-
-  return <div className="flex flex-col gap-y-8 p-12 bg-gray-100 relative">
+  return <div className="flex flex-col gap-y-4 p-12 bg-gray-100 relative">
     <div className="absolute top-0 left-0 w-full">
       {successes.map((success, index) => (
         <Feedback
@@ -123,7 +143,7 @@ export const Clients = () => {
       ))}
     </div>
 
-    <div className="capitalize font-bold text-2xl text-slate-600 pb-6 flex flex-col md:flex-row justify-between items-baseline gap-8" style={{ borderBottom: "1px solid#e3e3e3" }}>
+    <div className="capitalize font-bold text-2xl text-slate-600  flex flex-col md:flex-row justify-between items-baseline gap-8" >
 
       <div className="p-4 w-full md:w-auto">
         manage clients
@@ -140,14 +160,7 @@ export const Clients = () => {
     </div>
 
     <div className="flex flex-col md:flex-row justify-between items-baseline gap-8">
-      <div className="p-4 w-full md:w-auto">
-        <div className="relative mt-1">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <Search className="w-5 h-5 text-zinc-500 dark:text-zinc-400" />
-          </div>
-          <input type="text" className="w-full md:w-80 text-base bg-zinc-50 border border-zinc-300 text-zinc-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 p-2.5 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for clients" />
-        </div>
-      </div>
+
       {/* 
 <div className="w-full md:w-auto">
   <ListBox defaultItem={filteredClientsOption} displayName="display" items={filterClientsOptions} label="Filtered clients" onSelect={setFilteredClientsOption}></ListBox>
@@ -157,7 +170,8 @@ export const Clients = () => {
 
     {/* Client Table */}
     {
-      loading ? 'loading' : clients?.length ? <ClientsTable values={clients!} onDelete={prepareToDelete} onEdit={prepareToEdit} /> : <>Empty</>
+      loading ? 'loading' : clients?.length ? <ClientsTable values={clients!} meta={meta} order={order} orderBy={orderBy} filterBy={filterBy} onDelete={prepareToDelete}
+        onEdit={prepareToEdit} onSort={handleSort} onFilter={handleFilter} onPageChange={(page) => setQueryParams({ ...queryParams, page })} onRowsPerPageChange={(per_page) => setQueryParams({ ...queryParams, per_page })} /> : <>Empty</>
     }
 
 

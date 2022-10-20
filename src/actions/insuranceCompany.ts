@@ -1,18 +1,21 @@
 import { InsuranceCompany } from "types/InsuranceCompany";
+import { MetaResponse, RequestQueryParams } from "utils/params/query";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 // GET ALL
-export const get_insurance_companies_request = (access_token: string) => ({
+export const get_insurance_companies_request = (access_token: string, queryParams: RequestQueryParams<InsuranceCompany> = {}) => ({
 	type: "@get/insurance_companies/request",
 	payload: {
 		access_token,
+		queryParams
 	},
 });
 
-export const get_insurance_companies_success = (insuranceCompanies: InsuranceCompany[]) => ({
+export const get_insurance_companies_success = (insuranceCompanies: InsuranceCompany[], meta: MetaResponse = {}) => ({
 	type: "@get/insurance_companies/success",
 	payload: {
 		insuranceCompanies,
+		meta
 	},
 });
 

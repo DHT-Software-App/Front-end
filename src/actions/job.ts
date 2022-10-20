@@ -1,18 +1,21 @@
 import { Job } from "types/Job";
+import { MetaResponse, RequestQueryParams } from "utils/params/query";
 import { SuccessResponse } from "utils/Responses/SuccessResponse";
 
 // GET ALL
-export const get_jobs_request = (access_token: string) => ({
+export const get_jobs_request = (access_token: string, queryParams: RequestQueryParams<Job> = {}) => ({
 	type: "@get/jobs/request",
 	payload: {
 		access_token,
+		queryParams
 	},
 });
 
-export const get_jobs_success = (jobs: Job[]) => ({
+export const get_jobs_success = (jobs: Job[], meta: MetaResponse = {}) => ({
 	type: "@get/jobs/success",
 	payload: {
 		jobs,
+		meta
 	},
 });
 

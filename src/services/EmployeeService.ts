@@ -9,11 +9,30 @@ import { SuccessResponse } from "utils/Responses/SuccessResponse";
 import { Role } from "types/Role";
 import { User } from "types/User";
 import { ResponseError } from "utils/errors/ResponseError";
+import { MetaResponse, RequestQueryParams } from "utils/params/query";
 
 const { REACT_APP_BACKEND_API } = process.env;
 
 export class EmployeeService {
-	static async getAll(access_token: string): Promise<Employee[]> {
+	static async getAll(access_token: string, requestQueryParams: RequestQueryParams<Employee>): Promise<{employees: Employee[], meta: MetaResponse} | undefined> {
+		let queryParams: any = {};
+
+		if(requestQueryParams.filter) {
+			queryParams[`filter[${requestQueryParams.filter?.[0]}]`]  = requestQueryParams.filter?.[1]
+		}
+
+		if(requestQueryParams.order && requestQueryParams.orderBy) {
+			queryParams['sort'] = (requestQueryParams.order == 'asc' ? '' : '-') + requestQueryParams.orderBy;
+		}
+
+		if(requestQueryParams.page) {
+			queryParams['page'] = requestQueryParams.page;
+		}
+
+		if(requestQueryParams.per_page) {
+			queryParams['per_page'] = requestQueryParams.per_page;
+		}
+
 		try {
 			const endpoint = `${REACT_APP_BACKEND_API}/employees?include=role, user, profile`;
 
@@ -23,6 +42,7 @@ export class EmployeeService {
 					"Content-Type": "application/json",
 					Accept: "application/json",
 				},
+				params: queryParams
 			});
 
 			const employees: Employee[] = data.data.map((data: any) => {
@@ -84,9 +104,18 @@ export class EmployeeService {
 				return employee;
 			});
 
-			return employees;
+			
+			const meta: MetaResponse = {
+					...data.meta
+			}
+
+			return {
+				employees,
+				meta
+			};
+
 		} catch (error) {
-			return [];
+		
 		}
 	}
 
